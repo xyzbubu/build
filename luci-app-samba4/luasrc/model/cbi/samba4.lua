@@ -23,8 +23,6 @@ br = s:taboption("general", Flag, 'disable_async_io', translate('Force synchrono
 br = s:taboption("general", Flag,  'allow_legacy_protocols', translate('Allow legacy (insecure) protocols/authentication.'),
 			translate('Allow legacy smb(v1)/Lanman connections, needed for older devices without smb(v2.1/3) support.'))
 br.rmempty = false
-br.enabled = "yes"
-br.disabled = "no"
 br.default = "yes"
 
 macos = s:taboption("general", Flag, "macos", translate("Enable macOS compatible shares"),
