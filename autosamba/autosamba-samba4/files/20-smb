@@ -38,12 +38,20 @@ smb_handle() {
 	if [  "$path" = "$2" ] ;then
 		global=1
 	fi
+# 	if [  "$path" = "/boot" ] && [ "$homes" = "0" ]  ;then
+# 		global=1
+#  	fi
 }
 
-
+chk_en() {
+	config_get_bool autoshare $1 autoshare 1
+	[ $autoshare -eq 0 ] && exit
+}
 config_load samba4
+config_foreach chk_en samba
+
 autoshare=`uci get samba4.@samba[0].autoshare`
-[ $autoshare -eq 0 ] && exit
+[ "$autoshare" -eq 0 ] && exit
 
 device=`basename $DEVPATH`
 
@@ -69,10 +77,11 @@ case "$ACTION" in
 		if [ "$str" == $path ];then
 			strr=${j#* }
 			target=${strr%% *}
-			global=0
+			 global=0
 			config_foreach smb_handle sambashare $target
 			name=${target#*/mnt/}
 			name=$(echo $name | sed -e "s/^\///")
+
 			if [ $global -eq 0 ] ;then
 				echo -e "\n\nconfig sambashare" >> $config_file
 				echo -e "\toption auto '1'" >> $config_file
