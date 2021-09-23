@@ -50,8 +50,8 @@ chk_en() {
 config_load samba4
 config_foreach chk_en samba
 
-autoshare=`uci get samba4.@samba[0].autoshare`
-[ "$autoshare" -eq 0 ] && exit
+#  autoshare=`uci get samba4.@samba[0].autoshare`
+#  [ "$autoshare" -eq 0 ] && exit
 
 device=`basename $DEVPATH`
 
@@ -124,7 +124,7 @@ case "$ACTION" in
 
 			[ "$dev" = "$device" ] && {
 				auto=`uci get samba4.@sambashare[$i].auto`
-				[ $auto = "1" ] && {
+				[ $auto -eq 1 ] && {
 					mount_dir=`uci get samba4.@sambashare[$i].name`
 					uci delete samba4.@sambashare[$i]
 					uci commit
