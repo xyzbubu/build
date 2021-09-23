@@ -1,12 +1,11 @@
 local m,s,o
-local ov="bypass"
-local uci=luci.model.uci.cursor()
+local bypass="bypass"
 
-m=Map(ov)
+m=Map(bypass)
 m:section(SimpleSection).template="bypass/status"
 
 local server_table={}
-uci:foreach(ov,"servers",function(s)
+luci.model.uci.cursor():foreach(bypass,"servers",function(s)
 	if s.alias then
 		server_table[s[".name"]]="[%s]:%s"%{string.upper(s.type),s.alias}
 	elseif s.server and s.server_port then
@@ -88,6 +87,7 @@ o.default=1
 o=s:option(ListValue,"dns_mode",translate("Foreign Resolve Dns Mode"))
 o:value("0",translate("Use SmartDNS DoH query"))
 o:value("1",translate("Use SmartDNS TCP query"))
+o.default="1"
 
 o=s:option(Value,"dns",translate("Foreign DoH"),
 translate("Custom DNS format is https://cloudflare-dns.com/dns-query or https://8.8.8.8/dns-query -http-host dns.google"))
@@ -105,12 +105,14 @@ o:value("2","8.8.8.8,8.8.4.4 ("..translate("Google")..")")
 o:value("3","9.9.9.9,149.112.112.112 (Quad9)")
 o:value("4","9.9.9.11,149.112.112.11 (Quad9 ECS)")
 o:value("5","208.67.222.222,208.67.220.220 (OpenDNS)")
+o.default="2"
 o:depends("dns_mode",1)
 
 o=s:option(ListValue,"dns_mode_l",translate("Domestic Resolve Dns Mode"),
 translate("If DoH resolution is not normal,use UDP mode and select ISP DNS"))
 o:value("0",translate("Use SmartDNS DoH query"))
 o:value("1",translate("Use SmartDNS UDP query"))
+o.default="1"
 
 o=s:option(Value,"dns_l",translate("Domestic DoH"),
 translate("Custom DNS format is https://dns.alidns.com/dns-query or https://223.5.5.5/dns-query"))

@@ -105,11 +105,11 @@ function o.cfgvalue(...)
 end
 
 o=s:option(DummyValue,"server",translate("TCPing Latency"))
-o.template="bypass/server"
+o.template="bypass/socket"
 o.width = "10%"
 
 o=s:option(DummyValue,"server_port",translate("Result"))
-o.template="bypass/port"
+o.template="bypass/ping"
 o.width = "10%"
 
 o=s:option(Button,"apply_node",translate("Apply"))

@@ -1,9 +1,10 @@
 <%+cbi/valueheader%>
 <script type="text/javascript">//<![CDATA[
-	function subscribe(s){
-		s.disabled=true;
-		s.value='<%:Refresh...%>';
-		XHR.get('<%=luci.dispatcher.build_url("admin","services","bypass","subscribe")%>',null,function(x,rv){
+	function subscribe(btn,dataname){
+		btn.disabled=true;
+		btn.value='<%:Refresh...%>';
+		murl=dataname;
+		XHR.get('<%=luci.dispatcher.build_url("admin","services","bypass","subscribe")%>',{set:murl},function(x,rv){
 			setTimeout(function(){
 				window.location.reload()
 			},1000);
@@ -11,5 +12,6 @@
 		return false;
 	}
 //]]></script>
-<input type="button" class="cbi-button cbi-input-apply" value="<%:Update All Subscribe Severs%> " onclick="return subscribe(this)"/>
+<input type="button" class="cbi-button cbi-input-apply" value="<%:Update All Subscribe Severs%> " onclick="return subscribe(this,'<%=self.option%>')" />
+<!-- <span id="<%=self.option%>-status"><em><%=self.value%></em></span> -->
 <%+cbi/valuefooter%>
