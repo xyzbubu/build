@@ -18,6 +18,8 @@ config global
 	option dns_mode '1'
 	option tcp_dns '2'
 	option dns_mode_l '1'
+	option nf_ip '1'
+	option global_server 'cfg184a8f'
 
 config socks5_proxy
 
@@ -27,7 +29,6 @@ config access_control
 config server_global
 
 config server_subscribe
-	option proxy '0'
 	option auto_update_time '5'
 	option auto_update '1'
 	option filter_words '过期时间/剩余流量/QQ群/官网/防失联地址/回国'
