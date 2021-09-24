@@ -1,14 +1,11 @@
 
 config global
 	option threads '0'
-	option dns_mode_l '0'
 	option monitor_enable '1'
 	option enable_switch '1'
 	option switch_time '600'
 	option switch_timeout '5'
 	option switch_try_count '3'
-	option dns_mode '0'
-	option dns '2'
 	option dns_hijack '0'
 	option run_mode 'router'
 	option yb_server 'cfg0f4a8f'
@@ -18,6 +15,9 @@ config global
 	option cu_server 'cfg124a8f'
 	option dns_mode_c '0'
 	option tg_server 'cfg6e4a8f'
+	option dns_mode '1'
+	option tcp_dns '2'
+	option dns_mode_l '1'
 
 config socks5_proxy
 
@@ -31,3 +31,4 @@ config server_subscribe
 	option auto_update_time '5'
 	option auto_update '1'
 	option filter_words '过期时间/剩余流量/QQ群/官网/防失联地址/回国'
+

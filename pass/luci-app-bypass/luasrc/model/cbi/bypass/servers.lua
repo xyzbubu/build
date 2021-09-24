@@ -91,7 +91,7 @@ end
 
 o=s:option(DummyValue,"type",translate("Type"))
 function o.cfgvalue(...)
-	return Value.cfgvalue(...) and string.upper(Value.cfgvalue(...))
+	return (Value.cfgvalue(...)=="vless") and "VLESS" or Value.cfgvalue(...)
 end
 
 o=s:option(DummyValue,"alias",translate("Alias"))
@@ -104,13 +104,15 @@ function o.cfgvalue(...)
 	return Value.cfgvalue(...) or "N/A"
 end
 
-o=s:option(DummyValue,"server",translate("TCPing Latency"))
+o=s:option(DummyValue,"server_port",translate("Socket Connected"))
 o.template="bypass/socket"
-o.width = "10%"
+o.width="10%"
 
-o=s:option(DummyValue,"server_port",translate("Result"))
+o=s:option(DummyValue,"server",translate("TCPing Latency"))
 o.template="bypass/ping"
 o.width = "10%"
+
+
 
 o=s:option(Button,"apply_node",translate("Apply"))
 o.inputstyle="apply"
@@ -121,8 +123,9 @@ o.write=function(self,section)
 end
 
 o=s:option(Flag,"switch_enable",translate("Auto Switch"))
+o.rmempty=false
 function o.cfgvalue(...)
-	return Value.cfgvalue(...) or 0
+	return Value.cfgvalue(...) or 1
 end
 
 m:append(Template("bypass/server_list"))
