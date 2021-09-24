@@ -113,7 +113,6 @@ get_mwan3_status() {
 	if [ -d "${MWAN3_STATUS_DIR}" ]; then
 		network_get_uptime uptime "$iface"
 		network_is_up "$iface" && up="1"
-
 		if [ -f "$MWAN3TRACK_STATUS_DIR/${iface}/STATUS" ]; then
 			status="$(cat "$MWAN3TRACK_STATUS_DIR/${iface}/STATUS")"
 		else
