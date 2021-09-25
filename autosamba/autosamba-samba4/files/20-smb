@@ -32,9 +32,9 @@ smb_handle() {
 	if [  "$path" = "$2" ] ;then
 		global=1
 	fi
- 	if [  "$path" = "/boot" ] && [ "$homes" = "0" ]  ;then
- 		global=1
-  	fi
+ 	#if [  "$path" = "/boot" ] && [ "$homes" = "0" ]  ;then
+ 	#	global=1
+  	#fi
 }
 
 chk_en() {
