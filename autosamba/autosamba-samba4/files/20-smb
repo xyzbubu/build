@@ -1,11 +1,6 @@
 #!/bin/sh
 
-#
-#  D-Team Technology Co.,Ltd. ShenZhen
-#  作者:Vic
-#
-# 警告:对着屏幕的哥们,我们允许你使用此脚本，但不允许你抹去作者的信息,请保留这段话。
-#
+
 
 . /lib/functions.sh
 . /lib/functions/service.sh
@@ -37,7 +32,7 @@ smb_handle() {
 	if [  "$path" = "$2" ] ;then
 		global=1
 	fi
- 	if [  "$path" = "/boot" ] && [ "$homes" -eq 0  ]  ;then
+ 	if [  "$path" = "/boot" ] && [ "$homes" = "0" ]  ;then
  		global=1
   	fi
 }
