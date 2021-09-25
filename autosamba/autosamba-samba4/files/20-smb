@@ -1,7 +1,5 @@
 #!/bin/sh
 
-
-
 . /lib/functions.sh
 . /lib/functions/service.sh
 
@@ -32,9 +30,9 @@ smb_handle() {
 	if [  "$path" = "$2" ] ;then
 		global=1
 	fi
- 	#if [  "$path" = "/boot" ] && [ "$homes" = "0" ]  ;then
- 	#	global=1
-  	#fi
+ 	if [  "$path" = "/boot" ] && [ $homes  -eq 0]  ;then
+ 		global=1
+  	fi
 }
 
 chk_en() {
@@ -43,9 +41,8 @@ chk_en() {
 }
 config_load samba4
 config_foreach chk_en samba
-
 autoshare=`uci get samba4.@samba[0].autoshare`
-[ "$autoshare" -eq 0 ] && exit
+[ $autoshare -eq "0" ] && exit
 
 device=`basename $DEVPATH`
 
@@ -89,6 +86,7 @@ case "$ACTION" in
 				echo -e "\toption dir_mask '0777'" >> $config_file
 				echo -e "\toption device '$device'" >> $config_file
 				/etc/init.d/samba4 reload
+
 			fi
 		fi
 	done
@@ -101,7 +99,6 @@ case "$ACTION" in
 					uci delete samba4.@sambashare[$i]
 					uci commit
 					/etc/init.d/samba4 reload
-					return
 			}
 
 	      done
