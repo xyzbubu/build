@@ -9,11 +9,6 @@ uci commit system
 uci set uhttpd.main.rfc1918_filter=0
 uci set uhttpd.main.redirect_https=0
 uci commit uhttpd
-uci set turboacc.config.sfe_flow='0'
-uci set turboacc.config.sw_flow='0'
-uci set turboacc.config.hw_flow='0'
-uci set turboacc.config.bbr_cca='0'
-uci commit turboacc
 uci set fstab.@global[0].anon_mount=1
 uci commit fstab
 uci set dhcp.@dnsmasq[0].cachesize='1500'
@@ -25,7 +20,6 @@ uci set dhcp.lan.ra_management='1'
 uci set dhcp.lan.ra_default='1'
 uci set dhcp.lan.force='1'
 uci commit dhcp
-#uci set network.@globals[0].ula_prefix=''
 uci set network.@wan[0].mtu=1460
 uci set network.@wan[0].metric='40'
 uci commit network
@@ -81,16 +75,6 @@ echo "log-facility=/dev/null" >> /etc/dnsmasq.conf
 
 sed -i 's/cbi.submit\"] = true/cbi.submit\"] = \"1\"/g' /usr/lib/lua/luci/dispatcher.lua
 echo 'hsts=0' > /root/.wgetrc
-
-/etc/init.d/php7-fastcgi disable 2>/dev/null
-/etc/init.d/php7-fpm disable 2>/dev/null
-/etc/init.d/softethervpnbridge disable 2>/dev/null
-/etc/init.d/softethervpnserver disable 2>/dev/null
-/etc/init.d/softethervpnclient disable 2>/dev/null
-/etc/init.d/haproxy disable 2>/dev/null
-/etc/init.d/kcptun disable 2>/dev/null
-for p in `ls -l /etc/init.d | awk '/--/{print $NF}'`; do chmod +x /etc/init.d/$p; done
-for p in `ls -l /usr/bin | awk '/--/{print $NF}'`; do chmod +x /usr/bin$p; done
 rm -rf /tmp/luci-*
 
 exit 0
