@@ -70,16 +70,11 @@ a = s:taboption("general", Flag, "autoshare", translate("Auto Share"),
 a.rmempty = false
 a.default = "yes"
 
-
 s = m:section(TypedSection, "sambashare", translate("Shared Directories")
   , translate("Please add directories to share. Each directory refers to a folder on a mounted device."))
 s.anonymous = true
 s.addremove = true
 s.template = "cbi/tblsection"
-
-en = s:option(Flag, "auto", translate("enable"))
-en.rmempty = false
-en.default = "yes"
 
 s:option(Value, "name", translate("Name"))
 pth = s:option(Value, "path", translate("Path"))
