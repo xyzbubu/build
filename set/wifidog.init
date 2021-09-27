@@ -1,0 +1,91 @@
+#!/bin/sh /etc/rc.common
+#QQ:183130227
+#Url:http://bbs.scjxsw.com
+#日期20150612
+
+START=95
+
+
+EXTRA_COMMANDS="status"
+EXTRA_HELP="        status Print the status of the service"
+start() {	
+	if [ "$(uci -q get wifidog.wifidog.wifidog_enable)" -eq "0" ]
+	then
+	wdctl stop >/dev/null 2>&1
+	exit 0
+	fi
+ssw='FirewallRule allow to scjxsw.com'
+for jjs in $(uci -q get wifidog.wifidog.wx_url|tr , \\n)
+do
+ssw="$ssw
+FirewallRule allow to $jjs"
+done
+for jjs in $(uci -q get wifidog.wifidog.bmd_url|tr , \\n)
+do
+ssw="$ssw
+FirewallRule allow to $jjs"
+done  
+echo -n >/etc/wifidog.conf
+sleep 1
+echo "
+GatewayID $(uci -q get wifidog.wifidog.gateway_id)
+GatewayInterface $(uci -q get wifidog.wifidog.interface)
+ExternalInterface $(uci -q get network.wan.ifname)
+AuthServer {
+	Hostname $(uci -q get wifidog.wifidog.gateway_hostname)
+	HTTPPort $(uci -q get wifidog.wifidog.gateway_httpport)
+	Path $(uci get -q wifidog.wifidog.gateway_path)
+	}
+Daemon 1
+ProxyPort $(uci get -q wifidog.wifidog.pt)
+GatewayPort $(uci -q get wifidog.wifidog.gatewayport)
+CheckInterval $(uci -q get wifidog.wifidog.check_interval)
+ClientTimeout $(uci -q get wifidog.wifidog.client_timeout)
+HTTPDMaxConn $(uci -q get wifidog.wifidog.gateway_connmax)
+TrustedMACList $(uci -q get wifidog.wifidog.myz_mac)
+
+FirewallRuleSet global {
+FirewallRule allow to 0.openwrt.pool.ntp.org
+FirewallRule allow to 1.openwrt.pool.ntp.org
+FirewallRule allow to 2.openwrt.pool.ntp.org
+FirewallRule allow to 3.openwrt.pool.ntp.org
+$ssw
+}
+FirewallRuleSet validating-users {
+    FirewallRule allow to 0.0.0.0/0
+}
+
+FirewallRuleSet known-users {
+    FirewallRule allow to 0.0.0.0/0
+}
+
+FirewallRuleSet unknown-users {
+    FirewallRule allow udp port 53
+    FirewallRule allow tcp port 53
+    FirewallRule allow udp port 67
+    FirewallRule allow tcp port 67
+}
+
+FirewallRuleSet locked-users {
+    FirewallRule block to 0.0.0.0/0
+}
+" >>/etc/wifidog.conf
+sleep 2
+	nice --20 wifidog -c /etc/wifidog.conf
+}
+
+restart() {
+	wdctl stop >/dev/null 2>&1
+sleep 2
+	/etc/init.d/wifidog start
+}
+
+
+stop() {
+	wdctl stop >/dev/null 2>&1
+}
+
+status() {
+	wdctl status
+}
+
