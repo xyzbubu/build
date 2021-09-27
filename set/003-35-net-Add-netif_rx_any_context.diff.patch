@@ -1,0 +1,34 @@
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -3764,6 +3764,7 @@ void generic_xdp_tx(struct sk_buff *skb,
+ int do_xdp_generic(struct bpf_prog *xdp_prog, struct sk_buff *skb);
+ int netif_rx(struct sk_buff *skb);
+ int netif_rx_ni(struct sk_buff *skb);
++int netif_rx_any_context(struct sk_buff *skb);
+ int netif_receive_skb(struct sk_buff *skb);
+ int netif_receive_skb_core(struct sk_buff *skb);
+ void netif_receive_skb_list(struct list_head *head);
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -4840,6 +4840,21 @@ int netif_rx_ni(struct sk_buff *skb)
+ }
+ EXPORT_SYMBOL(netif_rx_ni);
+ 
++int netif_rx_any_context(struct sk_buff *skb)
++{
++	/*
++	 * If invoked from contexts which do not invoke bottom half
++	 * processing either at return from interrupt or when softrqs are
++	 * reenabled, use netif_rx_ni() which invokes bottomhalf processing
++	 * directly.
++	 */
++	if (in_interrupt())
++		return netif_rx(skb);
++	else
++		return netif_rx_ni(skb);
++}
++EXPORT_SYMBOL(netif_rx_any_context);
++
+ static __latent_entropy void net_tx_action(struct softirq_action *h)
+ {
+ 	struct softnet_data *sd = this_cpu_ptr(&softnet_data);
