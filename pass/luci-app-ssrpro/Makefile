@@ -82,7 +82,7 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Libev_Client
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Libev_Server
 	bool "Include Shadowsocks Libev Server"
-	default n if i386||x86_64||arm
+	default y if i386||x86_64||arm
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Rust_Client
 	bool "Include Shadowsocks Rust Client"
@@ -92,7 +92,7 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Rust_Client
 config PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Rust_Server
 	bool "Include Shadowsocks Rust Server"
 	depends on aarch64||arm||i386||mips||mipsel||x86_64
-	default n if aarch64
+	default y if aarch64
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Client
 	bool "Include ShadowsocksR Libev Client"
@@ -100,15 +100,15 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Client
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Server
 	bool "Include ShadowsocksR Libev Server"
-	default n if i386||x86_64||arm
+	default y if i386||x86_64||arm
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_Simple_Obfs
 	bool "Include Shadowsocks Simple Obfs Plugin"
-	default n if i386||x86_64||arm
+	default y if i386||x86_64||arm
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_Trojan
 	bool "Include Trojan"
-	default y
+	default n
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_Plugin
 	bool "Include Shadowsocks V2ray Plugin"
@@ -116,7 +116,7 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_Plugin
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_Xray
 	bool "Include Xray"
-	default n if aarch64||arm||i386||x86_64
+	default y if aarch64||arm||i386||x86_64
 endef
 
 define Package/$(PKG_NAME)/conffiles
