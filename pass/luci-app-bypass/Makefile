@@ -43,6 +43,26 @@ LUCI_DEPENDS:=+ipset +ip-full +iptables-mod-tproxy +dnsmasq-full +smartdns-le +c
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Socks_Server:microsocks
 
 define Package/$(PKG_NAME)/config
+menu "Include libustream-ssl"
+	depends on PACKAGE_$(PKG_NAME)
+	config PACKAGE_$(PKG_NAME)_INCLUDE_libustream-wolfssl
+		bool "Include libustream-wolfssl"
+		default y if DEFAULT_libustream-wolfssl
+		select PACKAGE_libustream-wolfssl
+	
+	config PACKAGE_$(PKG_NAME)_INCLUDE_libustream-openssl
+		depends on !PACKAGE_$(PKG_NAME)_INCLUDE_libustream-wolfssl
+		bool "Include libustream-openssl"
+		default y if DEFAULT_libustream-openssl
+		select PACKAGE_libustream-openssl
+
+	config PACKAGE_$(PKG_NAME)_INCLUDE_libustream-mbedtls
+		depends on !(PACKAGE_$(PKG_NAME)_INCLUDE_libustream-wolfssl || PACKAGE_$(PKG_NAME)_INCLUDE_libustream-openssl)
+		bool "Include libustream-mbedtls"
+		default y if DEFAULT_libustream-mbedtls
+		select PACKAGE_libustream-mbedtls
+
+endmenu
 config PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Libev_Client
 	bool "Include Shadowsocks Libev Client"
 	default y
