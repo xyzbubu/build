@@ -10,7 +10,6 @@ s:tab("template", translate("Edit Template"))
 
 --o=s:taboption("general",NetworkSelect,'interface', translate('Interface'),translate('Listen only on the given interface or, if unspecified, on lan'))
 
-
 o=s:taboption("general", Value, "workgroup", translate("Workgroup"))
 o.placeholder = 'WORKGROUP'
 
@@ -23,6 +22,8 @@ br = s:taboption("general", Flag, 'disable_async_io', translate('Force synchrono
 br = s:taboption("general", Flag,  'allow_legacy_protocols', translate('Allow legacy (insecure) protocols/authentication.'),
 			translate('Allow legacy smb(v1)/Lanman connections, needed for older devices without smb(v2.1/3) support.'))
 br.rmempty = false
+br.enabled = "yes"
+br.disabled = "no"
 br.default = "yes"
 
 macos = s:taboption("general", Flag, "macos", translate("Enable macOS compatible shares"),
@@ -62,13 +63,13 @@ end
 
 br = s:taboption("general", Flag, "homes", translate("Share home-directories"), translate("Allow system users to reach their home directories via"))
 br.rmempty = false
+br.enabled = "yes"
+br.disabled = "no"
 br.default = "yes"
-
-
 a = s:taboption("general", Flag, "autoshare", translate("Auto Share"),
         translate("Auto share local disk which connected"))
 a.rmempty = false
-a.default = "yes"
+a.default = "no"
 
 s = m:section(TypedSection, "sambashare", translate("Shared Directories")
   , translate("Please add directories to share. Each directory refers to a folder on a mounted device."))
