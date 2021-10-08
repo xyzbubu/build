@@ -63,13 +63,12 @@ end
 
 br = s:taboption("general", Flag, "homes", translate("Share home-directories"), translate("Allow system users to reach their home directories via"))
 br.rmempty = false
-br.enabled = "yes"
-br.disabled = "no"
 br.default = "yes"
+
 a = s:taboption("general", Flag, "autoshare", translate("Auto Share"),
         translate("Auto share local disk which connected"))
 a.rmempty = false
-a.default = "no"
+a.default = "yes"
 
 s = m:section(TypedSection, "sambashare", translate("Shared Directories")
   , translate("Please add directories to share. Each directory refers to a folder on a mounted device."))
@@ -112,13 +111,13 @@ go.default = "yes"
 
 
 gon = s:option(Flag, "guest_only", translate("Guests only"))
-gon.rmempty = false
+
 gon.enabled = "yes"
 gon.disabled = "no"
 gon.default = "yes"
 
 iown = s:option(Flag, "inherit_owner", translate("Inherit owner"))
-iown.rmempty = false
+
 iown.enabled = "yes"
 iown.disabled = "no"
 iown.default = "yes"
