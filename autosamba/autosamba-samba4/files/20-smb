@@ -1,11 +1,5 @@
 #!/bin/sh
 
-#
-#  D-Team Technology Co.,Ltd. ShenZhen
-#  作者:Vic
-#
-# 警告:对着屏幕的哥们,我们允许你使用此脚本，但不允许你抹去作者的信息,请保留这段话。
-#
 
 . /lib/functions.sh
 . /lib/functions/service.sh
@@ -38,6 +32,7 @@ smb_handle() {
 	if [  "$path" = "$2" ] ;then
 		global=1
 	fi
+	[  "$target" = "/boot" ] && [ "$homes" = 0 ] && global=1
 }
 
 chk_en() {
@@ -65,7 +60,7 @@ case "$ACTION" in
 	path="/dev/$device"
 
 	wait_for_init
-
+	homes=`uci get samba4.@samba[0].homes`
 	cat /proc/mounts | while read j
 	do
 		str=${j%% *}
@@ -76,8 +71,6 @@ case "$ACTION" in
 			config_foreach smb_handle sambashare $target
 			name=${target#*/mnt/}
 			name=$(echo $name | sed -e "s/^\///")
-			homes=`uci get samba4.@samba[0].homes`
-			[  "$target" = "/boot" ] && [ "$homes" = "0" ] && global=1
 			if [ $global -eq 0 ] ;then
 				echo -e "\n\nconfig sambashare" >> $config_file
 				echo -e "\toption auto '1'" >> $config_file
@@ -95,8 +88,7 @@ case "$ACTION" in
 			fi
 		fi
 	done
-	homes=`uci get samba4.@samba[0].homes`
-	if [ "$homes" -eq "0" ]; then
+	if [ "$homes" -eq 0 ]; then
 		sum=$(grep -c 'config sambashare' /etc/config/samba4)
 		for i in $(seq 0 $((sum - 1))); do
 	      		path=$(uci get samba4.@sambashare[$i].path 2>/dev/null)
