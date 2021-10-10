@@ -4,6 +4,7 @@
 -%>
 <script type="text/javascript">
 	//<![CDATA[
+	window.addEventListener('load',function(){
 	const doms = document.getElementsByClassName('pingtime');
 	const ports = document.getElementsByClassName("socket-connected");
 	const transports = document.getElementsByClassName("transport");
@@ -53,6 +54,7 @@
 	for (let i = 0; i < 20; i++) {
 		thread()
 	}
+	})
 	function cbi_row_drop(fromId, toId, store, isToBottom) {
 		var fromNode = document.getElementById(fromId);
 		var toNode = document.getElementById(toId);
