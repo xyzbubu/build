@@ -120,7 +120,7 @@ end
 if luci.sys.call("which ssr-redir >/dev/null")==0 then
 o:value("ssr",translate("ShadowsocksR"))
 end
-if luci.sys.call("which xray >/dev/null")==0 then
+if luci.sys.call("which xray >/dev/null")==0 or luci.sys.call("which v2ray >/dev/null")==0 then
 o:value("vmess",translate("VMess"))
 o:value("vless",translate("VLESS"))
 end
