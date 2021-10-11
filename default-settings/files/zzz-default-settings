@@ -30,6 +30,9 @@ uci set turboacc.config.sfe_flow='0'
 uci set turboacc.config.hw_flow='0'
 uci set turboacc.config.sw_flow='0'
 uci commit turboacc
+uci set dockerd.@globals[0].auto_start='0'
+uci commit dockerd
+/etc/init.d/dockerd stop
 rm -f /usr/lib/lua/luci/view/admin_status/index/ddns.htm
 rm -f /usr/lib/lua/luci/view/admin_status/index/minidlna.htm
 
