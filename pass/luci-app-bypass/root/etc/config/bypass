@@ -1,11 +1,11 @@
 
 config global
 	option threads '0'
+	option run_mode 'router'
 	option dns_hijack '1'
 	option monitor_enable '1'
 	option dns_mode '1'
 	option dns_mode_l '1'
-	option run_mode 'all'
 	option enable_switch '0'
 	option tcp_dns '2'
 
