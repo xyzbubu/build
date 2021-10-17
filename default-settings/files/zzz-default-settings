@@ -1,5 +1,4 @@
 #!/bin/sh
-
 uci set luci.main.lang=zh_cn
 uci set luci.main.mediaurlbase='/luci-static/opentopd'
 uci commit luci
@@ -9,8 +8,6 @@ uci commit system
 uci set uhttpd.main.rfc1918_filter=0
 uci set uhttpd.main.redirect_https=0
 uci commit uhttpd
-uci set fstab.@global[0].anon_mount=1
-uci commit fstab
 uci set dhcp.@dnsmasq[0].cachesize='1500'
 uci set dhcp.@dnsmasq[0].min_ttl='3600'
 uci set dhcp.@dnsmasq[0].filter_aaaa='0'
@@ -22,9 +19,15 @@ uci set dhcp.lan.ra_management='1'
 uci set dhcp.lan.ra_default='1'
 uci set dhcp.lan.force='1'
 uci commit dhcp
+uci set network.@globals[0].ula_prefix=''
 uci set network.@wan[0].mtu=1460
 uci set network.@wan[0].metric='40'
+uci set network.@wan6[0].mifname='@wan'
 uci commit network
+uci set fstab.@global[0].anon_mount=1
+uci commit fstab
+uci set vsftpd.@listen[0].enable4='0'
+uci commit vsftpd
 uci set upnpd.@upnpd[0].enabled='0'
 uci set upnpd.@upnpd[0].igdv1='1'
 uci commit upnpd
@@ -52,9 +55,6 @@ sed -i 's/services/nas/g'  /usr/lib/lua/luci/view/minidlna_status.htm
 sed -i 's/\"services\"/\"control\"/g' /usr/lib/lua/luci/controller/samba4.lua
 sed -i 's/\"nas\"/\"control\"/g' /usr/lib/lua/luci/controller/cifsd.lua
 
-uci set vsftpd.@listen[0].enable4='0'
-uci commit vsftpd
-
 ln -sf /sbin/ip /usr/bin/ip
 
 sed -i 's#downloads.openwrt.org#mirrors.cloud.tencent.com/lede#g' /etc/opkg/distfeeds.conf
@@ -73,7 +73,7 @@ sed -i '/set wireless.radio${devidx}.disabled/d' /lib/wifi/mac80211.sh
 wifi up
 
 sed -i '/DISTRIB_REVISION/d' /etc/openwrt_release
-echo "DISTRIB_REVISION='R21.8.6'" >> /etc/openwrt_release
+# echo "DISTRIB_REVISION='R21.10.1'" >> /etc/openwrt_release
 cat /etc/openwrt_release1 >> /etc/openwrt_release
 sed -i '/DISTRIB_DESCRIPTION/d' /etc/openwrt_release
 echo "DISTRIB_DESCRIPTION='OpenWrt '" >> /etc/openwrt_release
