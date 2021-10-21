@@ -48,7 +48,7 @@ o.description=translate("After modify the subscribe URL and settings,click this 
 o.write=function()
 	SYS.call("touch /var/lock/bypass-uci.lock")
 	uci:commit(bypass)
-	luci.http.redirect(luci.dispatcher.build_url("admin","services",ov,"servers"))
+	luci.http.redirect(luci.dispatcher.build_url("admin","services",bypass,"servers"))
 end
 
 o=s:option(Button,"subscribe",translate("Update All Subscribe Severs"))
@@ -91,7 +91,7 @@ end
 
 o=s:option(DummyValue,"type",translate("Type"))
 function o.cfgvalue(...)
-	return (Value.cfgvalue(...)=="vless") and "VLESS" or Value.cfgvalue(...)
+	return Value.cfgvalue(...) and string.upper(Value.cfgvalue(...))
 end
 
 o=s:option(DummyValue,"alias",translate("Alias"))
