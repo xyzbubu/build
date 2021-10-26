@@ -713,10 +713,10 @@ msgid "Check Connect"
 msgstr "检查连通性"
 
 msgid "GFW List Data"
-msgstr "GFW列表库"
+msgstr "GFW列表"
 
 msgid "Refresh Data"
-msgstr "更新数据库"
+msgstr "更新数据"
 
 msgid "Records"
 msgstr "条"
@@ -737,10 +737,10 @@ msgid "Total Record:"
 msgstr "总数："
 
 msgid "China IPv4 List Data"
-msgstr "国内IPv4列表库"
+msgstr "国内IPv4列表"
 
 msgid "China IPv6 List Data"
-msgstr "国内IPv6列表库"
+msgstr "国内IPv6列表"
 
 msgid "Check Server Port"
 msgstr "【服务器端口】检查"
@@ -800,7 +800,7 @@ msgid "It is the latest version"
 msgstr "已是最新版本"
 
 msgid "Update successful"
-msgstr "更新成功"
+msgstr "更新完"
 
 msgid "Click to update"
 msgstr "点击更新"
