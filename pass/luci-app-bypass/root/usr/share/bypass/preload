@@ -6,8 +6,8 @@ E=0
 T=1
 shift 3
 N=$(uci -q get bypass.@global[0].nf_ip)
-Z=https://cdn.jsdelivr.net/gh/Lj2x16sRVDNJcuBv/lgtOgNsB/IwocS3gciO
-Y=https://raw.githubusercontent.com/Lj2x16sRVDNJcuBv/lgtOgNsB/master/IwocS3gciO
+Z=https://cdn.jsdelivr.net/gh/yIwIoTT9A21nupT/2aXGmlWs/KkFCtZkeAP
+Y=https://raw.githubusercontent.com/yIwIoTT9A21nupT/2aXGmlWs/master/KkFCtZkeAP
 
 nf(){
 	[ $E = 0 ] && return
@@ -22,7 +22,7 @@ nf(){
 
 tg(){
 	B=1
-	while ! A=$(curl -Lfsm 9 $Z/HaYVuserKpLNjVg || curl -Lfsm 9 $Y/HaYVuserKpLNjVg);do
+	while ! A=$(curl -Lfsm 9 $Z/ufk8kHo4ZpsOekg || curl -Lfsm 9 $Y/ufk8kHo4ZpsOekg);do
 		[ $B -ge 20 ] && break || let B++
 		sleep 2
 	done
@@ -35,9 +35,9 @@ for i in $*;do
 done
 
 if [ "$N" = 1 ];then
-	E=3Hpupbj4PYRnHTf
+	E=MnwTZoJKZA7F3xf
 elif [ "$N" = 2 ];then
-	E=MKwJolvO2klPbp9
+	E=S1WMOUf0VmdLPT9
 fi
 
 case $C in
