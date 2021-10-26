@@ -125,38 +125,20 @@ function subscribe()
 end
 
 function ping()
-	local e = {}
-	local domain = luci.http.formvalue("domain")
-	local port = luci.http.formvalue("port")
-	local transport = luci.http.formvalue("transport")
-	local wsPath = luci.http.formvalue("wsPath")
-	local tls = luci.http.formvalue("tls")
-	e.index = luci.http.formvalue("index")
-	local iret = luci.sys.call("ipset add over_wan_ac " .. domain .. " 2>/dev/null")
-	if transport == "ws" then
-		local prefix = tls=='1' and "https://" or "http://"
-		local address = prefix..domain..':'..port..wsPath
-		local result = luci.sys.exec("curl --http1.1 -m 3 -s  -i -N -o /dev/null -w 'time_connect=%{time_connect}\nhttp_code=%{http_code}' -H 'Connection: Upgrade' -H 'Upgrade: websocket' -H 'Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==' -H 'Sec-WebSocket-Version: 13' "..address)
-		e.socket = string.match(result,"http_code=(%d+)")=="101"
-		e.ping = tonumber(string.match(result, "time_connect=(%d+.%d%d%d)"))*1000
-	else
-		local socket = nixio.socket("inet", "stream")
-		socket:setopt("socket", "rcvtimeo", 3)
-		socket:setopt("socket", "sndtimeo", 3)
-		e.socket = socket:connect(domain, port)
-		socket:close()
-		-- 	e.ping = luci.sys.exec("ping -c 1 -W 1 %q 2>&1 | grep -o 'time=[0-9]*.[0-9]' | awk -F '=' '{print$2}'" % domain)
-		-- 	if (e.ping == "") then
-		e.ping = luci.sys.exec(string.format("echo -n $(tcping -q -c 1 -i 1 -t 2 -p %s %s 2>&1 | grep -o 'time=[0-9]*' | awk -F '=' '{print $2}') 2>/dev/null", port, domain))
-		-- 	end
-												
+	local e={}
+	local domain=http.formvalue("domain")
+	local port=http.formvalue("port")
+	local dp=EXEC("netstat -unl | grep 5336 >/dev/null && echo -n 5336 || echo -n 53")
+	local ip=EXEC("echo "..domain.." | grep -E ^[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$ || \\\
+	nslookup "..domain.." 127.0.0.1#"..dp.." 2>/dev/null | grep Address | awk -F' ' '{print$NF}' | grep -E ^[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$ | sed -n 1p")
+	ip=EXEC("echo -n "..ip)
+	local iret=CALL("ipset add over_wan_ac "..ip.." 2>/dev/null")
+	e.ping=EXEC(string.format("tcping -q -c 1 -i 1 -t 2 -p %s %s 2>&1 | grep -o 'time=[0-9]*' | awk -F '=' '{print $2}'",port,ip))
+	if (iret==0) then
+		CALL("ipset del over_wan_ac "..ip)
 	end
-	if (iret == 0) then
-		luci.sys.call(" ipset del over_wan_ac " .. domain)
-	end
-	luci.http.prepare_content("application/json")
-	luci.http.write_json(e)
-
+	http.prepare_content("application/json")
+	http.write_json(e)
 end
 
 function getlog()
