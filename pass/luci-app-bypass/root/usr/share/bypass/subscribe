@@ -60,7 +60,6 @@ local encrypt_methods_ss = {
 }
 -- 分割字符串
 local function split(full, sep)
-	if full then
 	full = full:gsub("%z", "") -- 这里不是很清楚 有时候结尾带个\0
 	local off, result = 1, {}
 	while true do
@@ -78,8 +77,7 @@ local function split(full, sep)
 		end
 		return result
 	end
-	return {}
-end
+-- urlencode
 local function get_urlencode(c)
 	return sformat("%%%02X", sbyte(c))
 end
@@ -415,7 +413,7 @@ local function processData(szType, content)
 end
 -- curl
 local function curl(url)
-	local stdout=luci.sys.exec('curl --retry 3 -m 10 -LfsA "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36" "'..url..'"')
+	local stdout=luci.sys.exec('curl --retry 3 -m 10 -LfskA "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36" "'..url..'"')
 	return trim(stdout)
 end
 
@@ -573,12 +571,6 @@ local execute = function()
 					luci.sys.call("/etc/init.d/" .. name .. " restart > /dev/null 2>&1 &")
 				end
 			else
-			ucic:delete(name,ucic:get_first(name,'global'),'global_server')
-			ucic:delete(name,ucic:get_first(name,'global'),'udp_relay_server')
-			ucic:delete(name,ucic:get_first(name,'global'),'yb_server')
-			ucic:delete(name,ucic:get_first(name,'global'),'nf_server')
-			ucic:delete(name,ucic:get_first(name,'global'),'cu_server')
-			ucic:delete(name,ucic:get_first(name,'global'),'tg_server')
 				log('没有服务器节点了，停止服务')
 				luci.sys.call("/etc/init.d/" .. name .. " stop > /dev/null 2>&1 &")
 			end
@@ -589,10 +581,6 @@ local execute = function()
 end
 
 if subscribe_url and #subscribe_url > 0 then
-	if SYS.call('curl -so /dev/null -m 5 www.baidu.com')~=0 then
-		log("网络不通，停止更新订阅")
-		return
-	end
 	xpcall(execute, function(e)
 		log(e)
 		log(debug.traceback())
