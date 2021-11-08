@@ -14,6 +14,7 @@
 	local has_wifi = ((fs.stat("/etc/config/wireless", "size") or 0) > 0)
 	local sysinfo = luci.util.ubus("system", "info") or { }
 	local boardinfo = luci.util.ubus("system", "board") or { }
+	
 	local unameinfo = nixio.uname() or { }
 	local meminfo = sysinfo.memory or {
 		total = 0,
@@ -46,8 +47,11 @@
 		local cpu_info = luci.sys.exec("cpuinfo")
 
 		local eth_info = luci.sys.exec("ethinfo")
+		
 
 		local user_info = luci.sys.exec("cat /proc/net/arp | grep '0x2' | wc -l") or 0
+
+
 		local cpu_usage = (luci.sys.exec("expr 100 - $(top -n 1 | grep 'CPU:' | awk -F '%' '{print$4}' | awk -F ' ' '{print$2}')") or "6") .. "%"
         local ram_size = luci.sys.exec("free -m | grep Mem | awk '{print $2/1024}'")
 		local rv = {
@@ -685,23 +689,29 @@
 					info.loadavg[1] / 65535.0,
 					info.loadavg[2] / 65535.0
 				);
-
+				
 			if (e = document.getElementById('memtotal'))
 				e.innerHTML = progressbar(
 					Math.floor(((info.memory.free + info.memory.buffered) / 1048576) + (info.memcached / 1024)) + " <%:MB%>",
 					Math.floor(info.memory.total / 1048576) + " <%:MB%>"
 
 				);
-
 			if (e = document.getElementById('memfree'))
 				e.innerHTML = progressbar(
-					Math.floor(info.memory.free / 1048576) + " <%:MB%>",
+					Math.floor((((info.memory.total - info.memory.free )- info.memory.buffered) / 1048576) - (info.memcached / 1024)) + " <%:MB%>",
+					Math.floor(info.memory.total / 1048576) + " <%:MB%>"
+
+				);
+
+			if (e = document.getElementById('memcach'))
+				e.innerHTML = progressbar(
+					Math.floor(info.memory.memcached / 1048576) + " <%:MB%>",
 					Math.floor(info.memory.total / 1048576) + " <%:MB%>"
 				);
 
 			if (e = document.getElementById('membuff'))
 				e.innerHTML = progressbar(
-					Math.floor(info.memory.buffered / 1048576) + " <%:MB%>",
+					Math.floor(info.memory.buffered / 1048576 ) + " <%:MB%>",
 					Math.floor(info.memory.total / 1048576) + " <%:MB%>"
 				);
 
@@ -732,7 +742,7 @@
 	<table width="100%" cellspacing="10">
 		<tr><td width="33%"><%:Hostname%></td><td><%=luci.sys.hostname() or "?"%></td></tr>
 		<tr><td width="33%"><%:Model%></td><td><%=pcdata(boardinfo.model or "?")%> <%=luci.sys.exec("cat /etc/bench.log") or " "%></td></tr>
-		<tr><td width="33%"><%:CPU Info%></td><td id="cpuinfo">-</td></tr>
+		<tr><td width="33%"><%:实时频率%></td><td id="cpuinfo">-</td></tr>
         <tr><td width="33%"><%:RAM Size%></td><td id="ramsize">-</td></tr>
 		<tr><td width="33%"><%:Firmware Version%></td><td>
 			<%=pcdata(ver.distname)%> <%=pcdata(ver.distversion)%> /
@@ -756,8 +766,8 @@
 <fieldset class="cbi-section">
 	<legend><%:Memory%></legend>
 	<table width="100%" cellspacing="10">
-		<tr><td width="33%"><%:Total Available%></td><td id="memtotal">-</td></tr>
-		<tr><td width="33%"><%:Free%></td><td id="memfree">-</td></tr>
+		<tr><td width="33%"><%:可用数%></td><td id="memtotal">-</td></tr>
+		<tr><td width="33%"><%:已使用%></td><td id="memfree">-</td></tr>
 		<tr><td width="33%"><%:Buffered%></td><td id="membuff">-</td></tr>
 	</table>
 </fieldset>
@@ -765,7 +775,6 @@
 <% if swapinfo.total > 0 then %>
 <fieldset class="cbi-section">
 	<legend><%:Swap%></legend>
-
 	<table width="100%" cellspacing="10">
 		<tr><td width="33%"><%:Total Available%></td><td id="swaptotal">-</td></tr>
 		<tr><td width="33%"><%:Free%></td><td id="swapfree">-</td></tr>
