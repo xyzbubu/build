@@ -14,6 +14,7 @@ uci set dhcp.@dnsmasq[0].filter_aaaa='0'
 uci set dhcp.@dnsmasq[0].localservice='0'
 uci set dhcp.@dnsmasq[0].nonwildcard='0'
 uci set dhcp.lan.ra='server'
+uci set dhcp.lan.ndp=''
 uci set dhcp.lan.dhcpv6=''
 uci set dhcp.lan.ignore='0'
 uci set dhcp.lan.ra_management='1'
@@ -25,7 +26,7 @@ uci set network.lan.delegate='0'
 uci set network.wan.mtu=1460
 uci set network.wan.metric='41'
 uci set network.wan.delegate='0'
-uci set network.wan.ipv6='0'
+uci set network.wan.ipv6='auto'
 uci commit network
 uci set fstab.@global[0].anon_mount=1
 uci commit fstab
