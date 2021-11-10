@@ -28,16 +28,17 @@ uci set network.wan.metric='41'
 uci set network.wan.delegate='0'
 uci set network.wan.ipv6='auto'
 uci commit network
+uci set turboacc.config.sfe_flow='0'
+uci set turboacc.config.hw_flow='0'
+uci set turboacc.config.sw_flow='0'
+uci set turboacc.config.fullcone_nat='1'
+uci commit turboacc
 uci set fstab.@global[0].anon_mount=1
 uci commit fstab
 uci set upnpd.upnpd.enabled='0'
 uci set upnpd.upnpd.igdv1='1'
 uci commit upnpd
-uci set turboacc.config.sfe_flow='0'
-uci set turboacc.config.hw_flow='0'
-uci set turboacc.config.sw_flow='0'
-uci commit turboacc
-uci set dockerd.@globals[0].auto_start='0'
+uci set dockerd.globals.auto_start='0'
 uci commit dockerd
 /etc/init.d/dockerd stop
 rm -f /usr/lib/lua/luci/view/admin_status/index/ddns.htm
