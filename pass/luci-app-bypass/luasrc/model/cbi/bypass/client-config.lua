@@ -9,8 +9,8 @@ local encrypt_methods={
 "none",
 "table",
 "rc4",
-"rc4-md5",
 "rc4-md5-6",
+"rc4-md5",
 "aes-128-cfb",
 "aes-192-cfb",
 "aes-256-cfb",
@@ -28,15 +28,17 @@ local encrypt_methods={
 "seed-cfb",
 "salsa20",
 "chacha20",
-"chacha20-ietf"
+"chacha20-ietf",
 }
 
-local encrypt_methods_ss={
+local encrypt_methods_ss = {
+-- aead
 "aes-128-gcm",
 "aes-192-gcm",
 "aes-256-gcm",
 "chacha20-ietf-poly1305",
 "xchacha20-ietf-poly1305",
+-- stream
 "table",
 "rc4",
 "rc4-md5",
@@ -50,23 +52,17 @@ local encrypt_methods_ss={
 "camellia-128-cfb",
 "camellia-192-cfb",
 "camellia-256-cfb",
-"cast5-cfb",
-"des-cfb",
-"idea-cfb",
-"rc2-cfb",
-"seed-cfb",
 "salsa20",
 "chacha20",
-"chacha20-ietf"
+"chacha20-ietf",
 }
 
-local protocol={
+local protocol = {
 "origin",
-"auth_sha1",
-"auth_sha1_v2",
+"verify_deflate",
 "auth_sha1_v4",
-"auth_aes128_md5",
 "auth_aes128_sha1",
+"auth_aes128_md5",
 "auth_chain_a",
 "auth_chain_b",
 "auth_chain_c",
@@ -79,6 +75,7 @@ local obfs={
 "plain",
 "http_simple",
 "http_post",
+"random_head",
 "tls1.2_ticket_auth",
 }
 
@@ -88,15 +85,31 @@ local securitys={
 "chacha20-poly1305"
 }
 
-local flows={
-"xtls-rprx-splice",
-"xtls-rprx-splice-udp443",
+local flows = {
+"xtls-rprx-origin",
+"xtls-rprx-origin-udp443",
 "xtls-rprx-direct",
 "xtls-rprx-direct-udp443",
-"xtls-rprx-origin",
-"xtls-rprx-origin-udp443"
+"xtls-rprx-splice",
+"xtls-rprx-splice-udp443"
 }
 
+local force_fp = {
+	"disable",
+	"firefox",
+	"chrome",
+	"ios",
+}
+
+local encrypt_methods_ss_aead = {
+	"dummy",
+	"aead_chacha20_poly1305",
+	"aead_aes_128_gcm",
+	"aead_aes_256_gcm",
+	"chacha20-ietf-poly1305",
+	"aes-128-gcm",
+	"aes-256-gcm",
+}
 m=Map(ov,translate("Edit Server"))
 m.redirect=luci.dispatcher.build_url("admin/services/bypass/servers")
 if m.uci:get(ov,sid)~="servers" then
@@ -104,6 +117,7 @@ if m.uci:get(ov,sid)~="servers" then
 	return
 end
 
+-- [[ Servers Setting ]]--
 s=m:section(NamedSection,sid,"servers")
 s.anonymous=true
 s.addremove=false
