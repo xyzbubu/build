@@ -54,6 +54,7 @@ uci_get_by_type(){
 }
 
 GLOBAL_SERVER=$(uci_get_by_type global global_server)
+adguardhome=$(uci_get_by_type global adguardhome 0)
 gfw_mode=$(uci_get_by_type global gfw_mode 0)
 run_mode=$(uci_get_by_type global run_mode router)
 SO_SERVER=$(uci_get_by_type socks5_proxy server)
@@ -87,10 +88,11 @@ f_bin(){
 		ssr-server)ret=$(which ssr-server);;
 		vmess|vless)ret=$(which xray);;
 		trojan)ret=$(which trojan-plus);;
+		trojan-go) ret=$(which trojan-go);;
 		naiveproxy)ret=$(which naive);;
 		socks5|tun)ret=$(which redsocks2);;
 	esac
-	echo $ret
+	echo ${ret:=0}
 }
 
 gen_config_file(){
@@ -110,55 +112,56 @@ gen_config_file(){
 	esac
 	case $type in
 		ss)
-			cat > $config_file <<EOF
-{
-"server":"$hostip",
-"server_port":$sport,
-"local_address":"0.0.0.0",
-"local_port":$lport,
-"password":"$pass",
-"timeout":$timeout,
-"method":"$(uci_get_by_name $1 encrypt_method_ss)",
-"reuse_port":true,
-"fast_open":$fast
-}
-EOF
+		cat <<-EOF >$config_file
+			{
+			"server":"$hostip",
+			"server_port":$sport,
+			"local_address":"0.0.0.0",
+			"local_port":$lport,
+			"password":"$pass",
+			"timeout":$timeout,
+			"method":"$(uci_get_by_name $1 encrypt_method_ss)",
+			"reuse_port":true,
+			"fast_open":$fast
+			}
+		EOF
 			plugin=$(uci_get_by_name $1 plugin)
 			if which $plugin >/dev/null 2>&1;then
 				sed -i "s@$hostip\",@$hostip\",\n\"plugin\":\"$plugin\",\n\"plugin_opts\":\"$(uci_get_by_name $1 plugin_opts)\",@" $config_file
 			fi;;
 		ssr)
-			cat > $config_file <<EOF
-{
-"server":"$hostip",
-"server_port":$sport,
-"local_address":"0.0.0.0",
-"local_port":$lport,
-"password":"$pass",
-"timeout":$timeout,
-"method":"$(uci_get_by_name $1 encrypt_method)",
-"protocol":"$(uci_get_by_name $1 protocol)",
-"protocol_param":"$(uci_get_by_name $1 protocol_param)",
-"obfs":"$(uci_get_by_name $1 obfs)",
-"obfs_param":"$(uci_get_by_name $1 obfs_param)",
-"fast_open":$fast
-}
-EOF
-;;
+		cat <<-EOF >$config_file
+			{
+			"server":"$hostip",
+			"server_port":$sport,
+			"local_address":"0.0.0.0",
+			"local_port":$lport,
+			"password":"$pass",
+			"timeout":$timeout,
+			"method":"$(uci_get_by_name $1 encrypt_method)",
+			"protocol":"$(uci_get_by_name $1 protocol)",
+			"protocol_param":"$(uci_get_by_name $1 protocol_param)",
+			"obfs":"$(uci_get_by_name $1 obfs)",
+			"obfs_param":"$(uci_get_by_name $1 obfs_param)",
+			"reuse_port":true,
+			"fast_open":$fast
+			}
+		EOF
+		;;
 	naiveproxy)
-		cat > $config_file <<EOF
-{
-"listen":"$PROTO://0.0.0.0:$lport",
-"proxy":"https://$(uci_get_by_name $1 username):$pass@$(uci_get_by_name $1 server):$sport",
-"concurrency":"${3:-1}"
-}
-EOF
-;;
+		cat <<-EOF >$config_file
+			{
+			"listen":"$PROTO://0.0.0.0:$lport",
+			"proxy":"https://$(uci_get_by_name $1 username):$pass@$(uci_get_by_name $1 server):$sport",
+			"concurrency":"${3:-1}""
+			}
+		EOF
+		;;
 	esac
 }
 
 start_dns(){
-	$(which smartdns-le) -c $DNS_T
+	$(which smartdns) -c $DNS_T
 	case $dns_mode in
 		0)doh=$(echo $doh | sed 's/,/\n/g' | sed -e 's/104.16.249.249/1.1.1.1/' -e 's/104.16.248.249/1.0.0.1/' -e 's/ .*//');log "SmartDNS      : Use $(echo $doh | sed 's/ /,/g') to start on DoH mode (Foreign DNS)";;
 		1)dns=$(echo $dns | sed 's/ /,/g');log "SmartDNS      : Use $dns to start on TCP mode (Foreign DNS)";;
@@ -1064,7 +1067,7 @@ EOF
 	rm -f $O
 	[ $(find $DNS_DIR -name \* -exec cat {} \; 2>/dev/null | wc -l) = 0 ] && rm -rf $DNS_DIR || echo conf-dir=$DNS_DIR >> $DNS_FILE
 	[ $run_mode = router ] && chinadns_flag=1
-	killall -q -9 smartdns-le
+	killall -q -9 smartdns
 	start_dns
 	/etc/init.d/dnsmasq restart >/dev/null 2>&1
 	if [ $TG_SERVER ];then
@@ -1276,7 +1279,7 @@ stop(){
 	kill -9 $(ps -w | grep $BIN_DIR/monitor | grep -v grep | awk '{print$1}') 2>/dev/null
 	kill -9 $(ps -w | grep $BIN_DIR/preload | grep -v grep | awk '{print$1}') 2>/dev/null
 	kill -9 $(ps -w | grep $VAR | grep -v grep | awk '{print$1}') 2>/dev/null
-	killall -q -9 smartdns-le chinadns-ng kcptun-client xray-plugin microsocks
+	killall -q -9 smartdns chinadns-ng kcptun-client microsocks
 	$BIN_DIR/rules -f
 	[ $(iptables -nL | grep BYBASS-S-RULE | wc -l) = 0 ] || (iptables -F BYBASS-S-RULE && iptables -X BYBASS-S-RULE;while iptables -D INPUT -j BYBASS-S-RULE 2>/dev/null;do :;done)
 	rm -rf $DNS_DIR $VAR*.json $DNS_FILE $CON_T /var/lock/overwall-update.lock $LOC_UCI
@@ -1298,9 +1301,9 @@ bind :5336
 bind :5337
 $([ $dns_mode_l = 0 ] && echo 223.5.5.5 223.6.6.6 | sed 's/ /\n/g' | sed 's/^/server /g' || echo $REF | sed 's/ /\n/g' | sed 's/^/server /g')
 EOF
-		$(which smartdns-le) -c $DNS_T
+		$(which smartdns) -c $DNS_T
 		r=1
-		while ! ps -w | grep smartdns-le | grep -qv grep;do
+		while ! ps -w | grep smartdns | grep -qv grep;do
 			[ $r -ge 10 ] && return 1 || let r++
 			sleep 1
 		done
