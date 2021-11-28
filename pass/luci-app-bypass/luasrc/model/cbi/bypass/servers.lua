@@ -67,7 +67,6 @@ o.write=function()
 		end
 	end)
 	SYS.call("touch /var/lock/bypass-uci.lock")
-	uci:save(bypass)
 	uci:commit(bypass)
 	if SYS.call("uci -q get bypass."..SYS.exec("echo -n $(uci -q get bypass.@global[0].global_server)")..".server >/dev/null")==1 then
 		SYS.exec("/etc/init.d/bypass stop &")
@@ -75,7 +74,6 @@ o.write=function()
 	luci.http.redirect(luci.dispatcher.build_url("admin","services",bypass,"servers"))
 end
 
--- [[ Servers Manage ]]--
 s=m:section(TypedSection,"servers")
 s.anonymous=true
 s.addremove=true
@@ -93,7 +91,7 @@ end
 
 o=s:option(DummyValue,"type",translate("Type"))
 function o.cfgvalue(...)
-	return (Value.cfgvalue(...)=="vless") and "VLESS" or Value.cfgvalue(...)
+	return Value.cfgvalue(...) and string.upper(Value.cfgvalue(...))
 end
 
 o=s:option(DummyValue,"alias",translate("Alias"))
@@ -109,26 +107,18 @@ end
 o=s:option(DummyValue,"server_port",translate("Socket Connected"))
 o.template="bypass/socket"
 o.width="10%"
-o.render = function(self, section, scope)
-	self.transport = s:cfgvalue(section).transport
-	if self.transport == 'ws' then
-		self.ws_path = s:cfgvalue(section).ws_path
-		self.tls = s:cfgvalue(section).tls
-	end
-	DummyValue.render(self, section, scope)
-end
 
 o=s:option(DummyValue,"server",translate("TCPing Latency"))
 o.template="bypass/ping"
+o.width = "10%"
 o.width="10%"
 
 o=s:option(Button,"apply_node",translate("Apply"))
 o.inputstyle="apply"
 o.write=function(self,section)
 	uci:set(bypass,'@global[0]','global_server',section)
-	uci:save(bypass)
 	uci:commit(bypass)
-	luci.http.redirect(luci.dispatcher.build_url("admin","services",bypass,"base"))
+	luci.http.redirect(luci.dispatcher.build_url("admin","services",bypass,"log"))
 end
 
 o=s:option(Flag,"switch_enable",translate("Auto Switch"))

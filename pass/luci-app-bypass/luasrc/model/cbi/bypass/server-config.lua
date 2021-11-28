@@ -1,5 +1,5 @@
 local m,s,o
-local bypass="bypass"
+local ov="bypass"
 local sid=arg[1]
 local A=luci.sys.call("which obfs-server >/dev/null")
 local B=luci.sys.call("which xray-plugin >/dev/null")
@@ -10,23 +10,6 @@ local encrypt_methods_ss={
 "aes-256-gcm",
 "chacha20-ietf-poly1305",
 "xchacha20-ietf-poly1305",
-"rc4-md5",
-"aes-128-cfb",
-"aes-192-cfb",
-"aes-256-cfb",
-"aes-128-ctr",
-"aes-192-ctr",
-"aes-256-ctr",
-"bf-cfb",
-"camellia-128-cfb",
-"camellia-192-cfb",
-"camellia-256-cfb",
-"salsa20",
-"chacha20",
-"chacha20-ietf",
-}
-
-local encrypt_methods={
 "table",
 "rc4",
 "rc4-md5",
@@ -47,7 +30,32 @@ local encrypt_methods={
 "seed-cfb",
 "salsa20",
 "chacha20",
-"chacha20-ietf",
+"chacha20-ietf"
+}
+
+local encrypt_methods={
+"table",
+"rc4",
+"rc4-md5",
+"rc4-md5-6",
+"aes-128-cfb",
+"aes-192-cfb",
+"aes-256-cfb",
+"aes-128-ctr",
+"aes-192-ctr",
+"aes-256-ctr",
+"bf-cfb",
+"camellia-128-cfb",
+"camellia-192-cfb",
+"camellia-256-cfb",
+"cast5-cfb",
+"des-cfb",
+"idea-cfb",
+"rc2-cfb",
+"seed-cfb",
+"salsa20",
+"chacha20",
+"chacha20-ietf"
 }
 
 local protocol={
@@ -61,9 +69,9 @@ local obfs={
 "tls1.2_ticket_auth",
 }
 
-m=Map(bypass,translate("Edit Server"))
+m=Map(ov,translate("Edit Server"))
 m.redirect=luci.dispatcher.build_url("admin/services/bypass/server")
-if m.uci:get(bypass,sid)~="server_config" then
+if m.uci:get(ov,sid)~="server_config" then
 	luci.http.redirect(m.redirect)
 	return
 end

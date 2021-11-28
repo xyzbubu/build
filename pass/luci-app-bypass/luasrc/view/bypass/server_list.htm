@@ -2,30 +2,32 @@
  Copyright 2018-2019 Lienol <lawlienol@gmail.com>
  Licensed to the public under the Apache License 2.0.
 -%>
+<%
+local dsp=require "luci.dispatcher"
+-%>
 <script type="text/javascript">
 	//<![CDATA[
-	window.addEventListener('load',function(){
-	const doms=document.getElementsByClassName('pingtime');
-		const ports = document.getElementsByClassName("socket-connected");
-		const transports = document.getElementsByClassName("transport");
-		const wsPaths = document.getElementsByClassName("wsPath");
-		const tlss = document.getElementsByClassName("tls");
-	const xhr=(index) =>{
+	const doms = document.getElementsByClassName('pingtime');
+	const ports = document.getElementsByClassName("socket-connected");
+	const transports = document.getElementsByClassName("transport");
+	const wsPaths = document.getElementsByClassName("wsPath");
+	const tlss = document.getElementsByClassName("tls");
+		const xhr=(index) =>{
 		return new Promise((res) =>{
 			const dom=doms[index];
 			const port=ports[index];
-				const transport = transports[index];
-				const wsPath = wsPaths[index];
-				const tls = tlss[index];
+			const transport = transports[index];
+			const wsPath = wsPaths[index];
+			const tls = tlss[index];
 			if (!dom) res()
 			port.innerHTML='<font color="#0072c3"><%:connecting%></font>';
-				XHR.get('<%=luci.dispatcher.build_url("admin/services/bypass/act_ping")%>', {
-					index,
-					domain: dom.getAttribute("hint"),
-					port: port.getAttribute("hint"),
-					transport: transport.getAttribute("hint"),
-					wsPath: wsPath.getAttribute("hint"),
-					tls: tls.getAttribute("hint")
+			XHR.get('<%=dsp.build_url("admin/services/bypass/act_ping")%>',{
+				index,
+				domain: dom.getAttribute("hint"),
+				port: port.getAttribute("hint")
+				transport: transport.getAttribute("hint"),
+				wsPath: wsPath.getAttribute("hint"),
+				tls: tls.getAttribute("hint")
 			},
 			(x,result) =>{
 				let col='#ff0000';
@@ -37,7 +39,7 @@
 				dom.innerHTML=`<font color="${col}">${(result.ping ? result.ping : "--") + " ms"}</font>`
 				if (result.socket){
 					port.innerHTML='<font color="#249400"><%:ok%></font>';
-					} else {
+				} else{
 					port.innerHTML='<font color="#ff0000"><%:fail%></font>';
 				}
 				res();
@@ -55,7 +57,6 @@
 			for (let i=0; i < 20; i++){
 				thread()
 			}
-	})
 	function cbi_row_drop(fromId,toId,store,isToBottom){
 		var fromNode=document.getElementById(fromId);
 		var toNode=document.getElementById(toId);
@@ -178,7 +179,6 @@
 			var id = onclick_str.substring(onclick_str.lastIndexOf('/') + 1, onclick_str.length - 1);
 			var td = edit_btn[i].parentNode;
 			var new_div = "";
-			//Ìí¼Ó"ÖÃ¶¥"°´Å¥
 			new_div += '<input class="cbi-button" type="button" value="<%:To Top%>" onclick="_cbi_row_top(\'' + id + '\')"/>&nbsp;&nbsp;';
 			td.innerHTML = new_div + td.innerHTML;
 		}
