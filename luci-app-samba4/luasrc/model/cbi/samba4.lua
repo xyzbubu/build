@@ -61,10 +61,6 @@ function tmpl.write(self, section, value)
 	nixio.fs.writefile("/etc/samba/smb.conf.template", value)
 end
 
-br = s:taboption("general", Flag, "homes", translate("Share home-directories"), translate("Allow system users to reach their home directories via"))
-br.rmempty = false
-br.default = "yes"
-
 a = s:taboption("general", Flag, "autoshare", translate("Auto Share"),
         translate("Auto share local disk which connected"))
 a.rmempty = false
