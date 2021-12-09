@@ -4,11 +4,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-bypass
-PKG_VERSION:=1.1
-PKG_RELEASE:=1.1
-PKG_DATE:=20211115
-
-include $(INCLUDE_DIR)/package.mk
+PKG_VERSION:=1.2
+PKG_RELEASE:=76
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Kcptun \
@@ -26,7 +23,7 @@ PKG_CONFIG_DEPENDS:= \
 LUCI_TITLE:=LuCI support for bypass
 LUCI_PKGARCH:=all
 LUCI_DEPENDS:=+ipset +ip-full +iptables-mod-tproxy +dnsmasq-full \
-	+smartdns-le +coreutils +coreutils-base64 +curl +tcping \
+	+smartdns +coreutils +coreutils-base64 +curl +tcping \
 	+chinadns-ng +lua +luci-compat +microsocks \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Kcptun:kcptun-client \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_NaiveProxy:naiveproxy \
@@ -43,7 +40,6 @@ LUCI_DEPENDS:=+ipset +ip-full +iptables-mod-tproxy +dnsmasq-full \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Xray:xray-core
 
 define Package/$(PKG_NAME)/config
-menu "Configuration"
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_Kcptun
 	bool "Include Kcptun"
@@ -90,17 +86,12 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_Xray
 	bool "Include Xray"
 	default y
 
-endmenu
+
 endef
 
 define Package/$(PKG_NAME)/conffiles
-/etc/$(PKG_NAME)/netflix.list
-/etc/$(PKG_NAME)/oversea.list
-/etc/$(PKG_NAME)/black.list
-/etc/$(PKG_NAME)/preload.list
-/etc/$(PKG_NAME)/white.list
-/etc/$(PKG_NAME)/custom.list
-/etc/$(PKG_NAME)/youtube.list
+/etc/config/bypass
+/etc/bypass/
 endef
 
 include $(TOPDIR)/feeds/luci/luci.mk
