@@ -12,7 +12,7 @@ local ssub,slen,schar,sbyte,sformat,sgsub=string.sub,string.len,string.char,stri
 local jsonParse,jsonStringify=luci.jsonc.parse,luci.jsonc.stringify
 local b64decode=nixio.bin.b64decode
 local cache={}
-local nodeResult = setmetatable({}, {__index = cache}) -- update result
+local nodeResult=setmetatable({},{__index=cache})
 local name='bypass'
 local uciType='servers'
 local ucic=luci.model.uci.cursor()
@@ -65,18 +65,16 @@ local function UrlDecode(szText)
 	return (szText and szText:gsub("+"," "):gsub("%%(%x%x)",get_urldecode)) or nil
 end
 
--- trim
 local function trim(text)
 	if not text or text=="" then return "" end
 	return (sgsub(text,"^%s*(.-)%s*$","%1"))
 end
--- md5
+
 local function md5(content)
 	local stdout=SYS.exec('echo \"'..urlEncode(content)..'\" | md5sum | cut -d \" \" -f1')
-	-- assert(nixio.errno() == 0)
 	return trim(stdout)
 end
--- base64
+
 local function base64Decode(text)
 	local raw=text
 	if not text then return '' end
@@ -175,22 +173,22 @@ local function parseNodeUrl(A,B)
 	end
 	result.server_port=port
 end
--- 处理数据
-local function processData(szType, content)
+
+local function processData(szType,content)
 	result={type=szType}
-	if szType == 'ssr' then
-		local dat = split(content, "/%?")
-		local hostInfo = split(dat[1], ':')
-		result.server = hostInfo[1]
-		result.server_port = hostInfo[2]
-		result.protocol = hostInfo[3]
-		result.encrypt_method = hostInfo[4]
-		result.obfs = hostInfo[5]
-		result.password = base64Decode(hostInfo[6])
-		local params = {}
-		for _, v in pairs(split(dat[2], '&')) do
-			local t = split(v, '=')
-			params[t[1]] = t[2]
+	if szType=='ssr' then
+		local dat=split(content,"/%?")
+		local hostInfo=split(dat[1],':')
+		result.server=hostInfo[1]
+		result.server_port=hostInfo[2]
+		result.protocol=hostInfo[3]
+		result.encrypt_method=hostInfo[4]
+		result.obfs=hostInfo[5]
+		result.password=base64Decode(hostInfo[6])
+		local params={}
+		for _,v in pairs(split(dat[2],'&')) do
+			local t=split(v,'=')
+			params[t[1]]=t[2]
 		end
 		result.obfs_param=base64Decode(params.obfsparam)
 		result.protocol_param=base64Decode(params.protoparam)
@@ -386,7 +384,6 @@ local function check_filer(result)
 	local filter_word=split(filter_words,"/")
 	for i,v in pairs(filter_word) do
 		if result.alias:find(v) then
-			-- log('命中关键词:“'..v..'” pwd')
 			return filter_mode=='0'
 		end
 	end

@@ -3,11 +3,14 @@ config global
 	option threads '0'
 	option run_mode 'router'
 	option dns_hijack '1'
-	option monitor_enable '1'
 	option dns_mode '1'
 	option dns_mode_l '1'
+	option monitor_enable '1'
 	option enable_switch '0'
-	option tcp_dns '2'
+
+	option switch_time '600'
+	option switch_timeout '5'
+	option switch_try_count '3'
 
 
 config socks5_proxy

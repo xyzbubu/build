@@ -4,8 +4,10 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-bypass
-PKG_VERSION:=1.2
-PKG_RELEASE:=76
+PKG_VERSION:=1.1
+PKG_RELEASE:=1.1
+PKG_DATE:=20211115
+include $(INCLUDE_DIR)/package.mk
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Kcptun \
@@ -40,6 +42,7 @@ LUCI_DEPENDS:=+ipset +ip-full +iptables-mod-tproxy +dnsmasq-full \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Xray:xray-core
 
 define Package/$(PKG_NAME)/config
+menu "Configuration"
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_Kcptun
 	bool "Include Kcptun"
@@ -86,12 +89,17 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_Xray
 	bool "Include Xray"
 	default y
 
-
+endmenu
 endef
 
 define Package/$(PKG_NAME)/conffiles
-/etc/config/bypass
-/etc/bypass/
+/etc/overwall/netflix.list
+/etc/overwall/oversea.list
+/etc/overwall/black.list
+/etc/overwall/preload.list
+/etc/overwall/white.list
+/etc/overwall/custom.list
+/etc/overwall/youtube.list
 endef
 
 include $(TOPDIR)/feeds/luci/luci.mk

@@ -7,7 +7,7 @@ T=1
 shift 3
 N=$(uci -q get bypass.@global[0].nf_ip)
 Z=https://cdn.jsdelivr.net/gh/fangxx3863/overwall_list/Bypass
-https://raw.githubusercontent.com/fangxx3863/overwall_list/main/Bypass
+Y=https://raw.githubusercontent.com/fangxx3863/overwall_list/main/Bypass
 
 nf(){
 	[ $E = 0 ] && return

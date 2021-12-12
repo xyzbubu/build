@@ -54,7 +54,6 @@ uci_get_by_type(){
 }
 
 GLOBAL_SERVER=$(uci_get_by_type global global_server)
-adguardhome=$(uci_get_by_type global adguardhome 0)
 gfw_mode=$(uci_get_by_type global gfw_mode 0)
 run_mode=$(uci_get_by_type global run_mode router)
 SO_SERVER=$(uci_get_by_type socks5_proxy server)
@@ -88,11 +87,10 @@ f_bin(){
 		ssr-server)ret=$(which ssr-server);;
 		vmess|vless)ret=$(which xray);;
 		trojan)ret=$(which trojan-plus);;
-		trojan-go) ret=$(which trojan-go);;
 		naiveproxy)ret=$(which naive);;
 		socks5|tun)ret=$(which redsocks2);;
 	esac
-	echo ${ret:=0}
+	echo $ret
 }
 
 gen_config_file(){
@@ -112,51 +110,50 @@ gen_config_file(){
 	esac
 	case $type in
 		ss)
-		cat <<-EOF >$config_file
-			{
-			"server":"$hostip",
-			"server_port":$sport,
-			"local_address":"0.0.0.0",
-			"local_port":$lport,
-			"password":"$pass",
-			"timeout":$timeout,
-			"method":"$(uci_get_by_name $1 encrypt_method_ss)",
-			"reuse_port":true,
-			"fast_open":$fast
-			}
-		EOF
+			cat > $config_file <<EOF
+{
+"server":"$hostip",
+"server_port":$sport,
+"local_address":"0.0.0.0",
+"local_port":$lport,
+"password":"$pass",
+"timeout":$timeout,
+"method":"$(uci_get_by_name $1 encrypt_method_ss)",
+"reuse_port":true,
+"fast_open":$fast
+}
+EOF
 			plugin=$(uci_get_by_name $1 plugin)
 			if which $plugin >/dev/null 2>&1;then
 				sed -i "s@$hostip\",@$hostip\",\n\"plugin\":\"$plugin\",\n\"plugin_opts\":\"$(uci_get_by_name $1 plugin_opts)\",@" $config_file
 			fi;;
 		ssr)
-		cat <<-EOF >$config_file
-			{
-			"server":"$hostip",
-			"server_port":$sport,
-			"local_address":"0.0.0.0",
-			"local_port":$lport,
-			"password":"$pass",
-			"timeout":$timeout,
-			"method":"$(uci_get_by_name $1 encrypt_method)",
-			"protocol":"$(uci_get_by_name $1 protocol)",
-			"protocol_param":"$(uci_get_by_name $1 protocol_param)",
-			"obfs":"$(uci_get_by_name $1 obfs)",
-			"obfs_param":"$(uci_get_by_name $1 obfs_param)",
-			"reuse_port":true,
-			"fast_open":$fast
-			}
-		EOF
-		;;
+			cat > $config_file <<EOF
+{
+"server":"$hostip",
+"server_port":$sport,
+"local_address":"0.0.0.0",
+"local_port":$lport,
+"password":"$pass",
+"timeout":$timeout,
+"method":"$(uci_get_by_name $1 encrypt_method)",
+"protocol":"$(uci_get_by_name $1 protocol)",
+"protocol_param":"$(uci_get_by_name $1 protocol_param)",
+"obfs":"$(uci_get_by_name $1 obfs)",
+"obfs_param":"$(uci_get_by_name $1 obfs_param)",
+"fast_open":$fast
+}
+EOF
+;;
 	naiveproxy)
-		cat <<-EOF >$config_file
-			{
-			"listen":"$PROTO://0.0.0.0:$lport",
-			"proxy":"https://$(uci_get_by_name $1 username):$pass@$(uci_get_by_name $1 server):$sport",
-			"concurrency":"${3:-1}""
-			}
-		EOF
-		;;
+		cat > $config_file <<EOF
+{
+"listen":"$PROTO://0.0.0.0:$lport",
+"proxy":"https://$(uci_get_by_name $1 username):$pass@$(uci_get_by_name $1 server):$sport",
+"concurrency":"${3:-1}"
+}
+EOF
+;;
 	esac
 }
 
@@ -294,7 +291,7 @@ rules(){
 			done
 		fi
 		if ! A=$(nslookup $server 2>/dev/null | grep Address | awk -F' ' '{print$NF}' | grep -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$");then
-			log "Main Node: Unable to get $server address. Check domain name!";return 1
+			log "Main Node: Unable to get server address. Check domain name!";return 1
 		fi
 		server=$(echo "$A" | sed -n 1p)
 	fi
@@ -317,7 +314,7 @@ rules(){
 				done
 			fi
 			if ! A=$(nslookup $udp_server 2>/dev/null | grep Address | awk -F' ' '{print$NF}' | grep -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$");then
-				log "UDP Relay: Unable to get $udp_server address. Check domain name!";return 1
+				log "UDP Relay: Unable to get server address. Check domain name!";return 1
 			fi
 			udp_server=$(echo "$A" | sed -n 1p)
 		fi
@@ -371,7 +368,7 @@ rules(){
 				done
 			fi
 			if ! A=$(nslookup $nf_ip 2>/dev/null | grep Address | awk -F' ' '{print$NF}' | grep -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$");then
-				log "NF Shunt: Unable to get $nf_ip address. Check domain name!";return 1
+				log "NF Shunt: Unable to get server address. Check domain name!";return 1
 			fi
 			nf_ip=$(echo "$A" | sed -n 1p)
 		fi
@@ -1279,7 +1276,7 @@ stop(){
 	kill -9 $(ps -w | grep $BIN_DIR/monitor | grep -v grep | awk '{print$1}') 2>/dev/null
 	kill -9 $(ps -w | grep $BIN_DIR/preload | grep -v grep | awk '{print$1}') 2>/dev/null
 	kill -9 $(ps -w | grep $VAR | grep -v grep | awk '{print$1}') 2>/dev/null
-	killall -q -9 smartdns chinadns-ng kcptun-client microsocks
+	killall -q -9 smartdns chinadns-ng kcptun-client xray-plugin microsocks
 	$BIN_DIR/rules -f
 	[ $(iptables -nL | grep BYBASS-S-RULE | wc -l) = 0 ] || (iptables -F BYBASS-S-RULE && iptables -X BYBASS-S-RULE;while iptables -D INPUT -j BYBASS-S-RULE 2>/dev/null;do :;done)
 	rm -rf $DNS_DIR $VAR*.json $DNS_FILE $CON_T /var/lock/overwall-update.lock $LOC_UCI

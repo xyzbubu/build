@@ -104,13 +104,12 @@ function o.cfgvalue(...)
 	return Value.cfgvalue(...) or "N/A"
 end
 
-o=s:option(DummyValue,"server_port",translate("Socket Connected"))
-o.template="bypass/socket"
+o=s:option(DummyValue,"server",translate("TCPing Latency"))
+o.template="bypass/server"
 o.width="10%"
 
-o=s:option(DummyValue,"server",translate("TCPing Latency"))
-o.template="bypass/ping"
-o.width = "10%"
+o=s:option(DummyValue,"server_port",translate("Result"))
+o.template="bypass/port"
 o.width="10%"
 
 o=s:option(Button,"apply_node",translate("Apply"))
@@ -118,13 +117,12 @@ o.inputstyle="apply"
 o.write=function(self,section)
 	uci:set(bypass,'@global[0]','global_server',section)
 	uci:commit(bypass)
-	luci.http.redirect(luci.dispatcher.build_url("admin","services",bypass,"log"))
+	luci.http.redirect(luci.dispatcher.build_url("admin","services",bypass,"base"))
 end
 
 o=s:option(Flag,"switch_enable",translate("Auto Switch"))
-o.rmempty=false
 function o.cfgvalue(...)
-	return Value.cfgvalue(...) or 1
+	return Value.cfgvalue(...) or 0
 end
 
 m:append(Template("bypass/server_list"))

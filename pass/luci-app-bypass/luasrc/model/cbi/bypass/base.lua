@@ -20,7 +20,7 @@ for key in pairs(server_table) do
 end
 table.sort(key_table)
 
-s = m:section(TypedSection, 'global')
+s=m:section(TypedSection,"global")
 s.anonymous=true
 
 o=s:option(ListValue,"global_server",translate("Main Server"))
@@ -114,7 +114,7 @@ o:value("1",translate("Use SmartDNS UDP query"))
 
 o=s:option(Value,"dns_l",translate("Domestic DoH"),
 translate("Custom DNS format is https://dns.alidns.com/dns-query or https://223.5.5.5/dns-query"))
-o:value("",translate("Ali"))
+o:value("0",translate("Ali"))
 o:value("1","Dnspod")
 o:depends("dns_mode_l",0)
 

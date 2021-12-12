@@ -104,7 +104,6 @@ if m.uci:get(ov,sid)~="servers" then
 	return
 end
 
--- [[ Servers Setting ]]--
 s=m:section(NamedSection,sid,"servers")
 s.anonymous=true
 s.addremove=false
