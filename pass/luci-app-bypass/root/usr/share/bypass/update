@@ -7,13 +7,13 @@ LOCK=/var/lock/bypass-update.lock
 touch $LOCK
 DIR=/usr/share/bypass
 TMP=/tmp/bypass
+[ ! -d $TMP ] &&mkdir -p $TMP
 
 log(){
 	[ $A = N ] && echo "$(date +'%Y-%m-%d %H:%M:%S') $*" >> /tmp/bypass.log
 }
 
 if [ $A = Y ];then
-	mkdir -p $TMP
 	while ! B=$(curl -Lfsm 9 https://cdn.jsdelivr.net/gh/sirpdboy/list/China_IPList);do
 		sleep 2
 	done
@@ -34,7 +34,6 @@ C=$(uci -q get overwall.@global[0].run_mode)
 
 if [ "$C" = router ];then
 	if [ $A = Y ];then
-		mkdir -p $TMP
 		while ! D=$(curl -Lfsm 9 https://cdn.jsdelivr.net/gh/yIwIoTT9A21nupT/2aXGmlWs/KkFCtZkeAP/t8eOh94EJIHTXR6);do
 			sleep 2
 		done

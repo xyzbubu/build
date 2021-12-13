@@ -42,7 +42,7 @@ o.description=translate("Subscribe new add server default Auto-Switch on")
 o=s:option(Flag,"proxy",translate("Through proxy update"))
 o.description=translate("Through proxy update list,Not Recommended")
 
-o=s:option(Button,"update_Sub",translate("Update Subscribe Settings"))
+o=s:option(Button,"update_Sub",translate("Save Subscribe Settings"))
 o.inputstyle="reload"
 o.description=translate("After modify the subscribe URL and settings,click this button first")
 o.write=function()
@@ -59,6 +59,7 @@ o=s:option(Button,"delete",translate("Delete All Subscribe Severs"))
 o.inputstyle="reset"
 o.description=string.format(translate("Server Count")..": %d",server_count)
 o.write=function()
+        luci.http.redirect(luci.dispatcher.build_url("admin","services",bypass,"log"))
 	uci:delete_all(bypass,"servers",function(s)
 		if s.hashkey or s.isSubscribe then
 			return true
@@ -71,7 +72,7 @@ o.write=function()
 	if SYS.call("uci -q get bypass."..SYS.exec("echo -n $(uci -q get bypass.@global[0].global_server)")..".server >/dev/null")==1 then
 		SYS.exec("/etc/init.d/bypass stop &")
 	end
-	luci.http.redirect(luci.dispatcher.build_url("admin","services",bypass,"servers"))
+
 end
 
 s=m:section(TypedSection,"servers")

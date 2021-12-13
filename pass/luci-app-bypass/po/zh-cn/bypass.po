@@ -313,8 +313,8 @@ msgstr "丢弃命中关键词的节点"
 msgid "Keep Mode"
 msgstr "保留命中关键词的节点"
 
-msgid "Update Subscribe Settings"
-msgstr "更新订阅设置"
+msgid "Save Subscribe Settings"
+msgstr "保存订阅设置"
 
 msgid "Update Subscribe List"
 msgstr "更新订阅URL列表"
