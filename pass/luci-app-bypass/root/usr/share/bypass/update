@@ -14,11 +14,11 @@ log(){
 
 if [ $A = Y ];then
 	mkdir -p $TMP
-	while ! B=$(curl -Lfsm 9 https://cdn.jsdelivr.net/gh/fangxx3863/overwall_list/China_IPList);do
+	while ! B=$(curl -Lfsm 9 https://cdn.jsdelivr.net/gh/sirpdboy/list/China_IPList);do
 		sleep 2
 	done
 else
-	B=$(curl -Lfsm 9 https://cdn.jsdelivr.net/gh/fangxx3863/overwall_list/China_IPList || curl -Lfsm 9 https://raw.githubusercontent.com/fangxx3863/overwall_list/main/China_IPList)
+	B=$(curl -Lfsm 9 https://cdn.jsdelivr.net/gh/sirpdboy/list/China_IPList || curl -Lfsm 9 https://raw.githubusercontent.com/sirpdboy/list/main/China_IPList)
 fi
 [ -n "$B" ] && echo "$B" | base64 -d > /tmp/china.txt
 
@@ -39,7 +39,7 @@ if [ "$C" = router ];then
 			sleep 2
 		done
 	else
-		D=$(curl -Lfsm 9 https://cdn.jsdelivr.net/gh/fangxx3863/overwall_list/China_IPv6List || curl -Lfsm 9 https://raw.githubusercontent.com/fangxx3863/overwall_list/main/China_IPv6List)
+		D=$(curl -Lfsm 9 https://cdn.jsdelivr.net/gh/sirpdboy/list/China_IPv6List || curl -Lfsm 9 https://raw.githubusercontent.com/sirpdboy/list/main/China_IPv6List)
 	fi
 	[ -n "$D" ] && echo "$D" | base64 -d > /tmp/china_v6.txt
 
@@ -54,11 +54,11 @@ fi
 
 if [ "$C" = gfw -o "$(uci -q get bypass.@global[0].gfw_mode)" = 1 ];then
 	if [ $A = Y ];then
-		while ! curl -Lfsm 5 -o /tmp/gfw.b64 https://cdn.jsdelivr.net/gh/fangxx3863/overwall_list/GFW_List;do
+		while ! curl -Lfsm 5 -o /tmp/gfw.b64 https://cdn.jsdelivr.net/gh/sirpdboy/list/GFW_List;do
 			sleep 2
 		done
 	else
-		curl -Lfso /tmp/gfw.b64 https://cdn.jsdelivr.net/gh/fangxx3863/overwall_list/GFW_List || curl -Lfso /tmp/gfw.b64 https://raw.githubusercontent.com/fangxx3863/overwall_list/main/GFW_List
+		curl -Lfso /tmp/gfw.b64 https://cdn.jsdelivr.net/gh/sirpdboy/list/GFW_List || curl -Lfso /tmp/gfw.b64 https://raw.githubusercontent.com/sirpdboy/list/main/GFW_List
 	fi
 	$DIR/gfw
 	if ! cmp -s /tmp/gfwnew.txt $TMP/gfw.list;then
