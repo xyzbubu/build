@@ -8,7 +8,7 @@ basename=`basename $blkdev`
 device=`basename $DEVPATH`
 skip=`block info | sed 's/\(.*\): .*/\1/' | grep -q $device ; echo $?`
 path=$DEVPATH
-
+fdiskA
 if [ $basename != "block" ] && [ -z "${device##sd*}" ] && [ $skip -eq 1 ]; then
 	mntpnt=$device
 	case "$ACTION" in
@@ -25,3 +25,38 @@ if [ $basename != "block" ] && [ -z "${device##sd*}" ] && [ $skip -eq 1 ]; then
 			;;
 	esac
 fi
+
+fdiskA(){
+
+	for i in device ;
+	do
+		#Determine whether the specified directory is mounted
+		isR=`df -P|grep $i`
+		[ "$isR" != "" ] &&continue
+
+		#Determine whether there is an unpartitioned disk
+		isP=`fdisk -l /dev/$i |grep -v 'bytes'|grep "$i[1-9]*"`
+		if [ "$isP" = "" ];then
+				#Start partition
+				fdisk -S 56 /dev/$i << EOF
+n
+p
+1
+
+
+wq
+EOF
+
+			sleep 5
+			checkP=`fdisk -l /dev/$i|grep "/dev/${i}1"`
+			[ "$checkP" != "" ] && mkfs.ext4 /dev/${i}1
+		else
+			echo 'Test' > /mnt/$i/Test$i.check
+			if [ ! -f $setup_path/Test$i.check ];then
+					sed -i "/\/dev\/${i}1/d" /etc/fstab
+			else
+					rm -f $setup_path/Test$i.check
+			fi
+		fi
+	done
+}
