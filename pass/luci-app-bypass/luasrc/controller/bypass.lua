@@ -4,14 +4,14 @@ local http=require"luci.http"
 CALL=luci.sys.call
 EXEC=luci.sys.exec
 function index()
-	if not nixio.fs.access("/etc/config/bypass") then
+	if not nixio.fs.access("/etc/config/bypass") then 
 		return
 	end
 	local e=entry({"admin","services","bypass"},firstchild(),_("Bypass"),2)
 	e.dependent=false
 	e.acl_depends={"luci-app-bypass"}
 	entry({"admin","services","bypass","base"},cbi("bypass/base"),_("Base Setting"),1).leaf=true
-	entry({"admin","services","bypass","servers"},arcombine(cbi("bypass/servers",{autoapply=true}),cbi("bypass/client-config")),_("Severs Nodes"),2).leaf=true
+	entry({"admin","services","bypass","servers"},arcombine(cbi("bypass/servers",{autoapply=true, hideapplybtn=true, hidesavebtn=true, hideresetbtn=true}),cbi("bypass/client-config")),_("Severs Nodes"),2).leaf=true
 	entry({"admin","services","bypass","shunt"},cbi("bypass/shunt"),_("Shunt Setting"),3).leaf=true
 	entry({"admin","services","bypass","control"},cbi("bypass/control"),_("Access Control"),4).leaf=true
 	entry({"admin","services","bypass","domain"},cbi("bypass/domain"),_("Domain List"),5).leaf=true
