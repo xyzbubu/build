@@ -31,8 +31,8 @@ end
 
 function act_status()
 	local e = {}
-	e.tcp=CALL("ps -w | grep overwall-tcp | grep -qv grep")==0
-	e.udp=CALL("ps -w | grep overwall-udp | grep -qv grep")==0
+	e.tcp=CALL("ps -w | grep bypass-tcp | grep -qv grep")==0
+	e.udp=CALL("ps -w | grep bypass-udp | grep -qv grep")==0
 	e.smartdns = CALL("pidof smartdns >/dev/null")==0
 
 	e.chinadns=CALL("pidof chinadns-ng >/dev/null")==0
