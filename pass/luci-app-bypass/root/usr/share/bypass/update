@@ -6,7 +6,7 @@ LOCK=/var/lock/bypass-update.lock
 touch $LOCK
 DIR=/usr/share/bypass
 TMP=/tmp/bypass
-USR=/etc/bypass
+T_FILE=/etc/bypass
 log(){
 	[ $A = N ] && echo "$(date +'%Y-%m-%d %H:%M:%S') $*" >> /tmp/bypass.log
 }
@@ -23,7 +23,8 @@ fi
 
 if ! cmp -s /tmp/china.txt $TMP/china.txt;then
 	log "By Update  : Update China IP List"
-	cp -f /tmp/china.txt $TMP/china.txt  && cp -f /tmp/china.txt $USR/china.txt
+	cp -f /tmp/china.txt $TMP/china.txt
+	cp -f /tmp/china.txt $T_FILE/china.txt
 	[ $A = N ] && ipset list china_v4 >/dev/null 2>&1 && $DIR/chinaipset
 else
 	log "By Update  : China IPv4 List is up to date"
@@ -44,7 +45,8 @@ if [ "$C" = router ];then
 
 	if ! cmp -s /tmp/china_v6.txt $TMP/china_v6.txt;then
 		log "By Update  : Update China IPv6 List"
-		cp -f /tmp/china_v6.txt $TMP/china_v6.txt && cp -f /tmp/china_v6.txt $USR/china_v6.txt
+		cp -f /tmp/china_v6.txt $TMP/china_v6.txt 
+		cp -f /tmp/china_v6.txt $T_FILE/china_v6.txt
 		[ $A = N ] && ipset list china_v6 >/dev/null 2>&1 && $DIR/chinaipset v6
 	else
 		log "By Update  : China IPv6 List is up to date"
@@ -61,7 +63,8 @@ if [ "$C" = gfw -o "$(uci -q get bypass.@global[0].gfw_mode)" = 1 ];then
 	fi
 	$DIR/gfw
 	if ! cmp -s /tmp/gfwnew.txt $TMP/gfw.list;then
-		cp -f /tmp/gfwnew.txt $TMP/gfw.list && cp -f /tmp/gfwnew.txt $USR/gfw.list
+		cp -f /tmp/gfwnew.txt $TMP/gfw.list 
+		cp -f /tmp/gfwnew.txt $T_FILE/gfw.list
 		log "By Update  : Update GFW List"
 		[ $A = N ] && /etc/init.d/bypass restart
 	else
