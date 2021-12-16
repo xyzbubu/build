@@ -3,6 +3,7 @@ local fs=require"nixio.fs"
 local http=require"luci.http"
 CALL=luci.sys.call
 EXEC=luci.sys.exec
+USR=/etc/bypass
 function index()
 	if not nixio.fs.access("/etc/config/bypass") then 
 		return
@@ -61,14 +62,15 @@ function refresh()
 	local icount=0
 	local r
 	if set=="0" then
-		sret=CALL("curl -Lfso /tmp/gfw.b64 https://cdn.jsdelivr.net/gh/sirpdboy/list/GFW_List")
+
+		sret=CALL("curl -Lfso /tmp/gfw.b64 https://cdn.jsdelivr.net/gh/sirpdboy/iplist/ip/GFW_List || curl -Lfsm 9 https://raw.githubusercontent.com/sirpdboy/iplist/main/ip/GFW_List ")
 		if sret==0 then
 			CALL("/usr/share/bypass/gfw")
 			icount=EXEC("cat /tmp/gfwnew.txt | wc -l")
 			if tonumber(icount)>1000 then
 				oldcount=EXEC("cat /tmp/bypass/gfw.list | wc -l")
 				if tonumber(icount)~=tonumber(oldcount) then
-					EXEC("cp -f /tmp/gfwnew.txt /tmp/bypass/gfw.list && /etc/init.d/bypass restart >/dev/null 2>&1")
+					EXEC("cp -f /tmp/gfwnew.txt /tmp/bypass/gfw.list && cp -f /tmp/gfwnew.txt /etc/bypass/gfw.list &&/etc/init.d/bypass restart >/dev/null 2>&1")
 					r=tostring(tonumber(icount))
 				else
 					r="0"
@@ -81,12 +83,12 @@ function refresh()
 			r="-1"
 		end
 	elseif set=="1" then
-		sret=CALL("A=`curl -Lfsm 9 https://cdn.jsdelivr.net/gh/sirpdboy/list/China_IPList || curl -Lfsm 9 https://raw.githubusercontent.com/sirpdboy/list/main/China_IPList` && echo \"$A\" | base64 -d > /tmp/china.txt")
+		sret=CALL("A=`curl -Lfsm 9 https://cdn.jsdelivr.net/gh/sirpdboy/iplist/ip/China_IPv4List || curl -Lfsm 9 https://raw.githubusercontent.com/sirpdboy/iplist/main/ip/China_IPv4List && echo \"$A\"  > /tmp/china.txt")
 		icount=EXEC("cat /tmp/china.txt | wc -l")
 		if sret==0 and tonumber(icount)>1000 then
 			oldcount=EXEC("cat /tmp/bypass/china.txt | wc -l")
 			if tonumber(icount)~=tonumber(oldcount) then
-				EXEC("cp -f /tmp/china.txt /tmp/bypass/china.txt && ipset list china_v4 >/dev/null 2>&1 && /usr/share/bypass/chinaipset")
+				EXEC("cp -f /tmp/china.txt /tmp/bypass/china.txt && cp -f /tmp/china.txt /etc/bypass/china.txt &&ipset list china_v4 >/dev/null 2>&1 && /usr/share/bypass/chinaipset")
 				r=tostring(tonumber(icount))
 			else
 				r="0"
@@ -96,12 +98,12 @@ function refresh()
 		end
 		EXEC("rm -f /tmp/china.txt ")
 	elseif set=="2" then
-		sret=CALL("A=`curl -Lfsm 9 https://cdn.jsdelivr.net/gh/sirpdboy/list/China_IPv6List || curl -Lfsm 9 https://raw.githubusercontent.com/sirpdboy/list/main/China_IPv6List` && echo \"$A\" | base64 -d > /tmp/china_v6.txt")
+		sret=CALL("A=`curl -Lfsm 9 https://cdn.jsdelivr.net/gh/sirpdboy/iplist/ip/China_IPv6List || curl -Lfsm 9 https://raw.githubusercontent.com/sirpdboy/iplist/main/ip/China_IPv6List` && echo \"$A\" | base64 -d > /tmp/china_v6.txt")
 		icount=EXEC("cat /tmp/china_v6.txt | wc -l")
 		if sret==0 and tonumber(icount)>1000 then
 			oldcount=EXEC("cat /tmp/bypass/china_v6.txt | wc -l")
 			if tonumber(icount)~=tonumber(oldcount) then
-				EXEC("cp -f /tmp/china_v6.txt /tmp/bypass/china_v6.txt && ipset list china_v6 >/dev/null 2>&1 && /usr/share/bypass/chinaipset v6")
+				EXEC("cp -f /tmp/china_v6.txt /tmp/bypass/china_v6.txt && cp -f /tmp/china_v6.txt /etc/bypass/china_v6.txt &&ipset list china_v6 >/dev/null 2>&1 && /usr/share/bypass/chinaipset v6")
 				r=tostring(tonumber(icount))
 			else
 				r="0"

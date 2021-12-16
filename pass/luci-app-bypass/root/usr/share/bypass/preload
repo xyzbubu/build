@@ -6,8 +6,8 @@ E=0
 T=1
 shift 3
 N=$(uci -q get bypass.@global[0].nf_ip)
-Z=https://cdn.jsdelivr.net/gh/sirpdboy/list/Bypass
-Y=https://raw.githubusercontent.com/sirpdboy/list/main/Bypass
+Z=https://cdn.jsdelivr.net/gh/sirpdboy/iplist/rule
+Y=https://raw.githubusercontent.com/sirpdboy/iplist/main/rule
 
 nf(){
 	[ $E = 0 ] && return
