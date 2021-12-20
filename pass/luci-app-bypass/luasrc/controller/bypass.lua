@@ -56,6 +56,11 @@ function check_net()
 	http.write_json({ret=r})
 end
 
+function subscribe()
+	CALL("/usr/bin/lua /usr/share/bypass/subscribe")
+	http.prepare_content("application/json")
+	http.write_json({ret=1})
+end
 
 function checksrv()
 	local r="<br/>"
