@@ -547,11 +547,11 @@ if subscribe_url and #subscribe_url > 0 then
 		log(e)
 		log(debug.traceback())
 		log('发生错误,正在恢复服务')
-		if ucic:get_first(name,uciType) then
-			SYS.call("/etc/init.d/bypass restart > /dev/null 2>&1 &")
+		local firstServer = ucic:get_first(name, uciType)
+		if firstServer then
 			log('重启服务成功')
 		else
-			SYS.call("/etc/init.d/bypass stop > /dev/null 2>&1 &")
+			luci.sys.call("/etc/init.d/" .. name .. " stop > /dev/null 2>&1 &") -- 不加&的话日志会出现的更早
 			log('停止服务成功')
 		end
 	end)
