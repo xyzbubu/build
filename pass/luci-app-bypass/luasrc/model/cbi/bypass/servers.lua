@@ -59,7 +59,6 @@ o=s:option(Button,"delete",translate("Delete All Subscribe Severs"))
 o.inputstyle="reset"
 o.description=string.format(translate("Server Count")..": %d",server_count)
 o.write=function()
-        luci.http.redirect(luci.dispatcher.build_url("admin","services",bypass,"log"))
 	uci:delete_all(bypass,"servers",function(s)
 		if s.hashkey or s.isSubscribe then
 			return true

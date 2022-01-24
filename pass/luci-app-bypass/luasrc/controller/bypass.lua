@@ -58,6 +58,8 @@ end
 
 function subscribe()
 	CALL("/usr/bin/lua /usr/share/bypass/subscribe")
+
+        luci.http.redirect(luci.dispatcher.build_url("admin","services",bypass,"log"))
 	http.prepare_content("application/json")
 	http.write_json({ret=1})
 end
