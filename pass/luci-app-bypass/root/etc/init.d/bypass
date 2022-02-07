@@ -252,11 +252,18 @@ rules(){
 	mkdir -p /var/run /var/etc
 	
 	if [ ! -s $K/china.txt ] || [ $run_mode = router -a ! -s $K/china_v6.txt ] || ([ $run_mode = gfw -o $gfw_mode = 1 ] && [ ! -s $K/gfw.list ]);then
-	    if [ -s $T_FILE/china.txt ] || [ -s $T_FILE/china_v6.txt ] ||  [ -s $T_FILE/gfw.list ];then
+	    if [ -s $T_FILE/china.txt ] || [ -s $T_FILE/china_v6.txt ] ;then
 	         [ ! -d $K ] && mkdir -p $K
 		 cp -f /etc/bypass/gfw.list  $K/gfwnew.txt 
 		 cp -f /etc/bypass/china_v6.txt  $K/china_v6.txt
 		 cp -f /etc/bypass/china.txt  $K/china.txt
+	    else 
+		log "Rules     :Download IP/china files..."
+		firstdown 2;exit
+	    fi
+	   if [ -s $T_FILE/gfw.list ];then
+	         [ ! -d $K ] && mkdir -p $K
+		 cp -f /etc/bypass/gfw.list  $K/gfwnew.txt 
 	    else 
 		log "Rules     :Download IP/GFW files..."
 		firstdown 2;exit
