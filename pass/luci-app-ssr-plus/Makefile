@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-ssr-plus
 PKG_VERSION:=184
-PKG_RELEASE:=9
+PKG_RELEASE:=10
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Kcptun \
@@ -41,6 +41,7 @@ LUCI_DEPENDS:= \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Server:shadowsocksr-libev-ssr-server \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Simple_Obfs:simple-obfs \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Trojan:trojan \
+	+PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_Plugin:v2ray-plugin \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Xray:curl \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Xray:xray-core
 
@@ -55,6 +56,10 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_Kcptun
 config PACKAGE_$(PKG_NAME)_INCLUDE_NaiveProxy
 	bool "Include NaiveProxy"
 	depends on !(arc||armeb||mips||mips64||powerpc||TARGET_gemini)
+	default n
+
+config PACKAGE_$(PKG_NAME)_INCLUDE_IPT2Socks
+	bool "Include ipt2socks"
 	default n
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_Redsocks2
