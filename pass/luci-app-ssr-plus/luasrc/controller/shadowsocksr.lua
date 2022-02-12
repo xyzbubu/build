@@ -43,8 +43,11 @@ end
 
 function check_net()
 	local r=0
-	if CALL("nslookup www."..http.formvalue("url")..".com >/dev/null 2>&1")==0 then
-		r=EXEC("curl -m 5 -o /dev/null -sw %{time_starttransfer} www."..http.formvalue("url")..".com | awk '{printf ($1*1000+0.5)}'")
+	local u=http.formvalue("url")
+	local p
+	if CALL("nslookup www."..u..".com >/dev/null 2>&1")==0 then
+		if u=="google" then p="/generate_204" else p="" end
+		r=EXEC("curl -m 5 -o /dev/null -sw %{time_starttransfer} http://www."..u..".com"..p.." | awk '{printf ($1*1000)}'")
 		if r~="0" then
 			r=EXEC("echo -n "..r.." | sed 's/\\..*//'")
 			if r=="0" then r="1" end
