@@ -43,6 +43,7 @@ uci set dockerd.globals.auto_start='0'
 uci commit dockerd
 /etc/init.d/dockerd stop
 /etc/init.d/ttyd restart
+/etc/init.d/turboacc restart
 rm -f /usr/lib/lua/luci/view/admin_status/index/ddns.htm
 rm -f /usr/lib/lua/luci/view/admin_status/index/minidlna.htm
 
