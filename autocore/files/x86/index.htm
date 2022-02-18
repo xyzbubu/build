@@ -47,7 +47,8 @@
 		local cpu_info = luci.sys.exec("cpuinfo")
 
 		local eth_info = luci.sys.exec("ethinfo")
-		
+		local cpu_wd = luci.sys.exec("cpuwd")
+
 
 		local user_info = luci.sys.exec("cat /proc/net/arp | grep '0x2' | wc -l") or 0
 
@@ -57,6 +58,7 @@
 		local rv = {
 			cpuusage    = cpu_usage,
 			cpuinfo    = cpu_info,
+			cpuwd    = cpu_wd,
 			ethinfo    = eth_info,
 			userinfo    = user_info,
             ramsize    = ram_size,
@@ -673,6 +675,9 @@
 
 			if (e = document.getElementById('cpuinfo'))
 				e.innerHTML = info.cpuinfo;
+
+			if (e = document.getElementById('cpuwd'))
+				e.innerHTML = info.cpuwd;
 				
 			if (e = document.getElementById('cpuusage'))
 				e.innerHTML = info.cpuusage;
@@ -743,6 +748,7 @@
 		<tr><td width="33%"><%:Hostname%></td><td><%=luci.sys.hostname() or "?"%></td></tr>
 		<tr><td width="33%"><%:Model%></td><td><%=pcdata(boardinfo.model or "?")%> <%=luci.sys.exec("cat /etc/bench.log") or " "%></td></tr>
 		<tr><td width="33%"><%:实时频率%></td><td id="cpuinfo">-</td></tr>
+		<tr><td width="33%"><%:内核温度%></td><td id="cpuwd">-</td></tr>
         <tr><td width="33%"><%:RAM Size%></td><td id="ramsize">-</td></tr>
 		<tr><td width="33%"><%:Firmware Version%></td><td>
 			<%=pcdata(ver.distname)%> <%=pcdata(ver.distversion)%> /

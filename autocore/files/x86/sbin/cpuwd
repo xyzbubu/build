@@ -1,0 +1,4 @@
+#!/bin/sh
+
+TEMP=`sensors 2>/dev/null | grep 'Core 0' | cut -c12-` ||0
+printf "%.0f℃" $TEMP
