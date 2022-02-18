@@ -10,6 +10,9 @@ msgstr "CPU 温度"
 msgid "CPU Info"
 msgstr "CPU 信息"
 
+msgid "Model"
+msgstr "主机型号"
+
 msgid "CPU Model"
 msgstr "处理器型号"
 
