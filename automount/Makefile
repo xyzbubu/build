@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=automount
 PKG_VERSION:=1
-PKG_RELEASE:=35
+PKG_RELEASE:=36
 PKG_ARCH:=all
 
 include $(INCLUDE_DIR)/package.mk
@@ -19,7 +19,9 @@ include $(INCLUDE_DIR)/package.mk
 define Package/automount
   TITLE:=mount and format autoconfig hotplug script.
   MAINTAINER:=Lean &sirpdboy
-  DEPENDS:=+block-mount +kmod-usb-storage +kmod-usb-storage-extras +!TARGET_ramips:kmod-usb-storage-uas +kmod-fs-vfat +kmod-fs-ext4 +kmod-fs-exfat +antfs-mount +libblkid +fdisk 
+  DEPENDS:=+block-mount +kmod-fs-exfat +kmod-fs-ext4 +kmod-fs-vfat +libblkid \
+	+kmod-usb-storage +kmod-usb-storage-extras +!TARGET_ramips:kmod-usb-storage-uas \
+	+!LINUX_5_15:antfs-mount +LINUX_5_15:ntfs3-mount
 endef
 
 define Package/automount/description
