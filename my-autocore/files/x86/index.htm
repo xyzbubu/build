@@ -188,7 +188,7 @@
 		});
 	}
 
-	XHR.poll(1, '<%=REQUEST_URI%>', { status: 1 },
+	XHR.poll(5, '<%=REQUEST_URI%>', { status: 1 },
 		function(x, info)
 		{
 			if (!(npoll++ % 5))
@@ -743,7 +743,7 @@
 
 	<table width="100%" cellspacing="10">
 		<tr><td width="33%"><%:Hostname%></td><td><%=luci.sys.hostname() or "?"%></td></tr>
-		<tr><td width="33%"><%:Model%></td><td><%=pcdata(boardinfo.model or "?")%> <%=luci.sys.exec("cat /etc/bench.log") or " "%></td></tr>
+		<tr><td width="33%"><%:型号参数%></td><td><%=pcdata(boardinfo.model or "?")%> <%=luci.sys.exec("cat /etc/bench.log") or " "%></td></tr>
 		<tr><td width="33%"><%:实时频率%></td><td id="cpuinfo">-</td></tr>
 		<tr><td width="33%"><%:内核温度%></td><td id="cpuwd">-</td></tr>
         <tr><td width="33%"><%:RAM Size%></td><td id="ramsize">-</td></tr>

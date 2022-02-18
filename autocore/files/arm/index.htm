@@ -56,12 +56,13 @@
 		local cpu_info = luci.sys.exec("/sbin/cpuinfo") or "ARM Processor x 0 (233MHz, 2.3°C)"
 		local eth_info = luci.sys.exec("ethinfo")
 
+		local cpu_wd = luci.sys.exec("cpuwd")
 		local rv = {
 			cpuinfo    = cpu_info,
 			cpuusage   = cpu_usage,
 			ramsize    = ram_size,
 			ethinfo    = eth_info,
-
+			cpuwd    = cpu_wd,
 			userinfo   = user_info,
 			uptime     = sysinfo.uptime or 0,
 			localtime  = os.date("%Y年%m月%d日") .. " " .. translate(os.date("%A")) .. " " .. os.date("%X"),
@@ -675,6 +676,8 @@
 			if (e = document.getElementById('userinfo'))
 				e.innerHTML = info.userinfo;
 
+			if (e = document.getElementById('cpuwd'))
+				e.innerHTML = info.cpuwd;
 				
 			if (e = document.getElementById('cpuusage'))
 				e.innerHTML = info.cpuusage;
@@ -704,9 +707,8 @@
 				e.innerHTML = progressbar(
 					Math.floor((((info.memory.total - info.memory.free )- info.memory.buffered) / 1048576) - (info.memcached / 1024)) + " <%:MB%>",
 					Math.floor(info.memory.total / 1048576) + " <%:MB%>"
-
 				);
-				
+
 			if (e = document.getElementById('membuff'))
 				e.innerHTML = progressbar(
 					Math.floor(info.memory.buffered / 1048576) + " <%:MB%>",
@@ -739,8 +741,9 @@
 
 	<table width="100%" cellspacing="10">
 		<tr><td width="33%"><%:Hostname%></td><td><%=luci.sys.hostname() or "?"%></td></tr>
-		<tr><td width="33%"><%:Model%></td><td><%=pcdata(boardinfo.model or "?")%> <%=luci.sys.exec("cat /etc/bench.log") or ""%></td></tr>
-		<tr><td width="33%"><%:Architecture%></td><td id="cpuinfo">-</td></tr>
+		<tr><td width="33%"><%:型号参数%></td><td><%=pcdata(boardinfo.model or "?")%> <%=luci.sys.exec("cat /etc/bench.log") or " "%></td></tr>
+		<tr><td width="33%"><%:实时频率%></td><td id="cpuinfo">-</td></tr>
+		<tr><td width="33%"><%:内核温度%></td><td id="cpuwd">-</td></tr>
         <tr><td width="33%"><%:RAM Size%></td><td id="ramsize">-</td></tr>
 		<tr><td width="33%"><%:Firmware Version%></td><td>
 			<%=pcdata(ver.distname)%> <%=pcdata(ver.distversion)%> /
@@ -751,7 +754,7 @@
 		<tr><td width="33%"><%:Uptime%></td><td id="uptime">-</td></tr>
 		<tr><td width="33%"><%:Load Average%></td><td id="loadavg">-</td></tr>
 		<tr><td width="33%"><%:CPU usage (%)%></td><td id="cpuusage">-</td></tr>
-                                   <tr><td width="33%"><%:help%></td>
+         <tr><td width="33%"><%:help%></td>
 			<td id="cpr">
 				<input type="button" class="cbi-button cbi-button-apply" value="<%:更新建议%>" onclick="window.open('https://github.com/sirpdboy/openwrt18.06/issues')" />
 				<input type="button" class="cbi-button cbi-button-apply" value="<%:TG聊天群%>" onclick="window.open('https://t.me/joinchat/RV6mxIxZJVDByibQ')" />
