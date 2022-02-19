@@ -1,4 +1,10 @@
 #!/bin/sh
 
-TEMP=`sensors 2>/dev/null | grep 'Core 0' | cut -c15-22` ||0
-printf "%.1f°C" $TEMP
+# TEMP=`sensors 2>/dev/null | grep 'Core 0' | cut -c15-22` 
+TEMP=`sensors 2>/dev/null | grep 'Core 0' | cut -c12-  | awk  -F '°' '{print $1}' ` || TEMP=0
+
+	if [ $TEMP == "0" -o $TEMP == "" ]; then
+		printf "0°C 无温控或是虚拟机"
+	else
+		printf "%.0f°C" $TEMP
+	fi
