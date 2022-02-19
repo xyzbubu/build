@@ -47,9 +47,7 @@
 		local cpu_info = luci.sys.exec("cpuinfo")
 
 		local eth_info = luci.sys.exec("ethinfo")
-		local cpu_wd = luci.sys.exec("cpuwd")
-
-
+		local cpu_wd = (luci.sys.exec("sensors 2>/dev/null | grep 'Core 0' | cut -c12-  | awk  -F '°' '{print $1}' ") or "无温控或虚拟机 0") .. "°C"
 		local user_info = luci.sys.exec("cat /proc/net/arp | grep '0x2' | wc -l") or 0
 
 
