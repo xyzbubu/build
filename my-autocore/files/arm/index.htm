@@ -56,7 +56,10 @@
 		local cpu_info = luci.sys.exec("/sbin/cpuinfo") or "ARM Processor x 0 (233MHz, 2.3°C)"
 		local eth_info = luci.sys.exec("ethinfo")
 
-		local cpu_wd = luci.sys.exec("cpuwd")
+		local cpu_wd = (luci.sys.exec("cpuwd")) .. "°C"
+        if  cpu_wd == "0°C" or cpu_wd == "°C"   then
+		    cpu_wd= "0°C （无温控）"
+       	end
 		local rv = {
 			cpuinfo    = cpu_info,
 			cpuusage   = cpu_usage,
