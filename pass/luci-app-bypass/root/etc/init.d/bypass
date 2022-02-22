@@ -896,6 +896,7 @@ gen_dns(){
 	smartdns_flag=1
 	mkdir -p /tmp/dnsmasq.d $SDNS $DNS_DIR
 	cat > $DNS_T <<EOF
+server-name pddns
 force-AAAA-SOA yes
 speed-check-mode none
 cache-persist no
@@ -1286,6 +1287,8 @@ start(){
 stop(){
 	kill -9 $(ps -w | grep $BIN_DIR/rules | grep -v grep | awk '{print$1}') 2>/dev/null
 	kill -9 $(ps -w | grep gfw.b64 | grep -v grep | awk '{print$1}') 2>/dev/null
+	kill -9 $(ps -w | grep bypass | grep -v grep | awk '{print$1}') 2>/dev/null
+	kill -9 $(ps -w | grep smartdns | grep -v grep | awk '{print$1}') 2>/dev/null
 	kill -9 $(ps -w | grep $BIN_DIR/checknetwork | grep -v grep | awk '{print$1}') 2>/dev/null
 	kill -9 $(ps -w | grep $BIN_DIR/update | grep -v grep | awk '{print$1}') 2>/dev/null
 	[ $switch_server ] || kill -9 $(ps -w | grep $BIN_DIR/switch | grep -v grep | awk '{print$1}') 2>/dev/null
@@ -1303,6 +1306,7 @@ stop(){
 		/etc/init.d/dnsmasq restart >/dev/null 2>&1
 	elif [ -s $DNS_T ];then
 		cat > $DNS_T <<EOF
+server-name pddns
 speed-check-mode none
 cache-persist no
 cache-size 0
