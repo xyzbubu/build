@@ -29,15 +29,6 @@ endef
 
 define Build/Compile
 	$(CP) ./*.sh $(PKG_BUILD_DIR)
-	# remove comments, white spaces and empty lines
-	for FILE in `find $(PKG_BUILD_DIR) -type f`; do \
-		$(SED) 's/^[[:space:]]*//' \
-		-e '/^#[[:space:]]\|^#$$$$/d' \
-		-e 's/[[:space:]]#[[:space:]].*$$$$//' \
-		-e 's/[[:space:]]*$$$$//' \
-		-e '/^\/\/[[:space:]]/d'	\
-		-e '/^[[:space:]]*$$$$/d'	$$$$FILE; \
-	done
 endef
 
 define Package/$(PKG_NAME)/preinst
@@ -50,9 +41,6 @@ endef
 define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/usr/lib/ddns
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/*.sh $(1)/usr/lib/ddns
-	$(INSTALL_DIR) $(1)/usr/share/ddns/default
-	$(INSTALL_DATA) ./*.json $(1)/usr/share/ddns/default
-
 endef
 
 define Package/$(PKG_NAME)/postinst
