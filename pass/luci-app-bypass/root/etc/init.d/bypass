@@ -765,6 +765,8 @@ gen_dns(){
 			3)doh="https://9.9.9.9/dns-query -tls-host-verify *.quad9.net -http-host dns.quad9.net,https://149.112.112.112/dns-query -tls-host-verify *.quad9.net -http-host dns.quad9.net";dns="9.9.9.9 149.112.112.112";;
 			4)doh="https://9.9.9.11/dns-query -tls-host-verify *.quad9.net -http-host dns11.quad9.net,https://149.112.112.11/dns-query -tls-host-verify *.quad9.net -http-host dns11.quad9.net";dns="9.9.9.11 149.112.112.11";;
 			5)doh="https://146.112.41.2/dns-query -tls-host-verify doh.opendns.com -http-host doh.opendns.com";dns="208.67.222.222 208.67.220.220";;
+			6)doh="https://103.2.57.6/dns-query -tls-host-verify public.dns.iij.jp -http-host public.dns.iij.jp";dns="103.2.57.6 103.2.57.5";;
+			7)doh="https://172.104.93.80/dns-query -tls-host-verify jp.tiar.app -http-host jp.tiar.app";dns="172.104.93.80 172.104.93.80";;
 			*)doh=$(echo $dns | sed -e 's/，/,/g' -e 's/。/./g' -e 's/：/:/g');dns=$(echo $doh | sed 's/,/\n/g' | awk -F[/:] '{print$4}' | grep -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$");[ ! "$dns" ] && dns="1.1.1.1 1.0.0.1";;
 		esac
 		for i in $dns;do
@@ -802,6 +804,8 @@ gen_dns(){
 			3)doh_yb="https://9.9.9.9/dns-query -tls-host-verify *.quad9.net -http-host dns.quad9.net,https://149.112.112.112/dns-query -tls-host-verify *.quad9.net -http-host dns.quad9.net";dns_yb="9.9.9.9 149.112.112.112";;
 			4)doh_yb="https://9.9.9.11/dns-query -tls-host-verify *.quad9.net -http-host dns11.quad9.net,https://149.112.112.11/dns-query -tls-host-verify *.quad9.net -http-host dns11.quad9.net";dns_yb="9.9.9.11 149.112.112.11";;
 			5)doh_yb="https://146.112.41.2/dns-query -tls-host-verify doh.opendns.com -http-host doh.opendns.com";dns_yb="9.9.9.11 149.112.112.11";;
+			6)doh="https://103.2.57.6/dns-query -tls-host-verify public.dns.iij.jp -http-host public.dns.iij.jp";dns="103.2.57.6 103.2.57.5";;
+			7)doh="https://172.104.93.80/dns-query -tls-host-verify jp.tiar.app -http-host jp.tiar.app";dns="172.104.93.80 172.104.93.80";;
 			*)doh_yb=$(echo $dns_yb | sed -e 's/，/,/g' -e 's/。/./g' -e 's/：/:/g');dns_yb=$(echo $doh_yb | sed 's/,/\n/g' | awk -F[/:] '{print$4}' | grep -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$");[ ! "$dns_yb" ] && dns_yb="8.8.8.8 8.8.4.4";;
 		esac
 		for i in $dns_yb;do ipset add youtube $i 2>/dev/null;done
@@ -828,6 +832,8 @@ gen_dns(){
 			3)doh_nf="https://9.9.9.9/dns-query -tls-host-verify *.quad9.net -http-host dns.quad9.net,https://149.112.112.112/dns-query -tls-host-verify *.quad9.net -http-host dns.quad9.net";dns_nf="9.9.9.9 149.112.112.112";;
 			4)doh_nf="https://9.9.9.11/dns-query -tls-host-verify *.quad9.net -http-host dns11.quad9.net,https://149.112.112.11/dns-query -tls-host-verify *.quad9.net -http-host dns11.quad9.net";dns_nf="9.9.9.11 149.112.112.11";;
 			5)doh_nf="https://146.112.41.2/dns-query -tls-host-verify doh.opendns.com -http-host doh.opendns.com";dns_nf="9.9.9.11 149.112.112.11";;
+			6)doh="https://103.2.57.6/dns-query -tls-host-verify public.dns.iij.jp -http-host public.dns.iij.jp";dns="103.2.57.6 103.2.57.5";;
+			7)doh="https://172.104.93.80/dns-query -tls-host-verify jp.tiar.app -http-host jp.tiar.app";dns="172.104.93.80 172.104.93.80";;
 			*)doh_nf=$(echo $dns_nf | sed -e 's/，/,/g' -e 's/。/./g' -e 's/：/:/g');dns_nf=$(echo $doh_nf | sed 's/,/\n/g' | awk -F[/:] '{print$4}' | grep -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$");[ ! "$dns_nf" ] && dns_nf="9.9.9.9 149.112.112.112";;
 		esac
 		for i in $dns_nf;do ipset add netflix $i 2>/dev/null;done
@@ -854,6 +860,8 @@ gen_dns(){
 			3)doh_cu="https://9.9.9.9/dns-query -tls-host-verify *.quad9.net -http-host dns.quad9.net,https://149.112.112.112/dns-query -tls-host-verify *.quad9.net -http-host dns.quad9.net";dns_cu="9.9.9.9 149.112.112.112";;
 			4)doh_cu="https://9.9.9.11/dns-query -tls-host-verify *.quad9.net -http-host dns11.quad9.net,https://149.112.112.11/dns-query -tls-host-verify *.quad9.net -http-host dns11.quad9.net";dns_cu="9.9.9.11 149.112.112.11";;
 			5)doh_cu="https://146.112.41.2/dns-query -tls-host-verify doh.opendns.com -http-host doh.opendns.com";dns_cu="9.9.9.11 149.112.112.11";;
+			6)doh="https://103.2.57.6/dns-query -tls-host-verify public.dns.iij.jp -http-host public.dns.iij.jp";dns="103.2.57.6 103.2.57.5";;
+			7)doh="https://172.104.93.80/dns-query -tls-host-verify jp.tiar.app -http-host jp.tiar.app";dns="172.104.93.80 172.104.93.80";;
 			*)doh_cu=$(echo $dns_cu | sed -e 's/，/,/g' -e 's/。/./g' -e 's/：/:/g');dns_cu=$(echo $doh_cu | sed 's/,/\n/g' | awk -F[/:] '{print$4}' | grep -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$");[ ! "$dns_cu" ] && dns_cu="9.9.9.11 149.112.112.11";;
 		esac
 		for i in $dns_cu;do ipset add custom $i 2>/dev/null;done
