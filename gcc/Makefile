@@ -22,8 +22,8 @@ define Package/gcc
 endef
 
 PKG_NAME:=gcc
-#PKG_VERSION=7.4.0
-PKG_VERSION=8.5.0
+PKG_VERSION=7.5.0
+#PKG_VERSION=8.4.0
 PKG_RELEASE:=6
 PKG_SOURCE_URL:=@GNU/gcc/gcc-$(PKG_VERSION)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
@@ -38,6 +38,9 @@ ifeq ($(PKG_VERSION),7.3.0)
 endif
 ifeq ($(PKG_VERSION),7.4.0)
 	PKG_HASH:=eddde28d04f334aec1604456e536416549e9b1aa137fc69204e65eb0c009fe51
+endif
+ifeq ($(PKG_VERSION),7.5.0)
+        PKG_HASH:=b81946e7f01f90528a1f7352ab08cc602b9ccc05d4e44da4bd501c5a189ee661
 endif
 
 ifeq ($(PKG_VERSION),8.4.0)
