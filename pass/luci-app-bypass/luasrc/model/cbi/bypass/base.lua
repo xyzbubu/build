@@ -96,8 +96,6 @@ o:value("2",translate("Google"))
 o:value("3","Quad9")
 o:value("4","Quad9 ECS")
 o:value("5","OpenDNS")
-o:value("6","JpIij")
-o:value("7","JpTiar")
 o:depends("dns_mode",0)
 
 o=s:option(Value,"tcp_dns",translate("Foreign DNS"),
