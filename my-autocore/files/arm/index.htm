@@ -56,16 +56,11 @@
 		local cpu_info = luci.sys.exec("/sbin/cpuinfo") or "ARM Processor x 0 (233MHz, 2.3°C)"
 		local eth_info = luci.sys.exec("ethinfo")
 
-		local cpu_wd = (luci.sys.exec("cpuwd")) .. "°C"
-        if  cpu_wd == "0°C" or cpu_wd == "°C"   then
-		    cpu_wd= "0°C （无温控）"
-       	end
 		local rv = {
 			cpuinfo    = cpu_info,
 			cpuusage   = cpu_usage,
 			ramsize    = ram_size,
 			ethinfo    = eth_info,
-			cpuwd    = cpu_wd,
 			userinfo   = user_info,
 			uptime     = sysinfo.uptime or 0,
 			localtime  = os.date("%Y年%m月%d日") .. " " .. translate(os.date("%A")) .. " " .. os.date("%X"),
@@ -665,7 +660,8 @@
 							'<td style="text-align:center"><span style="line-height:25px">%s</span><br /><small><img src="<%=resource%>/icons/%s" /><br />%s<br />%s</small></td>',							ports[i].name,
 							ports[i].status ? 'port_up.png' : 'port_down.png',
 							ports[i].speed,
-							ports[i].duplex ? '<%:full-duplex%>' : '<%:half-duplex%>');
+							ports[i].duplex ? '<%:full-duplex%>' : '<%:half-duplex%>',
+							ports[i].mac);
 				};
 				e.innerHTML = "<tr>" + tmp + "</tr>";
 			}
@@ -678,9 +674,6 @@
 
 			if (e = document.getElementById('userinfo'))
 				e.innerHTML = info.userinfo;
-
-			if (e = document.getElementById('cpuwd'))
-				e.innerHTML = info.cpuwd;
 				
 			if (e = document.getElementById('cpuusage'))
 				e.innerHTML = info.cpuusage;
@@ -746,7 +739,6 @@
 		<tr><td width="33%"><%:Hostname%></td><td><%=luci.sys.hostname() or "?"%></td></tr>
 		<tr><td width="33%"><%:型号参数%></td><td><%=pcdata(boardinfo.model or "?")%> <%=luci.sys.exec("cat /etc/bench.log") or " "%></td></tr>
 		<tr><td width="33%"><%:实时频率%></td><td id="cpuinfo">-</td></tr>
-		<tr><td width="33%"><%:内核温度%></td><td id="cpuwd">-</td></tr>
         <tr><td width="33%"><%:RAM Size%></td><td id="ramsize">-</td></tr>
 		<tr><td width="33%"><%:Firmware Version%></td><td>
 			<%=pcdata(ver.distname)%> <%=pcdata(ver.distversion)%> /
@@ -756,7 +748,7 @@
 		<tr><td width="33%"><%:Local Time%></td><td id="localtime">-</td></tr>
 		<tr><td width="33%"><%:Uptime%></td><td id="uptime">-</td></tr>
 		<tr><td width="33%"><%:Load Average%></td><td id="loadavg">-</td></tr>
-		<tr><td width="33%"><%:CPU usage (%)%></td><td id="cpuusage">-</td></tr>
+		<tr><td width="33%"><%:CPU负载%></td><td id="cpuusage">-</td></tr>
 
 </table>
 </fieldset>
