@@ -13,9 +13,6 @@ do
 	d=$(ethtool $c)
 
 
-        n=$(ifconfig )
-	m=$(echo "$n" | grep "$c" | cut -c39-| awk  -F ' ' '{print $1}' )
-
 	e=$(echo "$d" | grep "Link detected" | awk -F: '{printf $2}' | sed 's/^[ \t]*//g')
 	if [ $e = yes ]; then
 		l=1
@@ -33,8 +30,9 @@ do
 		x=0
 	fi
 
-
-	echo -n "$h \"$c\", \"status\": $l, \"speed\": \"$f\", \"duplex\": $x, \"mac\": \"$m\"}," >> /tmp/state/ethinfo
+        n=$(ifconfig )
+	m=$(echo "$n" | grep "$c" | cut -c38-| sed "s/:/-/g" | sed "s/ //g" | sed 's/^[ \t]*//g' )
+	echo -n "$h \"$c\", \"status\": $l, \"speed\": \"$f\",\"mac\": \"$m\", \"duplex\": $x}," >> /tmp/state/ethinfo
 
 
 done
