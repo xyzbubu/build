@@ -1,0 +1,10 @@
+#!/bin/sh
+if [ "$PKG_UPGRADE" != 1 ]; then
+uci batch <<-EOF
+	set luci.themes.Tiktok=/luci-static/tiktok
+	set luci.main.mediaurlbase=/luci-static/tiktok
+	commit luci
+EOF
+fi
+
+exit 0
