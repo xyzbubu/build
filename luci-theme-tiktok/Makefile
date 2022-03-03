@@ -14,14 +14,15 @@ PKG_RELEASE:=20220301
 
 include $(INCLUDE_DIR)/package.mk
 
-include $(TOPDIR)/feeds/luci/luci.mk
+
 
 define Package/luci-theme-tiktok/postinst
 #!/bin/sh
 
-rm -Rf /var/luci-modulecache
-rm -Rf /var/luci-indexcache
+rm -Rf /tmp/luci*
 exit 0
 
 endef
+
+include $(TOPDIR)/feeds/luci/luci.mk
 # call BuildPackage - OpenWrt buildroot signature
