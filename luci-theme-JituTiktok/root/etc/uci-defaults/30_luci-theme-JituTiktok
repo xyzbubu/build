@@ -1,10 +1,9 @@
 #!/bin/sh
-if [ "$PKG_UPGRADE" != 1 ]; then
+
 uci batch <<-EOF
 	set luci.themes.JituTiktok=/luci-static/JituTiktok
 	set luci.main.mediaurlbase=/luci-static/JituTiktok
 	commit luci
 EOF
-fi
 
 exit 0
