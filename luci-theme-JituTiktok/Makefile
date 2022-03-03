@@ -8,7 +8,8 @@ include $(TOPDIR)/rules.mk
 LUCI_TITLE:=JituTiktok Theme
 
 LUCI_DEPENDS:=
+PKG_VERSION:=20220304
+PKG_RELEASE:=1
 
-
-include $(TOPDIR)/feeds/luci/luci.mk
+include ../../luci.mk
 # call BuildPackage - OpenWrt buildroot signature
