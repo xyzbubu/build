@@ -1,0 +1,6 @@
+#!/bin/sh
+uci batch <<-EOF
+	set luci.themes.Argon_jitu=/luci-static/argon_jitu
+	commit luci
+EOF
+exit 0
