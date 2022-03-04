@@ -740,13 +740,10 @@
 
 	<table width="100%" cellspacing="10">
 		<tr><td width="33%"><%:Hostname%></td><td><%=luci.sys.hostname() or "?"%></td></tr>
-		<tr><td width="33%"><%:型号参数%></td><td><%=pcdata(boardinfo.model or "?")%> <%=luci.sys.exec("cat /etc/bench.log") or " "%></td></tr>
+		<tr><td width="33%"><%:型号参数%></td><td><%="JITU-Y1"></td></tr>
 		<tr><td width="33%"><%:实时频率%></td><td id="cpuinfo">-</td></tr>
         <tr><td width="33%"><%:RAM Size%></td><td id="ramsize">-</td></tr>
-		<tr><td width="33%"><%:Firmware Version%></td><td>
-			<%=pcdata(ver.distname)%> <%=pcdata(ver.distversion)%> /
-			<%=pcdata(ver.luciname)%> (<%=pcdata(ver.luciversion)%>)
-		</td></tr>
+		<tr><td width="33%"><%:Firmware Version%></td><td><%="JITU- TikTok- Y1.0 "></td></tr>
 		<tr><td width="33%"><%:Kernel Version%></td><td><%=unameinfo.release or "?"%></td></tr>
 		<tr><td width="33%"><%:Local Time%></td><td id="localtime">-</td></tr>
 		<tr><td width="33%"><%:Uptime%></td><td id="uptime">-</td></tr>
