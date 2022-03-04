@@ -1,0 +1,6 @@
+#!/bin/sh
+uci batch <<-EOF
+	set luci.themes.Tiktok=/luci-static/tiktok
+	commit luci
+EOF
+exit 0
