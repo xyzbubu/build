@@ -4,6 +4,17 @@ local uci=luci.model.uci.cursor()
 local server_count=0
 local SYS=require"luci.sys"
 
+function url(...)
+    local url = string.format("admin/services/%s", bypass)
+    local args = { ... }
+    for i, v in pairs(args) do
+        if v ~= "" then
+            url = url .. "/" .. v
+        end
+    end
+    return require "luci.dispatcher".build_url(url)
+end
+
 uci:foreach(bypass,"servers",function(s)
 	server_count=server_count+1
 end)
@@ -51,9 +62,13 @@ o.write=function()
 	luci.http.redirect(luci.dispatcher.build_url("admin","services",bypass,"servers"))
 end
 
-o=s:option(Button,"subscribe",translate("Update All Subscribe Severs"))
-o.rawhtml=true
-o.template="bypass/subscribe"
+o = s:option(Button, "subscribe", translate("Update All Subscribe Severs"))
+o.inputstyle = "apply"
+function o.write(t, n)
+    luci.sys.call("lua /usr/share/bypass/subscribe  > /dev/null 2>&1 &")
+    luci.http.redirect(url("log"))
+end
+
 
 o=s:option(Button,"delete",translate("Delete All Subscribe Severs"))
 o.inputstyle="reset"

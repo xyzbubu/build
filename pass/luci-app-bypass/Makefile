@@ -5,8 +5,8 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-bypass
 PKG_VERSION:=1.1
-PKG_RELEASE:=1.1
-PKG_DATE:=20211115
+PKG_RELEASE:=12
+PKG_DATE:=20220305
 include $(INCLUDE_DIR)/package.mk
 
 PKG_CONFIG_DEPENDS:= \

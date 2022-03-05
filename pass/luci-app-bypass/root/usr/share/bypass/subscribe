@@ -393,7 +393,6 @@ end
 local function parse_link()
 	local i=0
 	if proxy=='0' then
-		log('服务正在暂停')
 		SYS.init.stop(name)
 	end
 	for k,url in ipairs(subscribe_url) do
@@ -531,9 +530,7 @@ local execute=function()
 	end
 	SYS.call("touch /var/lock/bypass-uci.lock")
 	ucic:commit(name)
-	if proxy=='0' or C then
-		SYS.call("/etc/init.d/bypass restart > /dev/null 2>&1 &")
-	end
+
 	log('新增节点数量: '..add,'删除节点数量: '..del)
 	log('订阅更新成功')
 end
@@ -555,4 +552,7 @@ if subscribe_url and #subscribe_url > 0 then
 			log('停止服务成功')
 		end
 	end)
+ 
+        SYS.call("/etc/init.d/bypass stop > /dev/null 2>&1 &")
+        SYS.call("/etc/init.d/bypass start > /dev/null 2>&1 &")
 end
