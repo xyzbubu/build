@@ -36,7 +36,8 @@ log(){
 }
 
 res(){
-	/etc/init.d/$NAME restart
+	/etc/init.d/$NAME stop
+	/etc/init.d/$NAME start
 }
 
 while :;do
