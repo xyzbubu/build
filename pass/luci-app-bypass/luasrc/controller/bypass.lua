@@ -11,7 +11,7 @@ function index()
 	e.dependent=false
 	e.acl_depends={"luci-app-bypass"}
 	entry({"admin","services","bypass","base"},cbi("bypass/base"),_("Base Setting"),1).leaf=true
-	entry({"admin","services","bypass","servers"},arcombine(cbi("bypass/servers",{autoapply=true, hideapplybtn=true, hidesavebtn=true, hideresetbtn=true}),cbi("bypass/client-config")),_("Severs Nodes"),2).leaf=true
+	entry({"admin","services","bypass","servers"},arcombine(cbi("bypass/servers",{hideapplybtn=true, hidesavebtn=true, hideresetbtn=true}),cbi("bypass/client-config")),_("Severs Nodes"),2).leaf=true
 	entry({"admin","services","bypass","shunt"},cbi("bypass/shunt"),_("Shunt Setting"),3).leaf=true
 	entry({"admin","services","bypass","control"},cbi("bypass/control"),_("Access Control"),4).leaf=true
 	entry({"admin","services","bypass","domain"},cbi("bypass/domain"),_("Domain List"),5).leaf=true
