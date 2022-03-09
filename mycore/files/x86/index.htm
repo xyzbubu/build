@@ -53,12 +53,13 @@
 
 		local cpu_usage = (luci.sys.exec("expr 100 - $(top -n 1 | grep 'CPU:' | awk -F '%' '{print$4}' | awk -F ' ' '{print$2}')") or "6") .. "%"
 
+		local up_time = luci.sys.exec("uptime")
 		local rv = {
 			cpuusage    = cpu_usage,
 			cpuwd    = cpu_wd,
 			ethinfo    = eth_info,
 			userinfo    = user_info,
-			uptime     = sysinfo.uptime or 0,
+			uptime     = up_time or 0,
 			localtime  = os.date("%Y年%m月%d日") .. " " .. translate(os.date("%A")) .. " " .. os.date("%X"),
 			loadavg    = sysinfo.load or { 0, 0, 0 },
 			memory     = meminfo,
@@ -187,7 +188,7 @@
 		});
 	}
 
-	XHR.poll(5, '<%=REQUEST_URI%>', { status: 1 },
+	XHR.poll(1, '<%=REQUEST_URI%>', { status: 1 },
 		function(x, info)
 		{
 			if (!(npoll++ % 5))
@@ -740,7 +741,7 @@
 	<table width="100%" cellspacing="10">
 		<tr><td width="33%"><%:Hostname%></td><td><%=luci.sys.hostname() or "?"%></td></tr>
 		<tr><td width="33%"><%:型号参数%></td><td><%=pcdata(boardinfo.model or "?")%> <%=luci.sys.exec("cat /etc/bench.log |awk -F '.' '{print $1}'") or " "%></td></tr>
-		<tr><td width="33%"><%:CPU主频%></td><td > <%=luci.sys.exec("cpuinfo |  awk -F '.' '{print $1}'")%></td></tr>
+		<tr><td width="33%"><%:CPU主频%></td><td > <%=luci.sys.exec("cpuinfo")%></td></tr>
 		<tr><td width="33%"><%:CPU温度%></td><td id="cpuwd">-</td></tr>
 		<tr><td width="33%"><%:CPU负载%></td><td id="cpuusage">-</td></tr>
         <tr><td width="33%"><%:RAM Size%></td><td > <%=luci.sys.exec("free -m  | grep Mem | awk '{print $2/1024}'|  awk -F '.' '{print $1}'").."MB"%></td></tr>

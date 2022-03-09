@@ -59,15 +59,15 @@
 		    cpu_wd= "0°C （无温控）"
        	end
 		local cpu_usage = luci.sys.exec("top -n1 | awk '/^CPU/ { printf(\"%d%%\", 100 - $8) }'") or "6%"
-		local cpu_info = luci.sys.exec("/sbin/cpuinfo") or "ARM Processor x 0 (233MHz, 2.3°C)"
 		local eth_info = luci.sys.exec("ethinfo")
 
+		local up_time = luci.sys.exec("uptime")
 		local rv = {
 			cpuusage   = cpu_usage,
 			cpuwd    = cpu_wd,
 			ethinfo    = eth_info,
 			userinfo   = user_info,
-			uptime     = sysinfo.uptime or 0,
+			uptime     = up_time or 0,
 			localtime  = os.date("%Y年%m月%d日") .. " " .. translate(os.date("%A")) .. " " .. os.date("%X"),
 			loadavg    = sysinfo.load or { 0, 0, 0 },
 			memory     = meminfo,
