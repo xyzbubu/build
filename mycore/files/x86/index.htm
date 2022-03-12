@@ -48,7 +48,8 @@
 		local user_info = luci.sys.exec("cat /proc/net/arp | grep '0x2' | wc -l") or 0
 		local cpu_wd ="+".. (luci.sys.exec("cpuwd")) .. "°C"
         if  cpu_wd == "+0°C" or cpu_wd == "+°C"   then
-		    cpu_wd= "0°C （无温控或虚拟机）"
+		    cpu_wd= "+0°C （无温控或虚拟机）"
+
        	end
 
 		local cpu_usage = (luci.sys.exec("expr 100 - $(top -n 1 | grep 'CPU:' | awk -F '%' '{print$4}' | awk -F ' ' '{print$2}')") or "6") .. "%"
@@ -59,7 +60,7 @@
 			cpuwd    = cpu_wd,
 			ethinfo    = eth_info,
 			userinfo    = user_info,
-			uptime     = up_time or 0,
+			uptime     = up_time,
 			localtime  = os.date("%Y年%m月%d日") .. " " .. translate(os.date("%A")) .. " " .. os.date("%X"),
 			loadavg    = sysinfo.load or { 0, 0, 0 },
 			memory     = meminfo,
@@ -666,7 +667,7 @@
 				e.innerHTML = info.localtime;
 
 			if (e = document.getElementById('uptime'))
-				e.innerHTML = String.format('%t', info.uptime);
+				e.innerHTML = info.uptime;
 
 			if (e = document.getElementById('userinfo'))
 				e.innerHTML = info.userinfo;
