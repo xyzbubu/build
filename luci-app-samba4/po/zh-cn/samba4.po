@@ -144,6 +144,8 @@ msgstr "请添加要共享的目录。每个目录指到已挂载设备上的文
 msgid "Read-only"
 msgstr "只读"
 
+msgid "Share home-directories"
+msgstr "共享家目录"
 msgid "Shared Directories"
 msgstr "共享目录"
 

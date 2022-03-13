@@ -61,6 +61,7 @@ function tmpl.write(self, section, value)
 	nixio.fs.writefile("/etc/samba/smb.conf.template", value)
 end
 
+
 a = s:taboption("general", Flag, "autoshare", translate("Auto Share"),
         translate("Auto share local disk which connected"))
 a.rmempty = false
