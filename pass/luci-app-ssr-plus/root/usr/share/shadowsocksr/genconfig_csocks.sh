@@ -1,6 +1,5 @@
 #!/bin/sh
 
-#!/bin/sh
 
 cat <<-EOF >$6
 {
