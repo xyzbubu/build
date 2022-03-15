@@ -32,7 +32,6 @@ smb_handle() {
 	if [  "$path" = "$2" ] ;then
 		global=1
 	fi
-	[  "$target" = "/boot" ] && [ "$homes" = 0 ] && global=1
 }
 
 chk_en() {
@@ -60,7 +59,7 @@ case "$ACTION" in
 	path="/dev/$device"
 
 	wait_for_init
-	homes=`uci get samba4.@samba[0].homes`
+
 	cat /proc/mounts | grep -v '/boot\|/opt' | while read j
 	do
 		str=${j%% *}
@@ -88,19 +87,6 @@ case "$ACTION" in
 			fi
 		fi
 	done
-	if [ "$homes" -eq 0 ]; then
-		sum=$(grep -c 'config sambashare' /etc/config/samba4)
-		for i in $(seq 0 $((sum - 1))); do
-	      		path=$(uci get samba4.@sambashare[$i].path 2>/dev/null)
-			[ "$path" = "/boot" ] && {
-					mount_dir=`uci get samba4.@sambashare[$i].name`
-					uci delete samba4.@sambashare[$i]
-					uci commit
-					/etc/init.d/samba4 reload
-			}
-
-	      done
-	fi
 	;;
 
 	remove)
