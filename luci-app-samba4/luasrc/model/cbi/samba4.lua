@@ -10,6 +10,11 @@ s:tab("template", translate("Edit Template"))
 
 --o=s:taboption("general",NetworkSelect,'interface', translate('Interface'),translate('Listen only on the given interface or, if unspecified, on lan'))
 
+
+a = s:taboption("general", Flag, "enabled", translate("Enabled"))
+a.rmempty = false
+a.default = "no"
+
 o=s:taboption("general", Value, "workgroup", translate("Workgroup"))
 o.placeholder = 'WORKGROUP'
 
