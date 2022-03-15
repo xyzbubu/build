@@ -20,9 +20,7 @@ PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Simple_Obfs \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Trojan_Plus \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_Plugin \
-	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Trojan-Go \
-	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Xray \
-
+	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Xray
 
 LUCI_TITLE:=LuCI support for bypass
 LUCI_PKGARCH:=all
@@ -41,9 +39,7 @@ LUCI_DEPENDS:=+ipset +ip-full +iptables-mod-tproxy +dnsmasq-full \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Simple_Obfs:simple-obfs \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Trojan_Plus:trojan-plus \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_Plugin:v2ray-plugin \
-	+PACKAGE_$(PKG_NAME)_INCLUDE_Trojan-Go:trojan-go \
-	+PACKAGE_$(PKG_NAME)_INCLUDE_Xray:xray-core\
-
+	+PACKAGE_$(PKG_NAME)_INCLUDE_Xray:xray-core
 
 define Package/$(PKG_NAME)/config
 menu "Configuration"
@@ -93,9 +89,7 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_Xray
 	bool "Include Xray"
 	default y
 
-config PACKAGE_$(PKG_NAME)_INCLUDE_Trojan-Go
-	bool "Include Trojan Go"
-	default y
+endmenu
 endef
 
 define Package/$(PKG_NAME)/conffiles
