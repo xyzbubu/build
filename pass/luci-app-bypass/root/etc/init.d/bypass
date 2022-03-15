@@ -79,7 +79,7 @@ GLOBAL_SERVER=$(uci_get_by_type global global_server)
 gfw_mode=$(uci_get_by_type global gfw_mode 0)
 run_mode=$(uci_get_by_type global run_mode router)
 SO_SERVER=$(uci_get_by_type socks5_proxy server)
-[ $SO_SERVER = same ] && SO_SERVER=$GLOBAL_SERVER
+[ "$SO_SERVER" = same ] && SO_SERVER=$GLOBAL_SERVER
 [ $(uci_get_by_name $SO_SERVER server) ] || SO_SERVER=
 dns_mode_l=$(uci_get_by_type global dns_mode_l 0)
 
@@ -117,7 +117,6 @@ f_bin(){
 		ssr-server)ret=$(which ssr-server);;
 		vmess|vless)ret=$(which xray);;
 		trojan)ret=$(which trojan-plus);;
-		trojan-go) ret=$(which trojan-go);;
 		naiveproxy)ret=$(which naive);;
 		socks5|tun)ret=$(which redsocks2);;
 	esac
@@ -141,52 +140,50 @@ gen_config_file(){
 	esac
 	case $type in
 		ss)
-		cat <<-EOF >$config_file
-			{
-			"server":"$hostip",
-			"server_port":$sport,
-			"local_address":"0.0.0.0",
-			"local_port":$lport,
-			"password":"$pass",
-			"timeout":$timeout,
-			"method":"$(uci_get_by_name $1 encrypt_method_ss)",
-			"reuse_port":true,
-			"fast_open":$fast
-			}
-		EOF
-		plugin=$(uci_get_by_name $1 plugin 0)
-		if [ $plugin != 0 -a -x "$(which $plugin)" ];then
+			cat > $config_file <<EOF
+{
+"server":"$hostip",
+"server_port":$sport,
+"local_address":"0.0.0.0",
+"local_port":$lport,
+"password":"$pass",
+"timeout":$timeout,
+"method":"$(uci_get_by_name $1 encrypt_method_ss)",
+"reuse_port":true,
+"fast_open":$fast
+}
+EOF
+			plugin=$(uci_get_by_name $1 plugin)
+			if which $plugin >/dev/null 2>&1;then
 				sed -i "s@$hostip\",@$hostip\",\n\"plugin\":\"$plugin\",\n\"plugin_opts\":\"$(uci_get_by_name $1 plugin_opts)\",@" $config_file
-		fi
-		;;
+			fi;;
 		ssr)
-		cat <<-EOF >$config_file
-			{
-			"server":"$hostip",
-			"server_port":$sport,
-			"local_address":"0.0.0.0",
-			"local_port":$lport,
-			"password":"$pass",
-			"timeout":$timeout,
-			"method":"$(uci_get_by_name $1 encrypt_method)",
-			"protocol":"$(uci_get_by_name $1 protocol)",
-			"protocol_param":"$(uci_get_by_name $1 protocol_param)",
-			"obfs":"$(uci_get_by_name $1 obfs)",
-			"obfs_param":"$(uci_get_by_name $1 obfs_param)",
-			"reuse_port":true,
-			"fast_open":$fast
-			}
-		EOF
-		;;
+			cat > $config_file <<EOF
+{
+"server":"$hostip",
+"server_port":$sport,
+"local_address":"0.0.0.0",
+"local_port":$lport,
+"password":"$pass",
+"timeout":$timeout,
+"method":"$(uci_get_by_name $1 encrypt_method)",
+"protocol":"$(uci_get_by_name $1 protocol)",
+"protocol_param":"$(uci_get_by_name $1 protocol_param)",
+"obfs":"$(uci_get_by_name $1 obfs)",
+"obfs_param":"$(uci_get_by_name $1 obfs_param)",
+"fast_open":$fast
+}
+EOF
+;;
 	naiveproxy)
-		cat <<-EOF >$config_file
-			{
-			"listen":"$PROTO://0.0.0.0:$lport",
-			"proxy":"https://$(uci_get_by_name $1 username):$pass@$(uci_get_by_name $1 server):$sport",
-			"concurrency":"${3:-1}"
-			}
-		EOF
-		;;
+		cat > $config_file <<EOF
+{
+"listen":"$PROTO://0.0.0.0:$lport",
+"proxy":"https://$(uci_get_by_name $1 username):$pass@$(uci_get_by_name $1 server):$sport",
+"concurrency":"${3:-1}"
+}
+EOF
+;;
 	esac
 }
 
@@ -220,7 +217,7 @@ start_dns(){
 
 check_net(){
 	if ! curl -so /dev/null -m 3 www.baidu.com;then
-		/etc/init.d/dnsmasq restart
+		log "Rules     :Wait for network to connect..."
 		firstdown 1;exit 1
 	fi
 }
@@ -511,7 +508,7 @@ rules(){
 start_tcp(){
 	if [ $kcp_enable = 1 ];then
 		cmd=$(which kcptun-client) || cmd=0
-		[! -x  $cmd  ] && log "Main Node      : Can't find KCPTUN program, start failed!" && return 1
+		[ ! $cmd ] && log "Main Node      : Can't find KCPTUN program, start failed!" && return 1
 		[ $($cmd -v 2>/dev/null | grep kcptun | wc -l) = 0 ] && return 1
 		kcp_port=$(uci_get_by_name $GLOBAL_SERVER kcp_port)
 		server_port=$(uci_get_by_name $GLOBAL_SERVER server_port)
@@ -523,7 +520,7 @@ start_tcp(){
 	threads=$(uci_get_by_type global threads 0)
 	[ $threads = 0 ] && threads=$(cat /proc/cpuinfo | grep 'processor' | wc -l)
 	cmd=$(f_bin $ttype)
-	[! -x  $cmd  ] && log "Main Node      : Can't find $(echo $ttype | tr a-z A-Z) program, start failed!" && return 1
+	[ ! $cmd ] && log "Main Node      : Can't find $(echo $ttype | tr a-z A-Z) program, start failed!" && return 1
 	[ $YB_GL ] && CONFIG_FILE=$CONFIG_FILE-yb
 	[ $NF_GL ] && CONFIG_FILE=$CONFIG_FILE-nf
 	[ $CU_GL ] && CONFIG_FILE=$CONFIG_FILE-cu
@@ -583,7 +580,7 @@ start_tcp(){
 
 start_udp(){
 	cmd=$(f_bin $utype)
-	[! -x  $cmd  ] && log "UDP Node      : Can't find $(echo $utype | tr a-z A-Z) program, start failed!" && return 1
+	[ ! $cmd ] && log "UDP Node      : Can't find $(echo $utype | tr a-z A-Z) program, start failed!" && return 1
 	redir_udp=1
 	case $utype in
 		ss|ssr)
@@ -617,7 +614,7 @@ start_udp(){
 
 start_yb(){
 	cmd=$(f_bin $ytype)
-	[! -x  $cmd  ] && log "Y2B Node       : Can't find $(echo $ytype | tr a-z A-Z) program, start failed!" && return 1
+	[ ! $cmd ] && log "Y2B Node       : Can't find $(echo $ytype | tr a-z A-Z) program, start failed!" && return 1
 	[ $NF_YB ] && CONFIG_YB_FILE=$CONFIG_YB_FILE-nf
 	[ $CU_YB ] && CONFIG_YB_FILE=$CONFIG_YB_FILE-cu
 	[ $TG_YB ] && CONFIG_YB_FILE=$CONFIG_YB_FILE-tg
@@ -656,7 +653,7 @@ start_yb(){
 
 start_nf(){
 	cmd=$(f_bin $ntype)
-	[! -x  $cmd  ] && log "NF Node         : Can't find $(echo $ntype | tr a-z A-Z) program, start failed!" && return 1
+	[ ! $cmd ] && log "NF Node         : Can't find $(echo $ntype | tr a-z A-Z) program, start failed!" && return 1
 	[ $CU_NF ] && CONFIG_NF_FILE=$CONFIG_NF_FILE-cu
 	[ $TG_NF ] && CONFIG_NF_FILE=$CONFIG_NF_FILE-tg
 	CONFIG_NF_FILE=$CONFIG_NF_FILE.json
@@ -694,7 +691,7 @@ start_nf(){
 
 start_cu(){
 	cmd=$(f_bin $ctype)
-	[! -x  $cmd  ] && log "Custom Node : Can't find $(echo $ctype | tr a-z A-Z) program, start failed!" && return 1
+	[ ! $cmd ] && log "Custom Node : Can't find $(echo $ctype | tr a-z A-Z) program, start failed!" && return 1
 	[ $TG_CU ] && CONFIG_CU_FILE=$CONFIG_CU_FILE-tg
 	CONFIG_CU_FILE=$CONFIG_CU_FILE.json
 	gen_config_file $CU_SERVER 4
@@ -731,7 +728,7 @@ start_cu(){
 
 start_tg(){
 	cmd=$(f_bin $gtype)
-	[! -x  $cmd  ] && log "TG Node        : Can't find $(echo $gtype | tr a-z A-Z) program, start failed!" && return 1
+	[ ! $cmd ] && log "TG Node        : Can't find $(echo $gtype | tr a-z A-Z) program, start failed!" && return 1
 	gen_config_file $TG_SERVER 5
 	redir_tg=1
 	case $gtype in
@@ -928,17 +925,16 @@ gen_dns(){
 
 	smartdns_flag=1
 	mkdir -p /tmp/dnsmasq.d $SDNS $DNS_DIR
-	cat >$DNS_T <<-EOF
-		force-AAAA-SOA yes
-		speed-check-mode none
-		dualstack-ip-selection yes
-		cache-size 0
-		cache-persist no
-		log-level fatal
-		log-file $LOG
-		bind :5335 -group a
-		bind :5336 -group i -no-rule-soa
-	EOF
+	cat > $DNS_T <<EOF
+force-AAAA-SOA yes
+speed-check-mode none
+cache-persist no
+cache-size 0
+log-level fatal
+log-file $LOG
+bind :5335 -group a
+bind :5336 -group i -no-rule-soa
+EOF
 	if [ $dns_mode = 0 ];then
 		echo $doh | sed 's/,/\n/g' | sed -e 's/^/server-https /g' -e 's/$/ -group a -exclude-default-group/g' >> $DNS_T
 		for i in $dns;do echo "server-tcp $i -group b -exclude-default-group" >> $DNS_T;done
@@ -1012,10 +1008,10 @@ gen_dns(){
 		gfw|oversea)port=5336;;
 		*)port=5337;;
 	esac
-	cat >$DNS_FILE <<-EOF
-		no-resolv
-		server=127.0.0.1#$port
-	EOF
+	cat > $DNS_FILE <<EOF
+no-resolv
+server=127.0.0.1#$port
+EOF
 	if [ $run_mode = oversea ];then
 		awk '!/^$/&&!/^#/{printf("server=/%s/'"127.0.0.1#5335"'\n",$0)}' $T_FILE/oversea.list > $DNS_DIR/oversea.conf
 		[ "$doh_t" ] && for i in $doh_t;do echo "server=/$i/127.0.0.1#5335" >> $DNS_DIR/oversea.conf;done
@@ -1101,9 +1097,7 @@ gen_dns(){
 		[ $run_mode = all -a "$doh_l_t" ] && for i in $doh_l_t;do echo "server=/$i/127.0.0.1#5336" > $DNS_DIR/white.conf;done
 		if [ -s $T_FILE/white.list ];then
 			cp -f $T_FILE/white.list $O
-			sed -i "s/\r//g" $O
-			D=$(cat $O)
-			for i in $D;do
+			for i in $(cat $O);do
 				sed -i -e "/\/$i\//d" -e "/\.$i\//d" $DNS_DIR/black.conf 2>/dev/null
 				sed -i -e "/\/$i\//d" -e "/\.$i\//d" $CON_T 2>/dev/null
 			done
@@ -1145,7 +1139,9 @@ c_cron(){
 }
 
 add_cron(){
-
+	if ! grep -q $LOG $CRON_FILE;then
+		echo "0 1 * * * rm -f $LOG" >> $CRON_FILE
+	fi
 	if [ $(uci_get_by_type server_subscribe auto_update 0) = 1 ];then
 		B=1
 		if ! grep -wq "$(uci_get_by_type server_subscribe auto_update_time 6) \* \* \* $BIN_DIR/update" $CRON_FILE;then
@@ -1171,7 +1167,7 @@ add_cron(){
 start_local(){
 	type=$(uci_get_by_name $SO_SERVER type)
 	[ $type = ss -o $type = ssr ] && cmd=$(f_bin $type-local) || cmd=$(f_bin $type)
-	[! -x  $cmd  ] && log "Socks5 Node : Can't find $(echo $type | tr a-z A-Z) program, start failed!" && return 1
+	[ ! $cmd ] && log "Socks5 Node : Can't find $(echo $type | tr a-z A-Z) program, start failed!" && return 1
 	socks5_port=$(uci_get_by_type socks5_proxy local_port 1080)
 	gen_config_file $SO_SERVER 6
 	local_enable=1
@@ -1215,20 +1211,20 @@ EOF
 			sed -i "s@0.0.0.0\",@0.0.0.0\",\n\"plugin\":\"$plugin\",\n\"plugin_opts\":\"$(uci_get_by_name $1 plugin_opts)\",@" $3
 		fi
 	else
-		cat <<-EOF >$3
-			{
-			"server":"0.0.0.0",
-			"server_port":$port,
-			"password":"$pass",
-			"timeout":$timeout,
-			"method":"$(uci_get_by_name $1 encrypt_method)",
-			"protocol":"$(uci_get_by_name $1 protocol)",
-			"protocol_param":"$(uci_get_by_name $1 protocol_param)",
-			"obfs":"$(uci_get_by_name $1 obfs)",
-			"obfs_param":"$(uci_get_by_name $1 obfs_param)",
-			"fast_open":$fast
-			}
-		EOF
+		cat >$3 <<EOF
+{
+"server":"0.0.0.0",
+"server_port":$port,
+"password":"$pass",
+"timeout":$timeout,
+"method":"$(uci_get_by_name $1 encrypt_method)",
+"protocol":"$(uci_get_by_name $1 protocol)",
+"protocol_param":"$(uci_get_by_name $1 protocol_param)",
+"obfs":"$(uci_get_by_name $1 obfs)",
+"obfs_param":"$(uci_get_by_name $1 obfs_param)",
+"fast_open":$fast
+}
+EOF
 	fi
 }
 
@@ -1238,7 +1234,7 @@ run_server(){
 	[ $server_count = 1 ] && iptables-save -t filter | grep -q BYBASS-S-RULE || iptables -N BYBASS-S-RULE && iptables -I INPUT -j BYBASS-S-RULE
 	type=$(uci_get_by_name $1 type ssr)
 	[ $type = ss -o $type = ssr ] && cmd=$(f_bin $type-server) || cmd=$(which microsocks)
-	[ !  -x $cmd ] && log "By SSR server    : Can't find $cmd program, start failed!" && return 1
+	[ ! $cmd ] && log "By server    : Can't find $cmd program, start failed!" && return 1
 	port=$(uci_get_by_name $1 server_port)
 	pass=$(uci_get_by_name $1 password)
 	name=bypass-server_$server_count
@@ -1246,25 +1242,22 @@ run_server(){
 		ss|ssr)timeout=$(uci_get_by_name $1 timeout 60);gen_service_file $1 $type /var/etc/$name.json
 			$cmd -c /var/etc/$name.json -u >/dev/null 2>&1 &
 			[ $type = ss ] && name=Shadowsocks || name=ShadowsocksR
-			log "By SSR server    : $name Server$server_count Started!"
-			;;
+			log "By server    : $name Server$server_count Started!";;
 		*)
 		if [ $(uci_get_by_name $1 auth_enable 0) = 1 ];then
 			username=$(uci_get_by_name $1 username)
 			if [ "$username" ];then
 				param="$([ $(uci_get_by_name $1 auth_once 0) = 1 ] && echo -1) -u $username -P $pass"
 			else
-				log "By SSR server    : Socks5 User and pass must be used together!"
+				log "By server    : Socks5 User and pass must be used together!"
 				return 1
 			fi
 		fi
 		$cmd -p $port $param $name >/dev/null 2>&1 &
-		log "By SSR server    : Socks5 Server$server_count Started!"
-		;;
+		log "By server    : Socks5 Server$server_count Started!";;
 	esac
-	iptables -t filter -A BYBASS-RULE -p tcp --dport $port -j ACCEPT
-	iptables -t filter -A BYBASS-RULE -p udp --dport $port -j ACCEPT
-	return 0
+	iptables -A BYBASS-S-RULE -p tcp --dport $port -j ACCEPT
+	iptables -A BYBASS-S-RULE -p udp --dport $port -j ACCEPT
 }
 
 gen_serv_include(){
@@ -1274,12 +1267,12 @@ gen_serv_include(){
 		iptables-save -t filter | grep BYBASS-S-RULE | sed -e "s/^-A INPUT/-I INPUT/"
 		echo 'COMMIT'
 	}
-	cat <<-EOF >>$FWI
-		iptables-save -c | grep -v BYBASS-S-RULE | iptables-restore -c
-		iptables-restore -n <<-EOT
-		$(extract_rules)
-		EOT
-	EOF
+	cat >> $FWI <<EOF
+iptables-save -c | grep -v BYBASS-S-RULE | iptables-restore -c
+iptables-restore -n <<-EOT
+$(extract_rules)
+EOT
+EOF
 }
 
 start_server(){
@@ -1299,7 +1292,7 @@ start_monitor(){
 
 start(){
 	set_lock
-	if [ -n "$switch_server" ];then
+	if [ $switch_server ];then
 		GLOBAL_SERVER=$switch_server
 		switch_enable=1
 	fi
@@ -1343,17 +1336,17 @@ stop(){
 		rm -rf $SDNS $PID $LOC
 		/etc/init.d/dnsmasq restart >/dev/null 2>&1
 	elif [ -s $DNS_T ];then
-		cat > $DNS_T <<-EOF
-			speed-check-mode none
-			cache-persist no
-			cache-size 0
-			log-level fatal
-			log-file $LOG
-			bind :5335
-			bind :5336
-			bind :5337
-                         $([ $dns_mode_l = 0 ] && echo 223.5.5.5 223.6.6.6 | sed 's/ /\n/g' | sed 's/^/server /g' || echo $REF | sed 's/ /\n/g' | sed 's/^/server /g')
-		EOF
+		cat > $DNS_T <<EOF
+speed-check-mode none
+cache-persist no
+cache-size 0
+log-level fatal
+log-file $LOG
+bind :5335
+bind :5336
+bind :5337
+$([ $dns_mode_l = 0 ] && echo 223.5.5.5 223.6.6.6 | sed 's/ /\n/g' | sed 's/^/server /g' || echo $REF | sed 's/ /\n/g' | sed 's/^/server /g')
+EOF
 		$(which smartdns) -c $DNS_T
 		r=1
 		while ! ps -w | grep smartdns | grep -qv grep;do
@@ -1365,18 +1358,10 @@ stop(){
 	unset_lock
 }
 
-restart(){
-	[ -f $LOC ] && exit 1
-	touch $LOC
-	STATUS=N
-	stop
-	start
-}
 boot(){
 	echo '#!/bin/sh' > $FWI
 	log "boot！"
 	mkdir -p /var/run /var/lock /var/log /tmp/dnsmasq.d $DNS_DIR $K $VAR
-	touch $LOCK
 	ulimit -n 65535
 	start
 }
