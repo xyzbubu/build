@@ -1,35 +1,3 @@
-/**
- *  Argon is a clean HTML5 theme for LuCI. It is based on luci-theme-material and Argon Template
- *
- *  luci-theme-argon
- *      Copyright 2019 Jerrykuku <jerrykuku@qq.com>
- *
- *  Have a bug? Please create an issue here on GitHub!
- *      https://github.com/jerrykuku/luci-theme-argon/issues
- *
- *  luci-theme-bootstrap:
- *      Copyright 2008 Steven Barth <steven@midlink.org>
- *      Copyright 2008 Jo-Philipp Wich <jow@openwrt.org>
- *      Copyright 2012 David Menting <david@nut-bolt.nl>
- *
- *  MUI:
- *      https://github.com/muicss/mui
- *
- *  luci-theme-material:
- *      https://github.com/LuttyYang/luci-theme-material/
- *
- *  Agron Theme
- *	    https://demos.creative-tim.com/argon-dashboard/index.html
- *
- *  Login background
- *      https://unsplash.com/
- *
- *  Licensed to the public under the Apache License 2.0
- */
-
-/*
- *  Font generate by Icomoon<icomoon.io>
- */
 (function ($) {
 	$(".main > .loading").hide();
     $(".main > .loading").fadeOut();

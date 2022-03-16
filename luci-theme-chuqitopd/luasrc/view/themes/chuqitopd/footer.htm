@@ -1,35 +1,3 @@
-<%#
-	opentopd is a clean HTML5 theme for LuCI. It is based on luci-theme-bootstrap and MUI
-
-	luci-theme-opentopd
-    Copyright 2020 sirpdboy <sirpdboy@qq.com>
-	Have a bug? Please create an issue here on GitHub!
-	https://github.com/sirpdboy/luci-theme-opentopd/issues
-     
-	luci-theme-bootstrap:
-	Copyright 2015-2017 Lutty Yang <lutty@wcan.in>
-	Copyright 2008 Steven Barth <steven@midlink.org>
-	Copyright 2008-2016 Jo-Philipp Wich <jow@openwrt.org>
-	Copyright 2012 David Menting <david@nut-bolt.nl>
-
-	MUI:
-	https://github.com/muicss/mui
-
-	luci-theme-material:
-	https://github.com/LuttyYang/luci-theme-material/
-
-	Agron Theme
-	https://demos.creative-tim.com/argon-dashboard/index.html
-
-	Login background
-	https://unsplash.com/
-
-	Font generate by Icomoon
-	https://icomoon.io/
-
-	Licensed to the public under the Apache License 2.0
--%>
-
 <%
 	local ver = require "luci.version"
 	local disp = require "luci.dispatcher"
@@ -41,8 +9,7 @@
                 </div>
                 <footer class="mobile-hide">
 
-		<a class="luci-link" href="https://github.com/openwrt/luci">Powered by <%= ver.luciname %>
-			(<%= ver.luciversion %>)</a> /
+
 		<%= ver.distversion %>
                     <% if #categories > 1 then %>
                     <ul class="breadcrumb pull-right" id="modemenu">
