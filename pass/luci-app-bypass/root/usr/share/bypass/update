@@ -53,7 +53,7 @@ if [ "$C" = router ];then
 	fi
 fi
 
-if [ "$C" = gfw -o "$(uci -q get bypass.@global[0].gfw_mode)" = 1 ];then
+if [ "$C" = gfw -o "$(uci -q get bypass.@global[0].gfw_mode)" = 1 -o ! -s $T_FILE/gfw.list ];then
 	if [ $A = Y ];then
 		while ! curl -Lfsm 5 -o /tmp/gfw.b64 https://cdn.jsdelivr.net/gh/sirpdboy/iplist/ip/GFW_List;do
 			sleep 2
