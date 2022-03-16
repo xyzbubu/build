@@ -741,13 +741,15 @@
 
 	<table width="100%" cellspacing="10">
 		<tr><td width="33%"><%:Hostname%></td><td><%=luci.sys.hostname() or "?"%></td></tr>
-		<tr><td width="33%"><%:机器型号%></td><td><%:JITU-Y1%></td></tr>
+		<tr><td width="33%"><%:机器型号%></td><td><%="CYTU-Y1"%></td></tr>
 		<tr><td width="33%"><%:CPU主频%></td><td > <%=luci.sys.exec("cpuinfo")%></td></tr>
 		<tr><td width="33%"><%:CPU温度%></td><td id="cpuwd">-</td></tr>
 		<tr><td width="33%"><%:CPU负载%></td><td id="cpuusage">-</td></tr>
         <tr><td width="33%"><%:RAM Size%></td><td > <%=luci.sys.exec("free -m  | grep Mem | awk '{print $2/1024}'|  awk -F '.' '{print $1}'").."MB"%></td></tr>
-		<tr><td width="33%"><%:Firmware Version%></td><td><%:JITU-TikTok-Y1.0%></td></tr>
-		<tr><td width="33%"><%:Kernel Version%></td><td><%=unameinfo.release or "?"%></td></tr>
+		<tr><td width="33%"><%:Firmware Version%></td><td><%="CYTU-TikTok-Y1.0"%></td></tr>
+
+		<tr><td width="33%"><%:Kernel Version%></td><td><%="5.10.105"%></td></tr>
+
 		<tr><td width="33%"><%:Local Time%></td><td id="localtime">-</td></tr>
 		<tr><td width="33%"><%:Uptime%></td><td id="uptime">-</td></tr>
 		<tr><td width="33%"><%:Load Average%></td><td id="loadavg">-</td></tr>
