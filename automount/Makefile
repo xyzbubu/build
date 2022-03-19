@@ -13,14 +13,16 @@ PKG_NAME:=automount
 PKG_VERSION:=1
 PKG_RELEASE:=37
 PKG_ARCH:=all
+PKG_CONFIG_DEPENDS:=CONFIG_TARGET_ramips
 
 include $(INCLUDE_DIR)/package.mk
 
 define Package/automount
   TITLE:=Mount autoconfig hotplug script.
   MAINTAINER:=Lean
-  DEPENDS:=+block-mount +kmod-fs-exfat +kmod-fs-ext4 +kmod-fs-vfat +libblkid \
-	+kmod-usb-storage +kmod-usb-storage-extras +!TARGET_ramips:kmod-usb-storage-uas +ntfs3-mount
+  DEPENDS:=+block-mount +kmod-fs-exfat0 +kmod-fs-ext4 +kmod-fs-vfat +ntfs-3g \
+	+kmod-usb-storage +kmod-usb-storage-extras +!TARGET_ramips:kmod-usb-storage-uas
+  PKGARCH:=all
 endef
 
 define Package/automount/description
@@ -28,6 +30,7 @@ A usb autoconfig hotplug script.
 endef
 
 define Build/Compile
+	true
 endef
 
 define Package/automount/install

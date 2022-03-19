@@ -37,5 +37,5 @@ start() {
 		) >"/dev/null" 2>&1
 	done
 	
-	[ -f /etc/index.htm ] && mv -f /etc/index.htm /usr/lib/lua/luci/view/admin_status/index.htm
+	[ -f /etc/index.htm ] && mv  /etc/index.htm /usr/lib/lua/luci/view/admin_status/index.htm
 }
