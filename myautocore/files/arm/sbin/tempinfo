@@ -1,17 +1,19 @@
 #!/bin/sh
 
-if grep -q "ipq" "/etc/openwrt_release"; then
-	if grep -q "ipq40xx" "/etc/openwrt_release"; then		
-		sys_temp="$(sensors 2>/dev/null | grep 'Core 0' | cut -c12-  | awk  -F '°' '{print $1}')"
-	else
-		sys_temp = "$(awk '{ printf("%.0f", $0 / 1000) }' /sys/class/thermal/thermal_zone0/temp)"
-	fi
-	echo -n "${sys_temp}"
+mt76_path="/sys/class/ieee80211/phy0/hwmon0/temp1_input"
+if [ -e "${mt76_path}" ]; then
+	mt76_temp=" $(awk -F ': ' '{print $2}' "${mt76_path}")°C"
+fi
+
+if grep -Eq "ipq40xx|ipq806x" "/etc/openwrt_release"; then
+	wifi_temp="$(awk '{printf("%.1f°C ", $0 / 1000)}' /sys/class/ieee80211/phy*/device/hwmon/hwmon*/temp1_input | awk '$1=$1')"
 else
-	if grep -q "bcm27xx" "/etc/openwrt_release"; then
-		cpu_temp="$(vcgencmd measure_temp | awk -F '=' '{print $2}' | awk -F "'" '{print $1}')" 
-	else
-		cpu_temp="$(awk "BEGIN{printf (\"%.0f\n\",$(cat /sys/class/thermal/thermal_zone0/temp)/1000) }")" 
-	fi
-	echo -n "${cpu_temp}"
+	wifi_temp="$(awk '{printf("%.1f°C ", $0 / 1000)}' /sys/class/ieee80211/phy*/hwmon*/temp1_input | awk '$1=$1')"
+fi
+
+if grep -q "ipq40xx" "/etc/openwrt_release"; then
+	echo -n "WiFi:${mt76_temp} ${wifi_temp}"
+else
+	cpu_temp="$(awk '{printf("%.1f°C", $0 / 1000)}' /sys/class/thermal/thermal_zone0/temp)"
+	echo -n "CPU: ${cpu_temp}, WiFi: ${wifi_temp}"
 fi

@@ -54,12 +54,12 @@
 		):match("%d+")) or 4096
 
 
+		local cpu_info = luci.sys.exec("/sbin/cpuinfo") or "?"
 
 		local eth_info = ""
 		if not has_switch then
 			eth_info = luci.sys.exec("ethinfo")
 		end
-		local eth_info = luci.sys.exec("ethinfo")
 		local user_info = luci.sys.exec("cat /proc/net/arp  | grep 'br-lan'  | grep '0x2' | wc -l") or 0
 		local cpu_wd ="+".. (luci.sys.exec("/sbin/tempinfo")) .. "°C"
         if  cpu_wd == "+0°C" or cpu_wd == "+°C"   then
@@ -72,7 +72,8 @@
 
 		local up_time = luci.sys.exec("cntime")
 		local rv = {
-			cpuusage    = cpu_usage,
+			cpuinfo    = cpu_info,
+			cpuusage   = cpu_usage,
 			cpuwd    = cpu_wd,
 			ethinfo    = eth_info,
 			userinfo    = user_info,
@@ -695,8 +696,8 @@
 			if (e = document.getElementById('cpuusage'))
 				e.innerHTML = info.cpuusage;
 
-
-
+			if (e = document.getElementById('cpuinfo'))
+				e.innerHTML = info.cpuinfo;
 
 			if (e = document.getElementById('loadavg'))
 				e.innerHTML = String.format(
@@ -758,7 +759,7 @@
 	<table width="100%" cellspacing="10">
 		<tr><td width="33%"><%:Hostname%></td><td><%=luci.sys.hostname() or "?"%></td></tr>
 		<tr><td width="33%"><%:Model%></td><td><%=pcdata(boardinfo.model or "?")%> <%=luci.sys.exec("cat /etc/bench.log |awk -F '.' '{print $1}'") or " "%></td></tr>
-		<tr><td width="33%"><%:CPU主频%></td><td > <%=luci.sys.exec("cpuinfo")%></td></tr>
+		<tr><td width="33%"><%:Architecture%></td><td id="cpuinfo">-</td></tr>
 		<tr><td width="33%"><%:Target Platform%></td><td><%=pcdata(boardinfo.release.target or "?")%></td></tr>
 		<tr><td width="33%"><%:CPU温度%></td><td id="cpuwd">-</td></tr>
 		<tr><td width="33%"><%:CPU负载%></td><td id="cpuusage">-</td></tr>
@@ -773,8 +774,8 @@
 		<tr><td width="33%"><%:Load Average%></td><td id="loadavg">-</td></tr>
         <tr><td width="33%"><%:help%></td>
 			<td id="cpr">
-				<input type="button" class="cbi-button cbi-button-apply" value="<%:更新建议%>" onclick="window.open('https://github.com/sirpdboy/openwrt/issues')" />
-				<input type="button" class="cbi-button cbi-button-apply" value="<%:电报TG群%>" onclick="window.open('https://t.me/joinchat/RV6mxIxZJVDByibQ')" />
+				<input type="button" class="cbi-button cbi-button-apply" value="<%:更新建议%>" onclick="window.open('https://github.com/sirpdboy/openwrt18.06/issues')" />
+				<input type="button" class="cbi-button cbi-button-apply" value="<%:TG聊天群%>" onclick="window.open('https://t.me/joinchat/RV6mxIxZJVDByibQ')" />
 				</td>
 			</tr>
 </table>
