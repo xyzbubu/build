@@ -58,10 +58,6 @@ uci commit upnpd
 uci set dockerd.@globals[0].auto_start='0'
 uci commit dockerd
 /etc/init.d/dockerd stop
-/etc/init.d/network restart
-/etc/init.d/turboacc restart
-/etc/init.d/dhcp restart
-/etc/init.d/system restart
 /etc/init.d/ttyd restart
 /etc/init.d/turboacc restart
 rm -f /usr/lib/lua/luci/view/admin_status/index/ddns.htm
@@ -71,7 +67,6 @@ rm -f /usr/lib/lua/luci/view/admin_status/index/upnp.htm
 sed -i 's/\"services\"/\"nas\"/g' /usr/lib/lua/luci/controller/aria2.lua
 sed -i 's/services/nas/g' /usr/lib/lua/luci/view/aria2/overview_status.htm
 sed -i 's/\"services\"/\"control\"/g' /usr/lib/lua/luci/controller/hd_idle.lua
-sed -i 's/\"services\"/\"control\"/g' /usr/lib/lua/luci/controller/samba.lua
 
 sed -i 's/\"services\"/\"control\"/g' /usr/lib/lua/luci/controller/samba4.lua
 sed -i 's/\"nas\"/\"control\"/g' /usr/lib/lua/luci/controller/cifsd.lua
@@ -111,7 +106,6 @@ echo "DISTRIB_DESCRIPTION='OpenWrt '" >> /etc/openwrt_release
 sed -i '/log-facility/d' /etc/dnsmasq.conf
 echo "log-facility=/dev/null" >> /etc/dnsmasq.conf
 
-sed -i 's/cbi.submit\"] = true/cbi.submit\"] = \"1\"/g' /usr/lib/lua/luci/dispatcher.lua
 echo 'hsts=0' > /root/.wgetrc
 rm -rf /tmp/luci-*
 
