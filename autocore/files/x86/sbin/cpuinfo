@@ -31,5 +31,6 @@ elif grep -Eq "ipq|mt7622" "/etc/openwrt_release"; then
 elif [ -z "${cpu_freq}" ]; then
 	echo -n "${cpu_arch} x ${cpu_cores} "
 else
-	echo -n "${cpu_arch} x ${cpu_cores} (${big_cpu_freq} ${cpu_freq} ) "
+
+	echo -n "${cpu_arch} x ${cpu_cores} (${big_cpu_freq}${cpu_freq})"
 fi
