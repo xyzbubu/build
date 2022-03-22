@@ -23,9 +23,9 @@ set dhcp.@dnsmasq[0].min_ttl='3600'
 set dhcp.@dnsmasq[0].filter_aaaa='0'
 set dhcp.@dnsmasq[0].localservice='0'
 set dhcp.@dnsmasq[0].nonwildcard='0'
-set dhcp.lan.ra='server'
 set dhcp.lan.ndp=''
-set dhcp.lan.dhcpv6=''
+set dhcp.lan.ra='hybrid'
+set dhcp.lan.dhcpv6='hybrid'
 set dhcp.lan.ignore='0'
 set dhcp.lan.ra_management='1'
 set dhcp.lan.ra_default='1'
@@ -55,9 +55,6 @@ uci commit fstab
 uci set upnpd.@upnpd[0].enabled='0' 
 uci set upnpd.@upnpd[0].igdv1='1' 
 uci commit upnpd 
-uci set dockerd.@globals[0].auto_start='0'
-uci commit dockerd
-/etc/init.d/dockerd stop
 /etc/init.d/ttyd restart
 /etc/init.d/turboacc restart
 rm -f /usr/lib/lua/luci/view/admin_status/index/ddns.htm
