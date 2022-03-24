@@ -1,6 +1,7 @@
 <%#
  Copyright 2008 Steven Barth <steven@midlink.org>
  Copyright 2008-2011 Jo-Philipp Wich <jow@openwrt.org>
+ Copyright 2021-2022 sirpdboy
  Licensed to the public under the Apache License 2.0.
 -%>
 
@@ -9,19 +10,10 @@
 	local util = require "luci.util"
 	local stat = require "luci.tools.status"
 	local ver = require "luci.version"
-	local uci = require("luci.model.uci").cursor()
 
 	local has_ipv6 = fs.access("/usr/sbin/ip6tables")
 	local has_dhcp = fs.access("/etc/config/dhcp")
 	local has_wifi = ((fs.stat("/etc/config/wireless", "size") or 0) > 0)
-	local has_switch = false
-
-	uci:foreach("network", "switch",
-			function(s)
-				has_switch = true
-				return false
-			end)
-
 	local sysinfo = luci.util.ubus("system", "info") or { }
 	local boardinfo = luci.util.ubus("system", "board") or { }
 	local unameinfo = nixio.uname() or { }
@@ -54,13 +46,9 @@
 		):match("%d+")) or 4096
 
 
-		local cpu_info = luci.sys.exec("/sbin/cpuinfo") or "?"
 
-		local eth_info = ""
-		if not has_switch then
-			eth_info = luci.sys.exec("ethinfo")
-		end
-		local user_info = luci.sys.exec("cat /proc/net/arp  | grep 'br-lan'  | grep '0x2' | wc -l") or 0
+		local eth_info = luci.sys.exec("ethinfo")
+		local user_info = luci.sys.exec("cat /proc/net/arp | grep 'br-lan' | grep '0x2' | wc -l") or "0"
 		local cpu_wd ="+".. (luci.sys.exec("/sbin/tempinfo")) .. "°C"
         if  cpu_wd == "+0°C" or cpu_wd == "+°C"   then
 		    cpu_wd= "+0°C （无温控或是虚拟机）"
@@ -72,7 +60,6 @@
 
 		local up_time = luci.sys.exec("cntime")
 		local rv = {
-			cpuinfo    = cpu_info,
 			cpuusage   = cpu_usage,
 			cpuwd    = cpu_wd,
 			ethinfo    = eth_info,
@@ -206,7 +193,7 @@
 		});
 	}
 
-	XHR.poll(5, '<%=REQUEST_URI%>', { status: 1 },
+	XHR.poll(1, '<%=REQUEST_URI%>', { status: 1 },
 		function(x, info)
 		{
 			if (!(npoll++ % 5))
@@ -696,8 +683,6 @@
 			if (e = document.getElementById('cpuusage'))
 				e.innerHTML = info.cpuusage;
 
-			if (e = document.getElementById('cpuinfo'))
-				e.innerHTML = info.cpuinfo;
 
 			if (e = document.getElementById('loadavg'))
 				e.innerHTML = String.format(
@@ -758,8 +743,8 @@
 
 	<table width="100%" cellspacing="10">
 		<tr><td width="33%"><%:Hostname%></td><td><%=luci.sys.hostname() or "?"%></td></tr>
-		<tr><td width="33%"><%:Model%></td><td><%=pcdata(boardinfo.model or "?")%> <%=luci.sys.exec("cat /etc/bench.log |awk -F '.' '{print $1}'") or " "%></td></tr>
-		<tr><td width="33%"><%:CPU Info%></td><td id="cpuinfo">-</td></tr>
+		<tr><td width="33%"><%:Model%></td><td><%=pcdata(boardinfo.model or "?")%></td></tr>
+		<tr><td width="33%"><%:CPU Info%></td><td><%=luci.sys.exec("/sbin/cpuinfo") or "?"%>  <%=luci.sys.exec("cat /etc/bench.log |awk -F '.' '{print $1}'") or " "%></td></tr>
 		<tr><td width="33%"><%:Architecture%></td><td><%=pcdata(boardinfo.release.target or "?")%></td></tr>
 		<tr><td width="33%"><%:CPU温度%></td><td id="cpuwd">-</td></tr>
 		<tr><td width="33%"><%:CPU负载%></td><td id="cpuusage">-</td></tr>
@@ -800,16 +785,12 @@
 	</table>
 </fieldset>
 <% end %>
-
-<% if not has_switch then %>
 <fieldset class="cbi-section">
 	<legend><%:Interfaces%></legend>
 
 	<table width="100%" cellspacing="10" id="ethinfo">
 	</table>
 </fieldset>
-<% end %>
-
 <fieldset class="cbi-section">
 	<legend><%:Network%></legend>
 

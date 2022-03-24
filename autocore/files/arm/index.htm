@@ -15,6 +15,7 @@
 	local has_ipv6 = fs.access("/usr/sbin/ip6tables")
 	local has_dhcp = fs.access("/etc/config/dhcp")
 	local has_wifi = ((fs.stat("/etc/config/wireless", "size") or 0) > 0)
+	local has_temp = fs.access("/sbin/tempinfo")
 	local has_switch = false
 	
 	uci:foreach("network", "switch",
@@ -53,8 +54,8 @@
 			"sysctl -n -e net.nf_conntrack_max net.ipv4.netfilter.ip_conntrack_max"
 		):match("%d+")) or 4096
 
-		local user_info = luci.sys.exec("cat /proc/net/arp | grep 'br-lan' | grep '0x2' | wc -l")
-		local cpu_usage = luci.sys.exec("top -n1 | awk '/^CPU/ { printf(\"%d%%\", 100 - $8) }'") or "6%"
+		local user_info = luci.sys.exec("cat /proc/net/arp | grep 'br-lan' | grep '0x2' | wc -l") or "0"
+		local cpu_usage = (luci.sys.exec("expr 100 - $(top -n 1 | grep 'CPU:' | awk -F '%' '{print$4}' | awk -F ' ' '{print$2}')") or "6") .. "%"
 
 		local eth_info = luci.sys.exec("ethinfo")
 
@@ -747,7 +748,7 @@
 		<tr><td width="33%"><%:CPU Info%></td><td><%=luci.sys.exec("/sbin/cpuinfo") or ""%> <%=luci.sys.exec("cat /etc/bench.log |awk -F '.' '{print $1}'") or ""%></td></tr>
 		<tr><td width="33%"><%:Architecture%></td><td><%=pcdata(boardinfo.release.target or "?")%></td></tr>
 		<% if has_temp then %>
-		<tr><td width="33%"><%:CPU Temperature%></td><td><%=luci.sys.exec("/sbin/tempinfo")or "0"%></td></tr>
+		<tr><td width="33%"><%:CPU Temperature%></td><td><%=luci.sys.exec("/sbin/tempinfo")%></td></tr>
 		<% end %>
 		<tr><td width="33%"><%:CPU负载%></td><td id="cpuusage">-</td></tr>
         <tr><td width="33%"><%:RAM Size%></td><td > <%=luci.sys.exec("free -m  | grep Mem | awk '{print $2/1024}'|  awk -F '.' '{print $1}'").."MB"%></td></tr>
