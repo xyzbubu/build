@@ -376,7 +376,7 @@ local function processData(szType,content)
 end
 
 local function curl(url)
-	local stdout=SYS.exec('curl --retry 3 -m 10 -LfsA "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36" "'..url..'"')
+	local stdout=SYS.exec('curl --retry 3 -Lfsm 10 "'..url..'"')
 	return trim(stdout)
 end
 
@@ -393,6 +393,7 @@ end
 local function parse_link()
 	local i=0
 	if proxy=='0' then
+		log('服务暂停中')
 		SYS.init.stop(name)
 	end
 	for k,url in ipairs(subscribe_url) do

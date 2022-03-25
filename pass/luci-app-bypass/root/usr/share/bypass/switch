@@ -1,9 +1,6 @@
 #!/bin/sh
 NAME=bypass
 S=/usr/share/$NAME
-D=$S/downbin
-X=/tmp/$NAME/bin/xray
-P=/tmp/$NAME/bin/xray-plugin
 
 uci_get_by_name(){
 	w=$(uci -q get $NAME.$1.$2)
@@ -35,17 +32,13 @@ get_ip(){
 
 f_bin(){
 	w=
-	if [ $1 = vmess -o $1 = vless ];then
-		[ -x $X ] || $D --down 1 0 1
-		[ -x $X ] && w=$X
-	else
-		case $1 in
-			ss)w=$(which ss-local);;
-			ssr)w=$(which ssr-local);;
-			trojan)w=$(which trojan-plus);;
-			naiveproxy)w=$(which naive);;
-		esac
-	fi
+	case $1 in
+		ss)w=$(which ss-local);;
+		ssr)w=$(which ssr-local);;
+		vmess|vless)w=$(which xray);;
+		trojan)w=$(which trojan-plus);;
+		naiveproxy)w=$(which naive);;
+	esac
 	echo $w
 }
 
@@ -74,13 +67,8 @@ gen_config_file(){
 }
 EOF
 			plugin=$(uci_get_by_name $1 plugin)
-			if [ $plugin ];then
-				[ $plugin = obfs-local -a "$(which obfs-local)" ] && pat=$(which obfs-local)
-				if [ $plugin = xray-plugin ];then
-					[ -x $P ] || $D --down 0 1 1
-					[ -x $P ] && pat=$P
-				fi
-				[ $pat ] && sed -i "s@$ip\",@$ip\",\n\"plugin\":\"$pat\",\n\"plugin_opts\":\"$(uci_get_by_name $1 plugin_opts)\",@" $J
+			if which $plugin >/dev/null 2>&1;then
+				sed -i "s@$ip\",@$ip\",\n\"plugin\":\"$plugin\",\n\"plugin_opts\":\"$(uci_get_by_name $1 plugin_opts)\",@" $J
 			fi;;
 		ssr)
 			cat <<-EOF > $J

@@ -190,7 +190,7 @@ EOF
 start_dns(){
 	$(which smartdns) -c $DNS_T
 	case $dns_mode in
-		0)doh=$(echo $doh | sed 's/,/\n/g' | sed -e 's/104.16.249.249/1.1.1.1/' -e 's/104.16.248.249/1.0.0.1/' -e 's/ .*//');log "SmartDNS      : Use $(echo $doh | sed 's/ /,/g') to start on DoH mode (Foreign DNS)";;
+		0)doh=$(echo $doh | sed 's/,/\n/g' | sed -e 's/162.159.36.1/1.1.1.1/' -e 's/162.159.46.1/1.0.0.1/' -e 's/ .*//');log "SmartDNS      : Use $(echo $doh | sed 's/ /,/g') to start on DoH mode (Foreign DNS)";;
 		1)dns=$(echo $dns | sed 's/ /,/g');log "SmartDNS      : Use $dns to start on TCP mode (Foreign DNS)";;
 	esac
 	if [ "$YB" ];then
@@ -789,7 +789,7 @@ gen_dns(){
 
 	if [ $dns_mode = 0 ];then
 		case $dns in
-			1)doh="https://104.16.249.249/dns-query -tls-host-verify cloudflare-dns.com -http-host cloudflare-dns.com,https://104.16.248.249/dns-query -tls-host-verify cloudflare-dns.com -http-host cloudflare-dns.com";dns="104.16.249.249 104.16.248.249 1.1.1.1 1.0.0.1";;
+			1)doh="https://162.159.36.1/dns-query -tls-host-verify cloudflare-dns.com -http-host cloudflare-dns.com,https://162.159.46.1/dns-query -tls-host-verify cloudflare-dns.com -http-host cloudflare-dns.com";dns="162.159.36.1 162.159.46.1 1.1.1.1 1.0.0.1";;
 			2)doh="https://8.8.8.8/dns-query -tls-host-verify dns.google -http-host dns.google,https://8.8.4.4/dns-query -tls-host-verify dns.google -http-host dns.google";dns="8.8.8.8 8.8.4.4";;
 			3)doh="https://9.9.9.9/dns-query -tls-host-verify *.quad9.net -http-host dns.quad9.net,https://149.112.112.112/dns-query -tls-host-verify *.quad9.net -http-host dns.quad9.net";dns="9.9.9.9 149.112.112.112";;
 			4)doh="https://9.9.9.11/dns-query -tls-host-verify *.quad9.net -http-host dns11.quad9.net,https://149.112.112.11/dns-query -tls-host-verify *.quad9.net -http-host dns11.quad9.net";dns="9.9.9.11 149.112.112.11";;
@@ -802,7 +802,7 @@ gen_dns(){
 				*)ipset del over_wan_ac $i 2>/dev/null || ipset add over_wan_ac $i nomatch 2>/dev/null;;
 			esac
 		done
-		[ "$dns" = "104.16.249.249 104.16.248.249 1.1.1.1 1.0.0.1" ] && dns="1.1.1.1 1.0.0.1"
+		[ "$dns" = "162.159.36.1 162.159.46.1 1.1.1.1 1.0.0.1" ] && dns="1.1.1.1 1.0.0.1"
 	else
 		case $dns in
 			1)dns="1.1.1.1,1.0.0.1";;
@@ -826,7 +826,7 @@ gen_dns(){
 
 	if [ "$YB" -a $dns_mode_y = 0 ];then
 		case $dns_yb in
-			1)doh_yb="https://104.16.249.249/dns-query -tls-host-verify cloudflare-dns.com -http-host cloudflare-dns.com,https://104.16.248.249/dns-query -tls-host-verify cloudflare-dns.com -http-host cloudflare-dns.com";dns_yb="104.16.249.249 104.16.248.249";;
+			1)doh_yb="https://162.159.36.1/dns-query -tls-host-verify cloudflare-dns.com -http-host cloudflare-dns.com,https://162.159.46.1/dns-query -tls-host-verify cloudflare-dns.com -http-host cloudflare-dns.com";dns_yb="162.159.36.1 162.159.46.1";;
 			2)doh_yb="https://8.8.8.8/dns-query -tls-host-verify dns.google -http-host dns.google,https://8.8.4.4/dns-query -tls-host-verify dns.google -http-host dns.google";dns_yb="8.8.8.8 8.8.4.4";;
 			3)doh_yb="https://9.9.9.9/dns-query -tls-host-verify *.quad9.net -http-host dns.quad9.net,https://149.112.112.112/dns-query -tls-host-verify *.quad9.net -http-host dns.quad9.net";dns_yb="9.9.9.9 149.112.112.112";;
 			4)doh_yb="https://9.9.9.11/dns-query -tls-host-verify *.quad9.net -http-host dns11.quad9.net,https://149.112.112.11/dns-query -tls-host-verify *.quad9.net -http-host dns11.quad9.net";dns_yb="9.9.9.11 149.112.112.11";;
@@ -852,7 +852,7 @@ gen_dns(){
 
 	if [ "$NF" -a $dns_mode_n = 0 ];then
 		case $dns_nf in
-			1)doh_nf="https://104.16.249.249/dns-query -tls-host-verify cloudflare-dns.com -http-host cloudflare-dns.com,https://104.16.248.249/dns-query -tls-host-verify cloudflare-dns.com -http-host cloudflare-dns.com";dns_nf="104.16.249.249 104.16.248.249";;
+			1)doh_nf="https://162.159.36.1/dns-query -tls-host-verify cloudflare-dns.com -http-host cloudflare-dns.com,https://162.159.46.1/dns-query -tls-host-verify cloudflare-dns.com -http-host cloudflare-dns.com";dns_nf="162.159.36.1 162.159.46.1";;
 			2)doh_nf="https://8.8.8.8/dns-query -tls-host-verify dns.google -http-host dns.google,https://8.8.4.4/dns-query -tls-host-verify dns.google -http-host dns.google";dns_nf="8.8.8.8 8.8.4.4";;
 			3)doh_nf="https://9.9.9.9/dns-query -tls-host-verify *.quad9.net -http-host dns.quad9.net,https://149.112.112.112/dns-query -tls-host-verify *.quad9.net -http-host dns.quad9.net";dns_nf="9.9.9.9 149.112.112.112";;
 			4)doh_nf="https://9.9.9.11/dns-query -tls-host-verify *.quad9.net -http-host dns11.quad9.net,https://149.112.112.11/dns-query -tls-host-verify *.quad9.net -http-host dns11.quad9.net";dns_nf="9.9.9.11 149.112.112.11";;
@@ -878,7 +878,7 @@ gen_dns(){
 
 	if [ "$CU" -a $dns_mode_c = 0 ];then
 		case $dns_cu in
-			1)doh_cu="https://104.16.249.249/dns-query -tls-host-verify cloudflare-dns.com -http-host cloudflare-dns.com,https://104.16.248.249/dns-query -tls-host-verify cloudflare-dns.com -http-host cloudflare-dns.com";dns_cu="104.16.249.249 104.16.248.249";;
+			1)doh_cu="https://162.159.36.1/dns-query -tls-host-verify cloudflare-dns.com -http-host cloudflare-dns.com,https://162.159.46.1/dns-query -tls-host-verify cloudflare-dns.com -http-host cloudflare-dns.com";dns_cu="162.159.36.1 162.159.46.1";;
 			2)doh_cu="https://8.8.8.8/dns-query -tls-host-verify dns.google -http-host dns.google,https://8.8.4.4/dns-query -tls-host-verify dns.google -http-host dns.google";dns_cu="8.8.8.8 8.8.4.4";;
 			3)doh_cu="https://9.9.9.9/dns-query -tls-host-verify *.quad9.net -http-host dns.quad9.net,https://149.112.112.112/dns-query -tls-host-verify *.quad9.net -http-host dns.quad9.net";dns_cu="9.9.9.9 149.112.112.112";;
 			4)doh_cu="https://9.9.9.11/dns-query -tls-host-verify *.quad9.net -http-host dns11.quad9.net,https://149.112.112.11/dns-query -tls-host-verify *.quad9.net -http-host dns11.quad9.net";dns_cu="9.9.9.11 149.112.112.11";;
@@ -905,7 +905,7 @@ gen_dns(){
 	if [ $dns_mode_l = 0 ];then
 		dns_l=$(uci_get_by_type global dns_l 0)
 		case $dns_l in
-			0)doh_l="https://223.5.5.5/dns-query -tls-host-verify *.alidns.com -http-host dns.alidns.com,https://223.6.6.6/dns-query -tls-host-verify *.alidns.com -http-host dns.alidns.com,https://[2400:3200::1]/dns-query -tls-host-verify *.alidns.com -http-host dns.alidns.com,https://[2400:3200:baba::1]/dns-query -tls-host-verify *.alidns.com -http-host dns.alidns.com";dns_l="223.5.5.5 223.6.6.6";;
+			0)doh_l="https://223.5.5.5/dns-query -tls-host-verify *.alidns.com -http-host dns.alidns.com,https://223.6.6.6/dns-query -tls-host-verify *.alidns.com -http-host dns.alidns.com,https://[2400:3200::1]/dns-query -tls-host-verify *.alidns.com -http-host dns.alidns.com,https://[2400:3200:baba::1]/dns-query -tls-host-verify *.alidns.com -http-host dns.alidns.com";dns_l="223.5.5.5 223.6.6.6 2400:3200::1 2400:3200:baba::1";;
 			1)doh_l="https://162.14.21.56/dns-query -tls-host-verify *.doh.pub -host-name doh.pub -http-host doh.pub,https://162.14.21.178/dns-query -tls-host-verify *.doh.pub -host-name doh.pub -http-host doh.pub";dns_l="162.14.21.56 162.14.21.178";;
 			*)doh_l=$(echo $dns_l | sed -e 's/，/,/g' -e 's/。/./g' -e 's/：/:/g' -e 's/,/\n/g');dns_l=$(echo "$doh_l" | grep -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$");[ ! "$dns_l" ] && dns_l="223.5.5.5 223.6.6.6 2400:3200::1 2400:3200:baba::1" && dns_d=1;;
 		esac
@@ -937,7 +937,7 @@ EOF
 	if [ $dns_mode = 0 ];then
 		echo $doh | sed 's/,/\n/g' | sed -e 's/^/server-https /g' -e 's/$/ -group a -exclude-default-group/g' >> $DNS_T
 		for i in $dns;do echo "server-tcp $i -group b -exclude-default-group" >> $DNS_T;done
-		echo -e "nameserver /dnsleaktest.com/b\nnameserver /whrq.net/b\nnameserver /speedtest.net/b\nnameserver /ooklaserver.net/b\nnameserver /in-addr.arpa/b" >> $DNS_T
+		echo -e "nameserver /dnsleaktest.com/b\nnameserver /whrq.net/b\nnameserver /speedtest.net/b\nnameserver /ooklaserver.net/b" >> $DNS_T
 		doh_t=$(echo $doh | sed 's/,/\n/g' | awk -F[/:] '{print$4}' | grep -Ev "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$")
 		if [ "$doh_t" ];then
 			for i in $doh_t;do
@@ -949,7 +949,7 @@ EOF
 		fi
 	else
 		for i in $dns;do echo "server-tcp $i -group a -exclude-default-group" >> $DNS_T;done
-		echo -e "nameserver /dnsleaktest.com/a\nnameserver /whrq.net/a\nnameserver /speedtest.net/a\nnameserver /ooklaserver.net/a\nnameserver /in-addr.arpa/a" >> $DNS_T
+		echo -e "nameserver /dnsleaktest.com/a\nnameserver /whrq.net/a\nnameserver /speedtest.net/a\nnameserver /ooklaserver.net/a" >> $DNS_T
 	fi
 
 	if [ "$YB" ];then
@@ -993,13 +993,13 @@ EOF
 
 	if [ $dns_mode_l = 0 ];then
 		echo $doh_l | sed 's/,/\n/g' | sed -e 's/^/server-https /g' -e 's/$/ -group i -exclude-default-group/g' >> $DNS_T
+		for i in $dns_l;do echo "server $i -group j -exclude-default-group" >> $DNS_T;done
 		doh_l_t=$(echo $doh_l | sed 's/,/\n/g' | awk -F[/:] '{print$4}' | grep -v '\[' | grep -Ev "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$")
-		if [ "$doh_l_t" ];then
-			for i in $dns_l;do echo "server $i -group j -exclude-default-group" >> $DNS_T;done
-			for i in $doh_l_t;do echo "domain-rules /$i/ -nameserver j -ipset over_wan_ac" >> $DNS_T;done
-		fi
+		[ "$doh_l_t" ] && for i in $doh_l_t;do echo "domain-rules /$i/ -nameserver j -ipset over_wan_ac" >> $DNS_T;done
+		echo "nameserver /in-addr.arpa/j" >> $DNS_T
 	else
 		for i in $dns_l;do echo "server $i -group i -exclude-default-group" >> $DNS_T;done
+		echo "nameserver /in-addr.arpa/i" >> $DNS_T
 	fi
 
 	case $run_mode in

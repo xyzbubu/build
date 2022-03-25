@@ -407,7 +407,11 @@ word-spacing:-.43em
           <h4 id="status_refresh0">
             <%:GFW List%>
             <br/>
+			<%if nixio.fs.access("/tmp/bypass/gfw.list") then%>
             <span id="refresh0_status" class="green"><%=luci.sys.exec("cat /tmp/bypass/gfw.list | wc -l")%>
+			<%else%>
+            <span id="refresh0_status" class="green">0
+			<%end%>
             <%:Records%>
             </span></h4>
         </div>
@@ -422,7 +426,11 @@ word-spacing:-.43em
           <h4 id="status_refresh1">
             <%:China IPv4 List%>
             <br/>
+			<%if nixio.fs.access("/tmp/bypass/china.txt") then%>
             <span id="refresh1_status" class="green"><%=luci.sys.exec("cat /tmp/bypass/china.txt | wc -l")%>
+			<%else%>
+            <span id="refresh1_status" class="green">0
+			<%end%>
             <%:Records%>
             </span></h4>
         </div>
@@ -437,7 +445,11 @@ word-spacing:-.43em
           <h4 id="status_refresh2">
             <%:China IPv6 List%>
             <br/>
+			<%if nixio.fs.access("/tmp/bypass/china_v6.txt") then%>
             <span id="refresh2_status" class="green"><%=luci.sys.exec("cat /tmp/bypass/china_v6.txt | wc -l")%>
+			<%else%>
+            <span id="refresh2_status" class="green">0
+			<%end%>
             <%:Records%>
             </span></h4>
         </div>
