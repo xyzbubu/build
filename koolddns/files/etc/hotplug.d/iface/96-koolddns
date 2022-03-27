@@ -1,6 +1,0 @@
-#!/bin/sh
-case "$ACTION" in
-	ifup)
-    /etc/init.d/koolddns update
-		;;
-esac
