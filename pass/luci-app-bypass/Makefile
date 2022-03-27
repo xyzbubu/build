@@ -18,9 +18,8 @@ PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Client \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Server \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Simple_Obfs \
-	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Simple_obfs_server \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Trojan_Plus \
-	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_xray-plugin \
+	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_xray_Plugin \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Xray
 
 LUCI_TITLE:=LuCI support for bypass
@@ -38,10 +37,8 @@ LUCI_DEPENDS:=+ipset +ip-full +iptables-mod-tproxy +dnsmasq-full \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Client:shadowsocksr-libev-ssr-redir \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Server:shadowsocksr-libev-ssr-server \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Simple_Obfs:simple-obfs \
-
-	+PACKAGE_$(PKG_NAME)_INCLUDE_Simple_obfs_server:simple-obfs-server \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Trojan_Plus:trojan-plus \
-	+PACKAGE_$(PKG_NAME)_INCLUDE_xray-plugin:xray-plugin \
+	+PACKAGE_$(PKG_NAME)_INCLUDE_xray_Plugin:xray-plugin \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Xray:xray-core
 
 define Package/$(PKG_NAME)/config
@@ -78,24 +75,19 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Server
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_Simple_Obfs
 	bool "Include Simple-Obfs (Shadowsocks Plugin)"
-	default y
+	default y if aarch64||arm||i386||x86_64
 
-config PACKAGE_$(PKG_NAME)_INCLUDE_Simple_obfs_server
-	bool "Include Shadowsocks Simple-obfs-server Plugin"
-	depends on PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Server
-	default y
-	
 config PACKAGE_$(PKG_NAME)_INCLUDE_Trojan_Plus
 	bool "Include Trojan-Plus"
 	default y
 
-config PACKAGE_$(PKG_NAME)_INCLUDE_xray-plugin
-	bool "Include xray-plugin (Shadowsocks Plugin)"
-	default y if x86||x86_64||arm||aarch64
-	
+config PACKAGE_$(PKG_NAME)_INCLUDE_xray_Plugin
+	bool "Include xray-Plugin (Shadowsocks Plugin)"
+	default y if aarch64||arm||i386||x86_64
+
 config PACKAGE_$(PKG_NAME)_INCLUDE_Xray
 	bool "Include Xray"
-	default y if x86||x86_64||arm||aarch64
+	default y
 
 endmenu
 endef
