@@ -7,7 +7,7 @@
 require "luci.model.uci"
 require "nixio"
 require "luci.util"
-require "luci.sys"
+SYS=require "luci.sys"
 require "luci.jsonc"
 -- these global functions are accessed all the time by the event handler
 -- so caching them is worth the effort
@@ -25,8 +25,8 @@ local switch = ucic:get_first(name, 'server_subscribe', 'switch', '1')
 local subscribe_url = ucic:get_first(name, 'server_subscribe', 'subscribe_url', {})
 local filter_mode=ucic:get_first(name,'server_subscribe','filter_mode','0')
 local filter_words = ucic:get_first(name, 'server_subscribe', 'filter_words', '过期时间/剩余流量')
-local v2_ss = luci.sys.exec('type -t -p ss-redir sslocal') ~= "" and "ss" or "v2ray"
-local v2_tj = luci.sys.exec('type -t -p trojan-plus') ~= "" and "trojan" or "v2ray"
+local v2_ss = SYS.exec('type -t -p ss-redir sslocal') ~= "" and "ss" or "v2ray"
+local v2_tj = SYS.exec('type -t -p trojan-plus') ~= "" and "trojan" or "v2ray"
 local log=function(...)
 	local file=io.open("/tmp/bypass.log","a")
 	io.output(file)
@@ -104,7 +104,7 @@ local function trim(text)
 end
 -- md5
 local function md5(content)
-	local stdout = luci.sys.exec('echo \"' .. urlEncode(content) .. '\" | md5sum | cut -d \" \" -f1')
+	local stdout = SYS.exec('echo \"' .. urlEncode(content) .. '\" | md5sum | cut -d \" \" -f1')
 	-- assert(nixio.errno() == 0)
 	return trim(stdout)
 end
@@ -417,7 +417,7 @@ local function processData(szType, content)
 end
 -- curl
 local function curl(url)
-	local stdout=luci.sys.exec('curl --retry 3 -m 10 -LfskA "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36" "'..url..'"')
+	local stdout=SYS.exec('curl --retry 3 -m 10 -LfskA "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36" "'..url..'"')
 	return trim(stdout)
 end
 
@@ -437,7 +437,7 @@ local execute = function()
 	do
 		if proxy == '0' then -- 不使用代理更新的话先暂停
 			log('服务正在暂停')
-			luci.sys.init.stop(name)
+			SYS.init.stop(name)
 		end
 		for k, url in ipairs(subscribe_url) do
 			local raw = curl(url)
@@ -517,7 +517,7 @@ local execute = function()
 		if next(nodeResult) == nil then
 			log("更新失败，没有可用的节点信息")
 			if proxy == '0' then
-				luci.sys.init.start(name)
+				SYS.init.start(name)
 				log('订阅失败, 恢复服务')
 			end
 			return
@@ -564,15 +564,15 @@ local execute = function()
 			local firstServer = ucic:get_first(name, uciType)
 			if firstServer then
 				if not ucic:get(name, globalServer) then
-					luci.sys.call("/etc/init.d/" .. name .. " stop > /dev/null 2>&1 &")
+					SYS.call("/etc/init.d/" .. name .. " stop > /dev/null 2>&1 &")
 					ucic:commit(name)
 					ucic:set(name, ucic:get_first(name, 'global'), 'global_server', ucic:get_first(name, uciType))
 					ucic:commit(name)
 					log('当前主服务器节点已被删除，正在自动更换为第一个节点。')
-					luci.sys.call("/etc/init.d/" .. name .. " start > /dev/null 2>&1 &")
+					SYS.call("/etc/init.d/" .. name .. " start > /dev/null 2>&1 &")
 				else
 					log('维持当前主服务器节点。')
-					luci.sys.call("/etc/init.d/" .. name .. " restart > /dev/null 2>&1 &")
+					SYS.call("/etc/init.d/" .. name .. " restart > /dev/null 2>&1 &")
 				end
 			else
 			ucic:delete(name,ucic:get_first(name,'global'),'global_server')
@@ -582,7 +582,7 @@ local execute = function()
 			ucic:delete(name,ucic:get_first(name,'global'),'cu_server')
 			ucic:delete(name,ucic:get_first(name,'global'),'tg_server')
 				log('没有服务器节点了，停止服务')
-				luci.sys.call("/etc/init.d/" .. name .. " stop > /dev/null 2>&1 &")
+				SYS.call("/etc/init.d/" .. name .. " stop > /dev/null 2>&1 &")
 			end
 		end
 		log('新增节点数量: ' .. add, '删除节点数量: ' .. del)
@@ -597,10 +597,10 @@ if subscribe_url and #subscribe_url > 0 then
 		log('发生错误, 正在恢复服务')
 		local firstServer = ucic:get_first(name, uciType)
 		if firstServer then
-			luci.sys.call("/etc/init.d/" .. name .. " restart > /dev/null 2>&1 &") -- 不加&的话日志会出现的更早
+			SYS.call("/etc/init.d/" .. name .. " restart > /dev/null 2>&1 &") -- 不加&的话日志会出现的更早
 			log('重启服务成功')
 		else
-			luci.sys.call("/etc/init.d/" .. name .. " stop > /dev/null 2>&1 &") -- 不加&的话日志会出现的更早
+			SYS.call("/etc/init.d/" .. name .. " stop > /dev/null 2>&1 &") -- 不加&的话日志会出现的更早
 			log('停止服务成功')
 		end
 	end)
