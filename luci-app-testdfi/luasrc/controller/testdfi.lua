@@ -4,8 +4,8 @@ function index()
 
     entry({"admin", "TEST"}, firstchild(), "TEST", 60).dependent = false
     entry({"admin", "TEST", "testdfi"}, template("testdfi/testdfi"), _("test_dfi"), 10).dependent =true
-    entry({"admin", "TEST", "testdfi", "connections_status"}, call("action_connections")).leaf = true
-    entry({"admin", "TEST", "testdfi",  "nameinfo"}, call("action_nameinfo")).leaf = true
+    entry({"admin", "TEST", "testdfi_status"}, call("action_connections")).leaf = true
+    entry({"admin", "TEST",  "nameinfo"}, call("action_nameinfo")).leaf = true
     
 end
 
