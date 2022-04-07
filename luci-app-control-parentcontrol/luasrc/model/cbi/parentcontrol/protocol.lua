@@ -46,7 +46,7 @@ e:value("udp", translate("UDP"))
 e = t:option(Value, "sport", translate("<font color=\"gray\">源端口</font>"))
 e.rmempty = true
 e = t:option(Value, "dport", translate("<font color=\"gray\">目的端口</font>"))
-e:value("",translate("PORT"))
+e:value("",translate(""))
 e:value("80", "TCP-HTTP")
 e:value("443", "TCP-HTTPS")
 e:value("22", "TCP-SSH")

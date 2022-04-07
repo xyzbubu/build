@@ -1,8 +1,9 @@
-module("luci.controller.weburl", package.seeall)
+module("luci.controller.parentcontrol", package.seeall)
 
 function index()
     if not nixio.fs.access("/etc/config/parentcontrol") then return end
 
+    entry({"admin", "control"}, firstchild(), "Control", 44).dependent = false
 	local e=entry({"admin","control","parentcontrol"},firstchild(),_("家长控制"),2)
 	e.dependent=false
 	entry({"admin","control","parentcontrol","time"},cbi("parentcontrol/time"),_("时间限制"),1).leaf=true
