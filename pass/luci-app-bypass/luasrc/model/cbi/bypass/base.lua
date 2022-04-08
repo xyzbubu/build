@@ -105,14 +105,12 @@ o:value("2","8.8.8.8,8.8.4.4 ("..translate("Google")..")")
 o:value("3","9.9.9.9,149.112.112.112 (Quad9)")
 o:value("4","9.9.9.11,149.112.112.11 (Quad9 ECS)")
 o:value("5","208.67.222.222,208.67.220.220 (OpenDNS)")
-o.default="1"
 o:depends("dns_mode",1)
 
 o=s:option(ListValue,"dns_mode_l",translate("Domestic Resolve Dns Mode"),
 translate("If DoH resolution is not normal,use UDP mode and select ISP DNS"))
 o:value("0",translate("Use SmartDNS DoH query"))
 o:value("1",translate("Use SmartDNS UDP query"))
-o.default="1"
 
 o=s:option(Value,"dns_l",translate("Domestic DoH"),
 translate("Custom DNS format is https://dns.alidns.com/dns-query or https://223.5.5.5/dns-query"))
