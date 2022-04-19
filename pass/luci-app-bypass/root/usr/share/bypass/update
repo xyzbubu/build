@@ -44,7 +44,7 @@ if [ "$C" = router ];then
 	[ -n "$D" ] && echo "$D" | base64 -d > /tmp/china_v6.txt
 
 	if ! cmp -s /tmp/china_v6.txt $T_FILE/china_v6.txt;then
-		log "By Update  : Update China IPv6 List"
+		log "By Update  : Update China IPv6 Lis t"
 		cp -f /tmp/china_v6.txt $TMP/china_v6.txt 
 		cp -f /tmp/china_v6.txt $T_FILE/china_v6.txt
 		[ $A = N ] && ipset list china_v6 >/dev/null 2>&1 && $DIR/chinaipset v6
