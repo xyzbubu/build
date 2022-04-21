@@ -31,7 +31,7 @@ tmp_udp_port="301"         #udp temporary port
 tmp_udp_local_port="302"   #udp socks temporary port
 tmp_shunt_port="303"       #shunt temporary port
 tmp_shunt_local_port="304" #shunt socks temporary port
-tmp_shunt_dns_port="305"   #shunt dns2socks temporary port
+tmp_shunt_dns_port="5335"   #shunt dns2socks temporary port
 server_count=0
 redir_tcp=0
 redir_udp=0
@@ -407,14 +407,14 @@ start_shunt() {
 			local tmp_port=$tmp_shunt_local_port
 			ln_start_bin $(first_type ${type}local ${type}-local) ${type}-local -c $shunt_dns_config_file
 		fi
-		ln_start_bin $(first_type dns2socks) dns2socks 127.0.0.1:$tmp_port 8.8.8.8:53 127.0.0.1:$tmp_shunt_dns_port -q
+		# ln_start_bin $(first_type dns2socks) dns2socks 127.0.0.1:$tmp_port 8.8.8.8:53 127.0.0.1:$tmp_shunt_dns_port -q
 		echolog "shunt:$(get_name $type) Started!"
 		;;
 	v2ray)
 		local tmp_port=${tmp_local_port:-$tmp_shunt_local_port}
 		gen_config_file $SHUNT_SERVER $type 3 $tmp_shunt_port $tmp_port
 		ln_start_bin $(first_type xray v2ray) v2ray run -config $shunt_config_file
-		ln_start_bin $(first_type dns2socks) dns2socks 127.0.0.1:$tmp_port 8.8.8.8:53 127.0.0.1:$tmp_shunt_dns_port -q
+		#ln_start_bin $(first_type dns2socks) dns2socks 127.0.0.1:$tmp_port 8.8.8.8:53 127.0.0.1:$tmp_shunt_dns_port -q
 		echolog "shunt:$($(first_type xray v2ray) version | head -1) Started!"
 		;;
 	trojan)
@@ -426,7 +426,7 @@ start_shunt() {
 			local tmp_port=$tmp_shunt_local_port
 			ln_start_bin $(first_type trojan) $type --config $shunt_dns_config_file
 		fi
-		ln_start_bin $(first_type dns2socks) dns2socks 127.0.0.1:$tmp_port 8.8.8.8:53 127.0.0.1:$tmp_shunt_dns_port -q
+		# ln_start_bin $(first_type dns2socks) dns2socks 127.0.0.1:$tmp_port 8.8.8.8:53 127.0.0.1:$tmp_shunt_dns_port -q
 		echolog "shunt:$($(first_type trojan) --version 2>&1 | head -1) Started!"
 		;;
 	naiveproxy)
@@ -438,7 +438,7 @@ start_shunt() {
 			local tmp_port=$tmp_shunt_local_port
 			ln_start_bin $(first_type naive) naive --config $shunt_dns_config_file
 		fi
-		ln_start_bin $(first_type dns2socks) dns2socks 127.0.0.1:$tmp_port 8.8.8.8:53 127.0.0.1:$tmp_shunt_dns_port -q
+		# ln_start_bin $(first_type dns2socks) dns2socks 127.0.0.1:$tmp_port 8.8.8.8:53 127.0.0.1:$tmp_shunt_dns_port -q
 		echolog "shunt:$($(first_type "naive") --version 2>&1 | head -1) Started!"
 		redir_udp=0
 		;;
@@ -467,7 +467,7 @@ start_shunt() {
 			local tmp_port=$tmp_shunt_local_port
 			ln_start_bin $(first_type microsocks) microsocks -i 127.0.0.1 -p $tmp_port shunt-dns-ssr-plus
 		fi
-		ln_start_bin $(first_type dns2socks) dns2socks 127.0.0.1:$tmp_port 8.8.8.8:53 127.0.0.1:$tmp_shunt_dns_port -q
+		# ln_start_bin $(first_type dns2socks) dns2socks 127.0.0.1:$tmp_port 8.8.8.8:53 127.0.0.1:$tmp_shunt_dns_port -q
 		echolog "shunt:$type REDIRECT/TPROXY Started!"
 		;;
 	esac
