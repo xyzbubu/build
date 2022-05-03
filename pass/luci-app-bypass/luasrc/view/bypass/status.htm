@@ -349,7 +349,7 @@ word-spacing:-.43em
         </div>
         <div class="pure-u-3-5">
           <h4 id="tcp_status">
-            <%:TCP%>
+            <%:CLIENT%>
             <br />
             <span class="red">
             <%:Not Running%>
@@ -364,7 +364,7 @@ word-spacing:-.43em
         </div>
         <div class="pure-u-3-5">
           <h4 id="udp_status">
-            <%:UDP%>
+            <%:GAME_MODE%>
             <br />
             <span class="red">
             <%:Not Running%>
@@ -503,38 +503,39 @@ word-spacing:-.43em
   </div>
   <script>
 
+//<![CDATA[
     const STATUS1_URL = '<%=url([[admin]], [[services]], [[bypass]], [[run]])%>';
-    const CLIENT = '<%:Client%>';
-    const GAME_MODE = '<%:Game Mode%>';
-    const RUNNING = '<%:Running%>';
-    const NOT_RUNNING = '<%:Not Running%>';
-
-    XHR.poll(2, STATUS1_URL, null,
+    XHR.poll(5, STATUS1_URL, null,
         function (x, data) {
-            if (data) {
-                if (data.tcp) {
-                    $("#tcp_status").html(CLIENT + '<br><span class="green">' + RUNNING + '</span>');
-                } else {
-                    $("#tcp_status").html(CLIENT + '<br><span class="red">' + NOT_RUNNING + '</span>');
-                }
-                if (data.udp) {
-                    $("#udp_status").html(GAME_MODE + '<br><span class="green">' + RUNNING + '</span>');
-                } else {
-                    $("#udp_status").html(GAME_MODE + '<br><span class="red">' + NOT_RUNNING + '</span>');
-                }
-                if (data.smartdns) {
-                    $("#smartdns_status").html('SmartDNS<br><span class="green">' + RUNNING + '</span>');
-                } else {
-                    $("#smartdns_status").html('SmartDNS<br><span class="red">' + NOT_RUNNING + '</span>');
-                }
-                if (data.chinadns) {
-                    $("#chinadns_status").html('ChinaDNS<br><span class="green">' + RUNNING + '</span>');
-                } else {
-                    $("#chinadns_status").html('ChinaDNS<br><span class="red">' + NOT_RUNNING + '</span>');
-                }
-            }
-        }
-    );
+          if (data) {
+		  		var tcp_status = document.getElementById('tcp_status');
+				var udp_status = document.getElementById('udp_status');
+				var smartdns_status = document.getElementById('smartdns_status');
+				var chinadns_status = document.getElementById('chinadns_status');
+		  	       if (data.tcp) {
+						tcp_status.innerHTML = 'TCP<br /><span class="green"><%:Running%></span>';
+					} else {
+						tcp_status.innerHTML = 'TCP<br /><span class="red"><%:Not Running%></span>';
+					}
+					
+					if (data.udp) {
+							udp_status.innerHTML = 'UDP<br /><span class="green"><%:Running%></span>'
+						} else {
+							udp_status.innerHTML = 'UDP<br /><span class="red"><%:Not Running%></span>'
+						}
+					if (data.smartdns) {
+							smartdns_status.innerHTML = 'UDP<br /><span class="green"><%:Running%></span>'
+						} else {
+							smartdns_status.innerHTML = 'UDP<br /><span class="red"><%:Not Running%></span>'
+						}
+					if (data.chinadns) {
+							chinadns_status.innerHTML = 'UDP<br /><span class="green"><%:Running%></span>'
+						} else {
+							chinadns_status.innerHTML = 'UDP<br /><span class="red"><%:Not Running%></span>'
+						}
+ 
+       }
+     });
 
 function check_net(url){
 			var s=document.getElementById(url+'_status');
