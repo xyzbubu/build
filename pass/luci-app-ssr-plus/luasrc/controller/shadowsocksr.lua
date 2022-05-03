@@ -65,7 +65,7 @@ function act_status()
 
     e.pdnsd = CALL('busybox ps -w | grep pdnsd | grep -v grep  >/dev/null ') == 0
 
-    e.udp = CALL('busybox ps -w | grep -ssrp-reudp | grep -v grep  >/dev/null') == 0
+    e.udp = CALL('busybox ps -w | grep ssrp-reudp | grep -v grep  >/dev/null') == 0
 
     e.server= CALL('busybox ps -w | grep ssr-server | grep -v grep  >/dev/null') == 0
     luci.http.prepare_content('application/json')

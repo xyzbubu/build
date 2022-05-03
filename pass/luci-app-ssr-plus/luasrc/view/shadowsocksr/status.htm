@@ -495,34 +495,35 @@ word-spacing:-.43em
   </div>
   <script>
 
+//<![CDATA[
     const STATUS1_URL = '<%=url([[admin]], [[services]], [[shadowsocksr]], [[run]])%>';
-    const CLIENT = '<%:Client%>';
-    const GAME_MODE = '<%:Game Mode%>';
-    const RUNNING = '<%:Running%>';
-    const NOT_RUNNING = '<%:Not Running%>';
 
-    XHR.poll(2, STATUS1_URL, null,
+    XHR.poll(5, STATUS1_URL, null,
         function (x, data) {
             if (data) {
+		  		var tcp_status = document.getElementById('tcp_status');
+				var udp_status = document.getElementById('udp_status');
+				var pdnsd_status = document.getElementById('pdnsd_status');
+				var server_status = document.getElementById('server_status');
                 if (data.global) {
-                    $("#tcp_status").html(CLIENT + '<br><span class="green">' + RUNNING + '</span>');
+                    tcp_status.innerHTML = 'TCP<br /><span class="green"><%:Running%></span>';
                 } else {
-                    $("#tcp_status").html(CLIENT + '<br><span class="red">' + NOT_RUNNING + '</span>');
+                    tcp_status.innerHTML = 'TCP<br /><span class="red"><%:Not Running%></span>';
                 }
                 if (data.udp) {
-                    $("#udp_status").html(GAME_MODE + '<br><span class="green">' + RUNNING + '</span>');
+                    udp_status.innerHTML = 'UDP<br /><span class="green"><%:Running%></span>';
                 } else {
-                    $("#udp_status").html(GAME_MODE + '<br><span class="red">' + NOT_RUNNING + '</span>');
+                    udp_status.innerHTML = 'UDP<br /><span class="red"><%:Not Running%></span>';
                 }
                 if (data.pdnsd) {
-                    $("#pdnsd_status").html('PDNSD<br><span class="green">' + RUNNING + '</span>');
+                    pdnsd_status.innerHTML = 'PDNSD<br /><span class="green"><%:Running%></span>';
                 } else {
-                    $("#pdnsd_status").html('PDNSD<br><span class="red">' + NOT_RUNNING + '</span>');
+                    pdnsd_status.innerHTML = 'PDNSD<br /><span class="red"><%:Not Running%></span>';
                 }
                 if (data.server) {
-                    $("#server_status").html('SERVER<br><span class="green">' + RUNNING + '</span>');
+                    server_status.innerHTML = 'SERVER<br /><span class="green"><%:Running%></span>';
                 } else {
-                    $("#server_status").html('SERVER<br><span class="red">' + NOT_RUNNING + '</span>');
+                    server_status.innerHTML = 'SERVER<br /><span class="red"><%:Not Running%></span>';
                 }
             }
         }
