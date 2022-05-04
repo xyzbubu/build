@@ -5,7 +5,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-bypass
 PKG_VERSION:=1.1
-PKG_RELEASE:=14
+PKG_RELEASE:=15
 include $(INCLUDE_DIR)/package.mk
 
 PKG_CONFIG_DEPENDS:= \
@@ -18,7 +18,7 @@ PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Server \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Simple_Obfs \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Trojan_Plus \
-	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_Plugin \
+	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Xray_plugin \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Xray
 
 LUCI_TITLE:=LuCI support for bypass
@@ -37,12 +37,16 @@ LUCI_DEPENDS:=+ipset +ip-full +iptables-mod-tproxy +dnsmasq-full \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Server:shadowsocksr-libev-ssr-server \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Simple_Obfs:simple-obfs \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Trojan_Plus:trojan-plus \
-	+PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_Plugin:v2ray-plugin \
+	+PACKAGE_$(PKG_NAME)_INCLUDE_Xray_plugin:xray-plugin \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Xray:xray-core
 
 define Package/$(PKG_NAME)/config
 menu "Configuration"
 
+config PACKAGE_$(PKG_NAME)_INCLUDE_Xray_plugin
+	bool "Include Shadowsocks Xray Plugin"
+	default y if x86||x86_64||arm||aarch64
+	
 config PACKAGE_$(PKG_NAME)_INCLUDE_Kcptun
 	bool "Include Kcptun"
 	default y if x86||x86_64||arm||aarch64
@@ -85,9 +89,6 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_Trojan_Plus
 	bool "Include Trojan-Plus"
 	default y
 
-config PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_Plugin
-	bool "Include V2ray-Plugin (Shadowsocks Plugin)"
-	default y if aarch64||arm||i386||x86_64
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_Xray
 	bool "Include Xray"
