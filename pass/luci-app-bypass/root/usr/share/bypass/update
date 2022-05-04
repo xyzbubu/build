@@ -13,7 +13,7 @@ log(){
 
 C=$(uci -q get bypass.@global[0].run_mode)
 mkdir -p $T_FILE 2>/dev/null
-if [ "$C" = router ];then
+
 	if [ ! -f $TMP/china.txt ];then
 		mkdir -p $TMP
 		while !  (curl -kLfsm 5 -o /tmp/china.txt https://cdn.jsdelivr.net/gh/sirpdboy/iplist/all_cn.txt || curl -kLfsm 5 -o /tmp/china.txt https://raw.githubusercontent.com/sirpdboy/iplist/all_cn.txt);do
@@ -55,9 +55,9 @@ if [ "$C" = router ];then
 			log "By Update  : China IPv6 List is up to date"
 		fi
 	}
-fi
 
-if [ "$C" = gfw -o "$(uci -q get bypass.@global[0].gfw_mode)" = 1  ];then
+
+
 	if [ ! -f $TMP/gfw.list ];then
 		while ! ( curl -kLfsm 5 -o /tmp/gfw.b64 https://cdn.jsdelivr.net/gh/YW5vbnltb3Vz/domain-list-community@release/gfwlist.txt  || curl -kLfsm 5  -o /tmp/gfw.b64 https://cdn.jsdelivr.net/gh/sirpdboy/iplist/gfwlist.txt );do
 			sleep 2
@@ -76,6 +76,6 @@ if [ "$C" = gfw -o "$(uci -q get bypass.@global[0].gfw_mode)" = 1  ];then
 		cp -f $T_FILE/gfw.list $TMP/gfw.list 
 		log "By Update  : GFW List is up to date"
 	fi
-fi
+    fi
 rm -f $LOCK /tmp/china*.txt /tmp/gfwnew.txt
 [ $A = Y ] && /etc/init.d/bypass restart &
