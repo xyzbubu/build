@@ -349,7 +349,7 @@ word-spacing:-.43em
         </div>
         <div class="pure-u-3-5">
           <h4 id="tcp_status">
-            <%:CLIENT%>
+            <%:TCP%>
             <br />
             <span class="red">
             <%:Not Running%>
@@ -364,7 +364,7 @@ word-spacing:-.43em
         </div>
         <div class="pure-u-3-5">
           <h4 id="udp_status">
-            <%:GAME_MODE%>
+            <%:UDP%>
             <br />
             <span class="red">
             <%:Not Running%>
@@ -524,14 +524,14 @@ word-spacing:-.43em
 							udp_status.innerHTML = 'UDP<br /><span class="red"><%:Not Running%></span>'
 						}
 					if (data.smartdns) {
-							smartdns_status.innerHTML = 'UDP<br /><span class="green"><%:Running%></span>'
+							smartdns_status.innerHTML = 'SmartDNS<br /><span class="green"><%:Running%></span>'
 						} else {
-							smartdns_status.innerHTML = 'UDP<br /><span class="red"><%:Not Running%></span>'
+							smartdns_status.innerHTML = 'SmartDNS<br /><span class="red"><%:Not Running%></span>'
 						}
 					if (data.chinadns) {
-							chinadns_status.innerHTML = 'UDP<br /><span class="green"><%:Running%></span>'
+							chinadns_status.innerHTML = 'ChinaDNS<br /><span class="green"><%:Running%></span>'
 						} else {
-							chinadns_status.innerHTML = 'UDP<br /><span class="red"><%:Not Running%></span>'
+							chinadns_status.innerHTML = 'ChinaDNS<br /><span class="red"><%:Not Running%></span>'
 						}
  
        }
