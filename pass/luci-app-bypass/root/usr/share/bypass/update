@@ -28,6 +28,9 @@ if [ "$C" = router ];then
 			cp -f /tmp/china.txt $TMP/china.txt
 			cp -f /tmp/china.txt $T_FILE/china.txt
 			[ $A = N ] && ipset list china_v4 >/dev/null 2>&1 && $DIR/chinaipset
+		else
+			cp -f $T_FILE/china.txt $TMP/china.txt
+			log "By Update  : China IPv4 List is up to date"
 		fi
         }
 
@@ -47,6 +50,9 @@ if [ "$C" = router ];then
 			cp -f /tmp/china_v6.txt $TMP/china_v6.txt 
 			cp -f /tmp/china_v6.txt $T_FILE/china_v6.txt
 			[ $A = N ] && ipset list china_v6 >/dev/null 2>&1 && $DIR/chinaipset v6
+		else
+	 		cp -f $T_FILE/china_v6.txt $TMP/china_v6.txt 
+			log "By Update  : China IPv6 List is up to date"
 		fi
 	}
 fi
@@ -56,8 +62,8 @@ if [ "$C" = gfw -o "$(uci -q get bypass.@global[0].gfw_mode)" = 1  ];then
 		while ! ( curl -kLfsm 5 -o /tmp/gfw.b64 https://cdn.jsdelivr.net/gh/YW5vbnltb3Vz/domain-list-community@release/gfwlist.txt  || curl -kLfsm 5  -o /tmp/gfw.b64 https://cdn.jsdelivr.net/gh/sirpdboy/iplist/gfwlist.txt );do
 			sleep 2
 		done
-	elif [ "$C" = gfw -o $A = N ];then
-		curl -kLfsm 5 -o /tmp/gfw.b64 https://cdn.jsdelivr.net/gh/YW5vbnltb3Vz/domain-list-community@release/gfwlist.txt  || curl -kLfsm 5  -o /tmp/gfw.b64 https://cdn.jsdelivr.net/gh/sirpdboy/iplist/gfwlist.txt 
+	else
+		curl -Lfso /tmp/gfw.b64 https://cdn.jsdelivr.net/gh/YW5vbnltb3Vz/domain-list-community@release/gfwlist.txt  || curl -Lfso  /tmp/gfw.b64 https://cdn.jsdelivr.net/gh/sirpdboy/iplist/ip/GFW_List
 	fi
 	if [[ -f /tmp/gfw.b64 && $? == 0 ]];then
 		$DIR/gfw
@@ -66,7 +72,9 @@ if [ "$C" = gfw -o "$(uci -q get bypass.@global[0].gfw_mode)" = 1  ];then
 			cp -f /tmp/gfwnew.txt $T_FILE/gfw.list
 			log "By Update  : Update GFW List"
 			[ $A = N ] && /etc/init.d/bypass restart
-		fi
+	else
+		cp -f $T_FILE/gfw.list $TMP/gfw.list 
+		log "By Update  : GFW List is up to date"
 	fi
 fi
 rm -f $LOCK /tmp/china*.txt /tmp/gfwnew.txt
