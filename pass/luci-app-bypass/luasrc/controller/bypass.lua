@@ -30,8 +30,8 @@ end
 
 function act_status()
 	local e = {}
-	e.tcp = CALL('busybox ps -w | grep bypass-tcp | grep -v grep  >/dev/null ') == 0
-	e.udp = CALL('busybox ps -w | grep bypass-udp | grep -v grep  >/dev/null ') == 0
+	e.tcp = CALL('ps -w | grep bypass-tcp | grep -v grep  >/dev/null ') == 0
+	e.udp = CALL('ps -w | grep bypass-udp | grep -v grep  >/dev/null ') == 0
 	e.smartdns = CALL("pidof smartdns >/dev/null")==0
 
 	e.chinadns=CALL("pidof chinadns-ng >/dev/null")==0

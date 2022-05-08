@@ -39,8 +39,8 @@ local encrypt_methods_ss = {
 	"aes-192-gcm",
 	"aes-256-gcm",
 	"chacha20-ietf-poly1305",
-	"xchacha20-ietf-poly1305"
-	--[[ stream
+	"xchacha20-ietf-poly1305",
+	--stream
 	"table",
 	"rc4",
 	"rc4-md5",
@@ -56,7 +56,7 @@ local encrypt_methods_ss = {
 	"camellia-256-cfb",
 	"salsa20",
 	"chacha20",
-	"chacha20-ietf" ]]
+	"chacha20-ietf"
 }
 -- 分割字符串
 local function split(full, sep)
@@ -196,23 +196,36 @@ local function processData(szType, content)
 			result.read_buffer_size = 2
 			result.write_buffer_size = 2
 		end
+		if info.net == 'grpc' then
+			if info.path then
+				result.serviceName = info.path
+			elseif info.serviceName then
+				result.serviceName = info.serviceName
+			end
+		end
 		if info.net == 'quic' then
 			result.quic_guise = info.type
 			result.quic_key = info.key
 			result.quic_security = info.securty
 		end
-		if info.net == 'grpc' then
-			result.grpc_serviceName = info.path
-		end
+
 		if info.security then
 			result.security = info.security
 		end
 		if info.tls == "tls" or info.tls == "1" then
 			result.tls = "1"
-			result.tls_host = info.host
+			if info.host then
+				result.tls_host = info.host
+			elseif info.sni then
+				result.tls_host = info.sni
+			end
 			result.insecure = 1
 		else
 			result.tls = "0"
+		end
+		-- https://www.v2fly.org/config/protocols/vmess.html#vmess-md5-认证信息-淘汰机制
+		if info.aid and (tonumber(info.aid) > 0) then
+			result.server = nil
 		end
 	elseif szType == "ss" then
 		local idx_sp = 0
@@ -387,6 +400,7 @@ local function processData(szType, content)
 			if params.type == 'grpc' then
 				if params.path then result.grpc_serviceName = params.path end
 				if params.serviceName then result.grpc_serviceName = params.serviceName end
+				result.serviceName = params.serviceName
 			end
 			if params.security == "tls" then
 				result.tls = "1"
@@ -462,7 +476,7 @@ local execute = function()
 					nodes = servers
 				-- SS SIP008 直接使用 Json 格式
 				elseif jsonParse(raw) then
-					nodes = jsonParse(raw)
+					nodes = jsonParse(raw).servers or jsonParse(raw)
 					if nodes[1].server and nodes[1].method then
 						szType = 'sip008'
 					end

@@ -95,7 +95,7 @@ log(){
 
 clean_log() {
 	local logsnum=$(cat $LOG 2>/dev/null | wc -l)
-	[ "$logsnum" -gt 1000 ] && {
+	[ "$logsnum" -gt 500 ] && {
 		echo "$(date "+%Y-%m-%d %H:%M:%S") LOG long ,clear log!" >$LOG
 	}
 }
@@ -916,8 +916,8 @@ gen_dns(){
 	cat > $DNS_T <<EOF
 force-AAAA-SOA yes
 speed-check-mode none
-cache-persist no
 cache-size 0
+cache-persist no
 log-level fatal
 log-file $LOG
 bind :5335 -group a
@@ -1123,13 +1123,11 @@ start_switch(){
 
 c_cron(){
 	grep -q $BIN_DIR/$1 $CRON_FILE && sed -i "/\/share\/bypass\/$1/d" $CRON_FILE
-	clean_log
+	
 }
 
 add_cron(){
-	if ! grep -q $LOG $CRON_FILE;then
-		echo "0 1 * * * rm -f $LOG" >> $CRON_FILE
-	fi
+
 	if [ $(uci_get_by_type server_subscribe auto_update 0) = 1 ];then
 		B=1
 		if ! grep -wq "$(uci_get_by_type server_subscribe auto_update_time 6) \* \* \* $BIN_DIR/update" $CRON_FILE;then
