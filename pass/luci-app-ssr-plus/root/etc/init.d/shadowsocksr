@@ -175,7 +175,7 @@ start_dns() {
 			touch $TMP_PATH/pdnsd/pdnsd.cache
 			chown -R nobody:nogroup $TMP_PATH/pdnsd
 		fi
-		cat <<-EOF >$TMP_PATH/pdnsd.conf
+		cat <<-EOF >$TMP_PATH/ssrpluspdnsd.conf
 			global{
 			perm_cache=1024;
 			cache_dir="$TMP_PATH/pdnsd";
@@ -203,7 +203,7 @@ start_dns() {
 			purge_cache=off;
 			}
 		EOF
-		ln_start_bin $(first_type pdnsd) pdnsd -c $TMP_PATH/pdnsd.conf
+		ln_start_bin $(first_type pdnsd) pdnsd -c $TMP_PATH/ssrpluspdnsd.conf
 	}
 	if [ "$ssrplus_dns" != "0" ]; then
 		case "$(uci_get_by_type global run_mode)" in

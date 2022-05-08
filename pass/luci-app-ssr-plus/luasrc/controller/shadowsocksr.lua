@@ -63,7 +63,7 @@ function act_status()
 
     e.global = CALL('busybox ps -w | grep ssrp-retcp | grep -v grep  >/dev/null ') == 0
 
-    e.pdnsd = CALL('busybox ps -w | grep pdnsd | grep -v grep  >/dev/null ') == 0
+    e.pdnsd = CALL('busybox ps -w | grep ssrpluspdnsd | grep -v grep  >/dev/null ') == 0
 
     e.udp = CALL('busybox ps -w | grep ssrp-reudp | grep -v grep  >/dev/null') == 0
 
