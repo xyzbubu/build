@@ -1,6 +1,11 @@
 #!/bin/sh
 
-a=$(ip address | grep ^[0-9] | awk -F: '{print $2}' | sed "s/ //g" | grep '^[e]' | grep -v "@" | grep -v "\.")
+a=$(ip address | grep ^[0-9] | awk -F: '{print $2}' | sed "s/ //g" | grep '^[l]'| grep -v "lo"  | awk -F '@'  '{print $1}' )
+if [ $(echo "$a" | wc -l) > 1 ]; then
+	a=$(ip address | grep ^[0-9] | awk -F: '{print $2}' | sed "s/ //g" | grep '^[l]'| grep -v "lo"  | awk -F '@'  '{print $1}' )$(ip address | grep ^[0-9] | awk -F: '{print $2}' | sed "s/ //g" | grep '^[w]'| grep -v "@" | grep -v "\." )
+else
+	a=$(ip address | grep ^[0-9] | awk -F: '{print $2}' | sed "s/ //g" | grep '^[e]' | grep -v "@" | grep -v "\.")
+fi
 b=$(echo "$a" | wc -l)
 rm -f /tmp/state/ethinfo
 
@@ -8,10 +13,11 @@ echo -n "[" > /tmp/state/ethinfo
 
 for i in $(seq 1 $b)
 do
-	h=$(echo '{"name":' )
+	h=$(echo '{"face":' )
 	c=$(echo "$a" | sed -n ${i}p)
 	d=$(ethtool $c)
-
+        face=$(uci show network | grep "$c" | head -n1 |awk -F '.'  '{print $2}' )
+	m=$(ifconfig | grep "$c" | head -n1 | awk -F 'HWaddr ' '{print $2}')
 	e=$(echo "$d" | grep "Link detected" | awk -F: '{printf $2}' | sed 's/^[ \t]*//g')
 	if [ $e = yes ]; then
 		l=1
@@ -29,7 +35,8 @@ do
 		x=0
 	fi
 
-	echo -n "$h \"$c\", \"status\": $l, \"speed\": \"$f\", \"duplex\": $x}," >> /tmp/state/ethinfo
+
+	echo -n "$h \"$face\", \"status\": $l, \"name\": \"$c\", \"duplex\": $x, \"speed\": \"$f\", \"mac\": \"$m\"}," >> /tmp/state/ethinfo
 done
 
 sed -i 's/.$//' /tmp/state/ethinfo
