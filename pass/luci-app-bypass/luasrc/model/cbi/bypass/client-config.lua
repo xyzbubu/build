@@ -3,7 +3,7 @@ local ov="bypass"
 local sid=arg[1]
 local uuid=luci.sys.exec("cat /proc/sys/kernel/random/uuid")
 local A=luci.sys.call("which obfs-local >/dev/null")
-local B=luci.sys.call("which xray-plugin >/dev/null")
+local B=luci.sys.call("which v2ray-plugin >/dev/null")
 
 local encrypt_methods={
 "none",
@@ -195,14 +195,14 @@ if A==0 then
 o:value("obfs-local",translate("simple-obfs"))
 end
 if B==0 then
-o:value("xray-plugin",translate("xray-plugin"))
+o:value("v2ray-plugin",translate("v2ray-plugin"))
 end
 o:depends("type","ss")
 end
 
 o=s:option(Value,"plugin_opts",translate("Plugin Opts"))
 o:depends("plugin","obfs-local")
-o:depends("plugin","xray-plugin")
+o:depends("plugin","v2ray-plugin")
 
 o=s:option(ListValue,"protocol",translate("Protocol"))
 for _,v in ipairs(protocol) do o:value(v) end

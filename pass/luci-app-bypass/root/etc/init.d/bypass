@@ -283,7 +283,7 @@ rules(){
 	
 	if [ ! -s $K/china.txt ] || [ $run_mode = router -a ! -s $K/china_v6.txt ] || ([ $run_mode = gfw -o $gfw_mode = 1 ] && [ ! -s $K/gfw.list ]);then
 
-		log "Rules-i     :Download IP/GFW files..."
+		log "Rules-f     :Download IP/GFW files..."
 		firstdown 2;exit
 
 	fi
@@ -467,7 +467,7 @@ rules(){
 
 	get_soip
 	log "Rules     : Get all server address successful!"
-	if [ "$lan_ac_ips" ];then
+	if [ -n "$lan_ac_ips" ];then
 		case $lan_ac_mode in
 			w|W|b|B)local ac_ips="$lan_ac_mode$lan_ac_ips";;
 		esac
@@ -1085,7 +1085,9 @@ EOF
 		[ $run_mode = all -a "$doh_l_t" ] && for i in $doh_l_t;do echo "server=/$i/127.0.0.1#5336" > $DNS_DIR/white.conf;done
 		if [ -s $T_FILE/white.list ];then
 			cp -f $T_FILE/white.list $O
-			for i in $(cat $O);do
+			sed -i "s/\r//g" $O
+			D=$(cat $O)
+			for i in $D;do
 				sed -i -e "/\/$i\//d" -e "/\.$i\//d" $DNS_DIR/black.conf 2>/dev/null
 				sed -i -e "/\/$i\//d" -e "/\.$i\//d" $CON_T 2>/dev/null
 			done
@@ -1312,7 +1314,7 @@ stop(){
 	kill -9 $(ps -w | grep $BIN_DIR/monitor | grep -v grep | awk '{print$1}') 2>/dev/null
 	kill -9 $(ps -w | grep $BIN_DIR/preload | grep -v grep | awk '{print$1}') 2>/dev/null
 	kill -9 $(ps -w | grep $VAR | grep -v grep | awk '{print$1}') 2>/dev/null
-	killall -q -9 smartdns chinadns-ng kcptun-client xray-plugin microsocks trojan trojan-go
+	killall -q -9 smartdns chinadns-ng kcptun-client xray-plugin v2ray-plugin microsocks trojan trojan-go
 	$BIN_DIR/rules -f
 	[ $(iptables -nL | grep BYBASS-S-RULE | wc -l) = 0 ] || (iptables -F BYBASS-S-RULE && iptables -X BYBASS-S-RULE;while iptables -D INPUT -j BYBASS-S-RULE 2>/dev/null;do :;done)
 	rm -rf $DNS_DIR $VAR*.json $DNS_FILE $CON_T /var/lock/bypass-update.lock $LOC_UCI
@@ -1335,7 +1337,7 @@ $([ $dns_mode_l = 0 ] && echo 223.5.5.5 223.6.6.6 | sed 's/ /\n/g' | sed 's/^/se
 EOF
 		$(which smartdns) -c $DNS_T
 		r=1
-		while ! ps -w | grep smartdns | grep -qv grep;do
+		while ! ps -w | grep smartdns | grep -v grep >/dev/null;do
 			[ $r -ge 10 ] && return 1 || let r++
 			sleep 1
 		done
