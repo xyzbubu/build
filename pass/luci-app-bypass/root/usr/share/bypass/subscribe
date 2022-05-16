@@ -7,7 +7,7 @@
 require "luci.model.uci"
 require "nixio"
 require "luci.util"
-SYS=require "luci.sys"
+require "luci.sys"
 require "luci.jsonc"
 -- these global functions are accessed all the time by the event handler
 -- so caching them is worth the effort
@@ -25,8 +25,8 @@ local switch = ucic:get_first(name, 'server_subscribe', 'switch', '1')
 local subscribe_url = ucic:get_first(name, 'server_subscribe', 'subscribe_url', {})
 local filter_mode=ucic:get_first(name,'server_subscribe','filter_mode','0')
 local filter_words = ucic:get_first(name, 'server_subscribe', 'filter_words', '过期时间/剩余流量')
-local v2_ss = SYS.exec('type -t -p ss-redir sslocal') ~= "" and "ss" or "v2ray"
-local v2_tj = SYS.exec('type -t -p trojan-plus') ~= "" and "trojan" or "v2ray"
+local v2_ss = luci.sys.exec('type -t -p ss-redir sslocal') ~= "" and "ss" or "v2ray"
+local v2_tj = luci.sys.exec('type -t -p trojan-plus') ~= "" and "trojan" or "v2ray"
 local log=function(...)
 	local file=io.open("/tmp/bypass.log","a")
 	io.output(file)
@@ -39,8 +39,8 @@ local encrypt_methods_ss = {
 	"aes-192-gcm",
 	"aes-256-gcm",
 	"chacha20-ietf-poly1305",
-	"xchacha20-ietf-poly1305",
-	--stream
+	"xchacha20-ietf-poly1305"
+	--[[ stream
 	"table",
 	"rc4",
 	"rc4-md5",
@@ -56,7 +56,7 @@ local encrypt_methods_ss = {
 	"camellia-256-cfb",
 	"salsa20",
 	"chacha20",
-	"chacha20-ietf"
+	"chacha20-ietf" ]]
 }
 -- 分割字符串
 local function split(full, sep)
@@ -104,7 +104,7 @@ local function trim(text)
 end
 -- md5
 local function md5(content)
-	local stdout = SYS.exec('echo \"' .. urlEncode(content) .. '\" | md5sum | cut -d \" \" -f1')
+	local stdout = luci.sys.exec('echo \"' .. urlEncode(content) .. '\" | md5sum | cut -d \" \" -f1')
 	-- assert(nixio.errno() == 0)
 	return trim(stdout)
 end
@@ -196,36 +196,23 @@ local function processData(szType, content)
 			result.read_buffer_size = 2
 			result.write_buffer_size = 2
 		end
-		if info.net == 'grpc' then
-			if info.path then
-				result.serviceName = info.path
-			elseif info.serviceName then
-				result.serviceName = info.serviceName
-			end
-		end
 		if info.net == 'quic' then
 			result.quic_guise = info.type
 			result.quic_key = info.key
 			result.quic_security = info.securty
 		end
-
+		if info.net == 'grpc' then
+			result.grpc_serviceName = info.path
+		end
 		if info.security then
 			result.security = info.security
 		end
 		if info.tls == "tls" or info.tls == "1" then
 			result.tls = "1"
-			if info.host then
-				result.tls_host = info.host
-			elseif info.sni then
-				result.tls_host = info.sni
-			end
+			result.tls_host = info.host
 			result.insecure = 1
 		else
 			result.tls = "0"
-		end
-		-- https://www.v2fly.org/config/protocols/vmess.html#vmess-md5-认证信息-淘汰机制
-		if info.aid and (tonumber(info.aid) > 0) then
-			result.server = nil
 		end
 	elseif szType == "ss" then
 		local idx_sp = 0
@@ -400,7 +387,6 @@ local function processData(szType, content)
 			if params.type == 'grpc' then
 				if params.path then result.grpc_serviceName = params.path end
 				if params.serviceName then result.grpc_serviceName = params.serviceName end
-				result.serviceName = params.serviceName
 			end
 			if params.security == "tls" then
 				result.tls = "1"
@@ -431,7 +417,7 @@ local function processData(szType, content)
 end
 -- curl
 local function curl(url)
-	local stdout=SYS.exec('curl --retry 3 -m 10 -LfskA "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36" "'..url..'"')
+	local stdout=luci.sys.exec('curl --retry 3 -m 10 -LfskA "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36" "'..url..'"')
 	return trim(stdout)
 end
 
@@ -451,7 +437,7 @@ local execute = function()
 	do
 		if proxy == '0' then -- 不使用代理更新的话先暂停
 			log('服务正在暂停')
-			SYS.init.stop(name)
+			luci.sys.init.stop(name)
 		end
 		for k, url in ipairs(subscribe_url) do
 			local raw = curl(url)
@@ -476,7 +462,7 @@ local execute = function()
 					nodes = servers
 				-- SS SIP008 直接使用 Json 格式
 				elseif jsonParse(raw) then
-					nodes = jsonParse(raw).servers or jsonParse(raw)
+					nodes = jsonParse(raw)
 					if nodes[1].server and nodes[1].method then
 						szType = 'sip008'
 					end
@@ -531,7 +517,7 @@ local execute = function()
 		if next(nodeResult) == nil then
 			log("更新失败，没有可用的节点信息")
 			if proxy == '0' then
-				SYS.init.start(name)
+				luci.sys.init.start(name)
 				log('订阅失败, 恢复服务')
 			end
 			return
@@ -578,15 +564,15 @@ local execute = function()
 			local firstServer = ucic:get_first(name, uciType)
 			if firstServer then
 				if not ucic:get(name, globalServer) then
-					SYS.call("/etc/init.d/" .. name .. " stop > /dev/null 2>&1 &")
+					luci.sys.call("/etc/init.d/" .. name .. " stop > /dev/null 2>&1 &")
 					ucic:commit(name)
 					ucic:set(name, ucic:get_first(name, 'global'), 'global_server', ucic:get_first(name, uciType))
 					ucic:commit(name)
 					log('当前主服务器节点已被删除，正在自动更换为第一个节点。')
-					SYS.call("/etc/init.d/" .. name .. " start > /dev/null 2>&1 &")
+					luci.sys.call("/etc/init.d/" .. name .. " start > /dev/null 2>&1 &")
 				else
 					log('维持当前主服务器节点。')
-					SYS.call("/etc/init.d/" .. name .. " restart > /dev/null 2>&1 &")
+					luci.sys.call("/etc/init.d/" .. name .. " restart > /dev/null 2>&1 &")
 				end
 			else
 			ucic:delete(name,ucic:get_first(name,'global'),'global_server')
@@ -596,7 +582,7 @@ local execute = function()
 			ucic:delete(name,ucic:get_first(name,'global'),'cu_server')
 			ucic:delete(name,ucic:get_first(name,'global'),'tg_server')
 				log('没有服务器节点了，停止服务')
-				SYS.call("/etc/init.d/" .. name .. " stop > /dev/null 2>&1 &")
+				luci.sys.call("/etc/init.d/" .. name .. " stop > /dev/null 2>&1 &")
 			end
 		end
 		log('新增节点数量: ' .. add, '删除节点数量: ' .. del)
@@ -611,10 +597,10 @@ if subscribe_url and #subscribe_url > 0 then
 		log('发生错误, 正在恢复服务')
 		local firstServer = ucic:get_first(name, uciType)
 		if firstServer then
-			SYS.call("/etc/init.d/" .. name .. " restart > /dev/null 2>&1 &") -- 不加&的话日志会出现的更早
+			luci.sys.call("/etc/init.d/" .. name .. " restart > /dev/null 2>&1 &") -- 不加&的话日志会出现的更早
 			log('重启服务成功')
 		else
-			SYS.call("/etc/init.d/" .. name .. " stop > /dev/null 2>&1 &") -- 不加&的话日志会出现的更早
+			luci.sys.call("/etc/init.d/" .. name .. " stop > /dev/null 2>&1 &") -- 不加&的话日志会出现的更早
 			log('停止服务成功')
 		end
 	end)
