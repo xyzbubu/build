@@ -1,8 +1,12 @@
 #!/bin/sh
-
-if [ $(ip address | grep ^[0-9] | awk -F: '{print $2}' | sed "s/ //g" | grep '^[l]'| grep -v "lo"  | awk -F '@'  '{print $1}' | wc -l ) == '0' ]; then
+tm=$(ip address | grep ^[0-9] | awk -F: '{print $2}' | sed "s/ //g" | grep '^[l]'| grep -v "lo"  | awk -F '@'  '{print $1}' | wc -l ) 
+if tm==0; then
+tm1=$(ip address | grep ^[0-9] | awk -F: '{print $2}' | sed "s/ //g" | grep '^[e]' | grep -v "@" | grep -v "\." )
+   if [ tm1 == 0 ]; then
 	    a=$(ip address | grep ^[0-9] | awk -F: '{print $2}' | sed "s/ //g" | grep '^[e]' | grep -v "er" | grep -v "@" | grep -v "\.")
-
+   else
+ 	    a=$(ip address | grep ^[0-9] | awk -F: '{print $2}' | sed "s/ //g" | grep '^[e]' | grep -v "er" | awk -F '@'  '{print $1}' )
+   fi
 else
 	a=$(ip address | grep ^[0-9] | awk -F: '{print $2}' | sed "s/ //g" | grep '^[l]'| grep -v "lo"  | awk -F '@'  '{print $1}' )$(ip address | grep ^[0-9] | awk -F: '{print $2}' | sed "s/ //g" | grep '^[w]'| grep -v "@" | grep -v "\." )
 fi

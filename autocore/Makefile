@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=autocore
 PKG_VERSION:=2
-PKG_RELEASE:=6
+PKG_RELEASE:=7
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -45,6 +45,7 @@ define Package/autocore/install/Default
 	$(INSTALL_DIR) $(1)/sbin
 	$(INSTALL_BIN) ./files/generic/cntime $(1)/sbin/
 	$(INSTALL_BIN) ./files/generic/cpuinfo $(1)/sbin/
+	$(INSTALL_BIN) ./files/generic/cpuspeed $(1)/sbin/
 	$(INSTALL_BIN) ./files/generic/ethinfo $(1)/sbin/
 endef
 define Package/autocore-arm/install
