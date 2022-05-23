@@ -36,11 +36,11 @@ mkdir -p $TMP 2>/dev/null
 
 	if [ ! -f $T_FILE/china_v6.txt ];then
 
-		while ! (curl -kLfsm 2 -o /tmp/china_v6.txt https://ispip.clang.cn/all_cn_ipv6.txt || curl -kLfsm 5 -o /tmp/china_v6.txt https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn_ipv6.txt);do
+		while ! (curl -kLfsm 3 -o /tmp/china_v6.txt https://ispip.clang.cn/all_cn_ipv6.txt || curl -kLfsm 5 -o /tmp/china_v6.txt https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn_ipv6.txt);do
 			sleep 2
 		done
 	else
-		curl -kLfsm 2 -o /tmp/china_v6.txt https://ispip.clang.cn/all_cn_ipv6.txt || curl -kLfsm 5 -o /tmp/china_v6.txt https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn_ipv6.txt
+		curl -kLfsm 3 -o /tmp/china_v6.txt https://ispip.clang.cn/all_cn_ipv6.txt || curl -kLfsm 5 -o /tmp/china_v6.txt https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn_ipv6.txt
 	fi
 	[[ -f /tmp/china_v6.txt && $? == 0 ]] && {
 

@@ -1314,7 +1314,7 @@ stop(){
 	kill -9 $(ps -w | grep $BIN_DIR/monitor | grep -v grep | awk '{print$1}') 2>/dev/null
 	kill -9 $(ps -w | grep $BIN_DIR/preload | grep -v grep | awk '{print$1}') 2>/dev/null
 	kill -9 $(ps -w | grep $VAR | grep -v grep | awk '{print$1}') 2>/dev/null
-	killall -q -9 smartdns chinadns-ng kcptun-client xray-plugin v2ray-plugin microsocks trojan trojan-go
+	killall -q -9 smartdns chinadns-ng kcptun-client xray xray-plugin v2ray-plugin microsocks trojan trojan-go
 	$BIN_DIR/rules -f
 	[ $(iptables -nL | grep BYBASS-S-RULE | wc -l) = 0 ] || (iptables -F BYBASS-S-RULE && iptables -X BYBASS-S-RULE;while iptables -D INPUT -j BYBASS-S-RULE 2>/dev/null;do :;done)
 	rm -rf $DNS_DIR $VAR*.json $DNS_FILE $CON_T /var/lock/bypass-update.lock $LOC_UCI
