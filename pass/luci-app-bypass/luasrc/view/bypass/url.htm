@@ -594,9 +594,9 @@ function fromUrl(btn,urlname,sid){
 		opt.set('transport',queryParam.type || "tcp");
 		opt.get('transport').dispatchEvent(event);
 		if (queryParam.type=="ws"){
-			opt.set('ws_host',queryParam.host || '');
+			//opt.set('ws_host',queryParam.host || '');
 			opt.set('ws_path',queryParam.path || '');
-		}else if (queryParam.type=="h2"){
+		else if (queryParam.type=="h2"){
 			opt.set('h2_host',queryParam.host || '');
 			opt.set('h2_path',queryParam.path || '');
 		}else if (queryParam.type=="tcp"){
