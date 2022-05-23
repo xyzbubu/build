@@ -1,4 +1,5 @@
 #!/bin/sh
+
 uci set luci.main.lang=zh_cn
 uci set luci.main.mediaurlbase='/luci-static/opentopd'
 uci commit luci
@@ -18,7 +19,7 @@ uci set uhttpd.main.redirect_https=0
 uci commit uhttpd
 
 uci -q batch <<-EOF
-set dhcp.@dnsmasq[0].cachesize='1500'
+set dhcp.@dnsmasq[0].cachesize='10000'
 set dhcp.@dnsmasq[0].min_ttl='3600'
 set dhcp.@dnsmasq[0].filter_aaaa='0'
 set dhcp.@dnsmasq[0].localservice='0'
@@ -42,15 +43,12 @@ set network.wan.ipv6='auto'
 set network.wan6.ifname='@wan'
 EOF
 uci commit network
-uci -q batch <<-EOF
-set turboacc.config.fullcone_nat='1'
-set turboacc.config.bbr_cca='0'
-set turboacc.config.sfe_flow='0'
-set turboacc.config.hw_flow='0'
-set turboacc.config.sw_flow='0'
-EOF
+uci set turboacc.config.fullcone_nat='1'
+uci set turboacc.config.bbr_cca='0'
+uci set turboacc.config.sfe_flow='0'
+uci set turboacc.config.hw_flow='0'
+uci set turboacc.config.sw_flow='0'
 uci commit turboacc
-/etc/init.d/turboacc restart
 uci set fstab.@global[0].anon_mount=1
 uci commit fstab
 uci set upnpd.@upnpd[0].enabled='0' 
@@ -82,8 +80,6 @@ sed -i 's,downloads.openwrt.org,mirrors.tencent.com/lede,g' /etc/opkg/distfeeds.
 sed -i "s/# //g" /etc/opkg/distfeeds.conf
 
 sed -i '/openwrt_luci/ { s/snapshots/releases\/18.06.9/g; }'  /etc/opkg/distfeeds.conf
-sed -i '/immortalwrt_luci/ { s/snapshots/releases\/18.06.9/g; }'  /etc/opkg/distfeeds.conf
-sed -i 's/immortalwrt.org/baidu.com/g'  /etc/config/luci
 sed -i 's/openwrt.org/baidu.com/g'  /etc/config/luci
 sed -i '/REDIRECT --to-ports 53/d' /etc/firewall.user
 echo "# iptables -t nat -I POSTROUTING -o eth0 -j MASQUERADE" > /etc/firewall.user
@@ -95,10 +91,13 @@ echo '[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp 
 
 sed -i '/option disabled/d' /etc/config/wireless
 sed -i '/set wireless.radio${devidx}.disabled/d' /lib/wifi/mac80211.sh
+uci set wireless.radio0.disabled=0
+uci set wireless.radio1.disabled=0
+uci commit wireless
 wifi up
 
 sed -i '/DISTRIB_REVISION/d' /etc/openwrt_release
-echo "DISTRIB_REVISION='R22.5.1'" >> /etc/openwrt_release
+echo "DISTRIB_REVISION='R22.6.1'" >> /etc/openwrt_release
 sed -i '/DISTRIB_DESCRIPTION/d' /etc/openwrt_release
 cat /etc/openwrt_release1 >> /etc/openwrt_release
 echo "DISTRIB_DESCRIPTION='OpenWrt '" >> /etc/openwrt_release
