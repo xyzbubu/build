@@ -108,5 +108,4 @@ echo "log-facility=/dev/null" >> /etc/dnsmasq.conf
 echo 'hsts=0' > /root/.wgetrc
 rm -rf /tmp/luci-*
 
-mv /etc/openwrt_banner /etc/banner
 exit 0
