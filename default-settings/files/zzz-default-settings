@@ -65,7 +65,6 @@ set dhcp.lan.force='1'
 EOF
 uci commit dhcp
 uci -q batch <<-EOF
-set network.@globals[0].ula_prefix=''
 set network.lan.delegate='0'
 set network.wan.mtu=1460
 set network.wan.metric='41'
