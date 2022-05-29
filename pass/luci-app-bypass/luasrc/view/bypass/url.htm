@@ -111,7 +111,10 @@ function buildUrl(btn,urlname,sid){
 	}
 
 	var s=document.getElementById(urlname+"-status");
-	if (!s) return false;
+	if (!s) {
+			alert("Never");
+			return false;
+		}
 	var v_type=opt.get("type").value;
 	var v_alias=opt.get("alias").value;
 	var url=null;
@@ -126,13 +129,17 @@ function buildUrl(btn,urlname,sid){
 			v_port.value+"/?";
 		var params='';
 		var v_plugin=opt.get("plugin").value;
-		if (v_plugin){
+			if (v_plugin && v_plugin != "none") {
+				if (v_plugin == "simple-obfs" || v_plugin == "obfs-local") {
+					v_plugin = "obfs-local";
+				}
 			var v_plugin_opts=opt.get("plugin_opts").value;
 			if (v_plugin_opts && v_plugin_opts!=''){
 				v_plugin+=encodeURI(";"+v_plugin_opts);
 			}
 			params+="&plugin="+encodeURI(v_plugin);
 		}
+		params += "&group="
 		params+="#"+encodeURI(v_alias);
 		if (params[0]=="&"){
 			params=params.substring(1);
@@ -196,6 +203,7 @@ function buildUrl(btn,urlname,sid){
 		info.net=v_transport;
 		info.security=opt.get("security").value || "auto";
 		if (opt.get("tls").checked){
+			var v_security = "tls";
 			info.tls="tls";
 			info.sni=opt.get("tls_host").value;
 		}
@@ -220,7 +228,8 @@ function buildUrl(btn,urlname,sid){
 			params+=opt.query("headerType","tcp_guise");
 			params+=opt.query("host","http_host");
 			params+=opt.query("path","http_path");
-		}else if (v_transport=="kcp"){
+		} else if (v_transport === "mkcp") {
+			v_transport = "kcp";
 			params+=opt.query("headerType","kcp_guise");
 			params+=opt.query("seed","seed");
 		}else if (v_transport=="quic"){
@@ -277,9 +286,9 @@ function buildUrl(btn,urlname,sid){
 		textarea.select();
 		try{
 			document.execCommand("copy");// Security exception may be thrown by some browsers.
-			s.innerHTML="<font color='green'><%:URL to clipboard successful%></font>";
+			s.innerHTML="<font color='green'><%:Share to clipboard successfully%></font>";
 		}catch (ex){
-			s.innerHTML="<font color='red'><%:URL to clipboard failed%></font>";
+			s.innerHTML="<font color='red'><%:Unable share to clipboard%></font>";
 		}finally{
 			document.body.removeChild(textarea);
 		}
@@ -337,7 +346,7 @@ function fromUrl(btn,urlname,sid){
 	event.initEvent("change",true,true);
 	switch (ssu[0]){
 	default:
-		s.innerHTML="<font color='red'><%:Invalid URL%></font>:"+ssu[0];
+		s.innerHTML="<font color='red'><%:Invalid Share URL Format%></font>:"+ssu[0];
 		return false;
 	case "ss":
 		ssu[1]=ssu[1].replace(/&group=.*#/,"#")
@@ -410,7 +419,7 @@ function fromUrl(btn,urlname,sid){
 		console.log(param);
 		var ssm=url0.match(/^(.+):([^:]+):([^:]*):([^:]+):([^:]*):([^:]+)/);
 		if (!ssm || ssm.length < 7){
-			s.innerHTML="<font color='red'><%:Invalid URL%></font>";
+			s.innerHTML="<font color='red'><%:Invalid Share URL Format%></font>";
 			return false;
 		}
 		var pdict={};
@@ -439,7 +448,7 @@ function fromUrl(btn,urlname,sid){
 		console.log(m.search);
 		var password=m.passwd;
 		if (password==''){
-			s.innerHTML="<font color='red'><%:Invalid URL%></font>";
+			s.innerHTML="<font color='red'><%:Invalid Share URL Format%></font>";
 			return false;
 		}
 		var queryParam={};
@@ -477,7 +486,7 @@ function fromUrl(btn,urlname,sid){
 				console.log(m.search);
 				var password=m.passwd;
 				if (password==''){
-					s.innerHTML="<font color='red'><%:Invalid URL%></font>";
+					s.innerHTML="<font color='red'><%:Invalid Share URL Format%></font>";
 					return false;
 				}
 				var queryParam={};
@@ -594,9 +603,9 @@ function fromUrl(btn,urlname,sid){
 		opt.set('transport',queryParam.type || "tcp");
 		opt.get('transport').dispatchEvent(event);
 		if (queryParam.type=="ws"){
-			//opt.set('ws_host',queryParam.host || '');
+			opt.set('ws_host',queryParam.host || '');
 			opt.set('ws_path',queryParam.path || '');
-		else if (queryParam.type=="h2"){
+		}else if (queryParam.type=="h2"){
 			opt.set('h2_host',queryParam.host || '');
 			opt.set('h2_path',queryParam.path || '');
 		}else if (queryParam.type=="tcp"){
@@ -612,14 +621,14 @@ function fromUrl(btn,urlname,sid){
 			opt.set('quic_key',queryParam.key);
 			opt.set('quic_security',queryParam.quicSecurity);
 		}else if (queryParam.type=="grpc"){
-			opt.set('grpc_serviceName',queryParam.serviceName || '');
+			opt.set('grpc_serviceName', (queryParam.serviceName || queryParam.path) || "");
 		}
 	}
-	s.innerHTML="<font color='green'><%:Import Successful%></font>";
+	s.innerHTML="<font color='green'><%:Import Finished%></font>";
 	return false;
 }
 //]]></script>
-<input type="button" class="cbi-button cbi-button-apply" value="<%:Import%>" onclick="return fromUrl(this,'<%=self.option%>','<%=self.value%>')"/>
-<input type="button" class="cbi-button cbi-button-apply" value='<%:Export%>' onclick="return buildUrl(this,'<%=self.option%>','<%=self.value%>')"/>
+<input type="button" class="btn cbi-button cbi-button-apply" value='<%:From Share URL%>' onclick="return fromUrl(this, '<%=self.option%>', '<%=self.value%>')" />
+<input type="button" class="btn cbi-button cbi-button-apply" value='<%:Build Share URL%>' onclick="return buildUrl(this, '<%=self.option%>', '<%=self.value%>')" />
 <span id="<%=self.option%>-status"></span>
 <%+cbi/valuefooter%>

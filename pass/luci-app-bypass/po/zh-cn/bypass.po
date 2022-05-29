@@ -316,8 +316,6 @@ msgstr "保留命中关键词的节点"
 msgid "Save Subscribe Settings"
 msgstr "保存订阅设置"
 
-msgid "Update Subscribe List"
-msgstr "更新订阅URL列表"
 
 msgid "Update subscribe url list first"
 msgstr "修改订阅URL和节点关键字后，请先点击更新"
@@ -764,10 +762,10 @@ msgid "Build Share URL"
 msgstr "导出配置信息"
 
 msgid "Import Finished"
-msgstr "导入完成："
+msgstr "导入完成"
 
-msgid "Not a supported scheme:"
-msgstr "不支持此格式："
+msgid "Not a supported Format"
+msgstr "不支持此格式"
 
 msgid "Invalid Share URL Format"
 msgstr "无效的配置链接"
@@ -800,7 +798,7 @@ msgid "It is the latest version"
 msgstr "已是最新版本"
 
 msgid "Update successful"
-msgstr "更新完"
+msgstr "更新成功"
 
 msgid "Click to update"
 msgstr "点击更新"
