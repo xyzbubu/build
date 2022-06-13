@@ -30,7 +30,6 @@ function index()
 	entry({"admin", "services", "shadowsocksr", "reset"}, call("act_reset"))
 	entry({"admin", "services", "shadowsocksr", "restart"}, call("act_restart"))
 	entry({"admin", "services", "shadowsocksr", "delete"}, call("act_delete"))
-	entry({"admin", "services", "shadowsocksr", "cache"}, call("act_cache"))
 	 entry({"admin","services","shadowsocksr","getlog"},call("getlog")) 
          entry({"admin","services","shadowsocksr","dellog"},call("dellog")) 
 end
@@ -63,7 +62,7 @@ function act_status()
 
     e.global = CALL('busybox ps -w | grep ssrp-retcp | grep -v grep  >/dev/null ') == 0
 
-    e.pdnsd = CALL('busybox ps -w | grep ssrpluspdnsd | grep -v grep  >/dev/null ') == 0
+    e.pdnsd = CALL('busybox ps -w | grep dns2tcp | grep -v grep  >/dev/null ') == 0
 
     e.udp = CALL('busybox ps -w | grep ssrp-reudp | grep -v grep  >/dev/null') == 0
 
@@ -166,12 +165,6 @@ function act_delete()
 	luci.http.redirect(luci.dispatcher.build_url("admin", "services", "shadowsocksr", "servers"))
 end
 
-function act_cache()
-	local e = {}
-	e.ret = luci.sys.call("pdnsd-ctl -c /var/etc/ssrplus/pdnsd empty-cache >/dev/null")
-	luci.http.prepare_content("application/json")
-	luci.http.write_json(e)
-end
 function getlog()
 	logfile="/var/log/ssrplus.log"
 	if not fs.access(logfile) then

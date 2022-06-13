@@ -381,7 +381,7 @@ word-spacing:-.43em
           <div class="img-con"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkBAMAAACCzIhnAAAAA3NCSVQICAjb4U/gAAAAGFBMVEX1OF38ucb2Smz////4fJX+5+v3YH76lKhmnvr0AAAACXBIWXMAAAsSAAALEgHS3X78AAAAH3RFWHRTb2Z0d2FyZQBNYWNyb21lZGlhIEZpcmV3b3JrcyA4tWjSeAAAAxtJREFUWIWtmEtz2jAQgBcPmCtTt+nVlJJeAeHk6hTKGeIwvdImca4Upv393V3JiuwYkLbdmcwE2Z+lXa32IVAtsv24+plG10+/tm1P4e3Q5itY+fzBA8kOUJMvxSVks4OGxM2JGsj3JkDy7RzSSjSZGnLbTgAcTyHT9BQSJe1I9kZzxwZFK/LuNAEwbENOKtJUxyLnllVfmkXuzxMA4yaSpZeQqGggZ3XXMqwjlyd5nQY8NSEZu4jPJHYajdz4EACPDrL3Q/qvyNSPAEgs4qU8ydgiO18krhDvdemVETLzR8YG8bQXSV8jmT8BUDAyD0EWjKxDkB4jAaqwMhCmCikDIbtCkiDi6cWVPCISpD3pD2Hak/6g0jAkVhBoMDQZBBoMTQZB7kKygADP1zKCQBujlRkZUSh7j4GKzinl5A65UVepHJP4lkfoOG4PGhkYhIIGI+RBHXJWRvomMiY2oXRgb5HMIGpAyEwjRzOS2BDZh9wiam+QOSFTRuy8ifkqrhd2jEzLH3jW8IWrpwLfQETlXf33UP4eEHJTHjl8xRVCB2ESkQoYRBi5JwRVSSECQiak156QtEISNWMEX08JmRLSqeIiITEphR+oEHxhUiE7QtRSz7JZpQaJDAJa/S1Gm0EdeUCEI2q2dxGoEA7NLlKojIycGEO5SGqRObjIgoZyNgSNuguzCG6tiww1Ai9Uwa1r6msjZ8tlCuBa7FOhEa4rZg7i7AsYpKf3JV1UCDrNTW1f8gaCpVdm9yaH5wPvGCML3qSucUuLkNwyQik7x0VtEq1L5WN94/w1ZM0IOXH+rEeMsTlJdMwRcxE8HYz0tMPwtAbZO6fSQWivGYnp63fkbeZUqit9KilcdJcr7QYlCm1UVJb8C/+P9bNr84TChSAoCUKfIMD6lxZaYlmyEKQkQeITpFdBEheUCpKCRFD2CIorQQkXUiiOlLgcFRS9ktJaUMAL2gRJM3KpQ9RSa3kEjZWkffNpEqte9B9aUUHDK2mrBc275IpAchEhuO6QXKpIrm4kF0SSayi025868VI03/gfV2ok5y/u/gJ+KnR0ZBLdnQAAAABJRU5ErkJggg==" > </div>
         </div>
         <div class="pure-u-3-5">
-          <h4 id="pdnsd_status">PDNSD<br />
+          <h4 id="pdnsd_status">DNS<br />
             <span class="red">
             <%:Not Running%>
             </span></h4>
@@ -516,9 +516,9 @@ word-spacing:-.43em
                     udp_status.innerHTML = 'UDP<br /><span class="red"><%:Not Running%></span>';
                 }
                 if (data.pdnsd) {
-                    pdnsd_status.innerHTML = 'PDNSD<br /><span class="green"><%:Running%></span>';
+                    pdnsd_status.innerHTML = 'DNS<br /><span class="green"><%:Running%></span>';
                 } else {
-                    pdnsd_status.innerHTML = 'PDNSD<br /><span class="red"><%:Not Running%></span>';
+                    pdnsd_status.innerHTML = 'DNS<br /><span class="red"><%:Not Running%></span>';
                 }
                 if (data.server) {
                     server_status.innerHTML = 'SERVER<br /><span class="green"><%:Running%></span>';
