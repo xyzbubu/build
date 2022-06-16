@@ -54,7 +54,7 @@ function trojan_shadowsocks()
 
 	if server.v2ray_protocol == "shadowsocksr" then
 		server.v2ray_protocol = "shadowsocks"
-	elseif (server.v2ray_protocol == "shadowsocks") and (server.mux ~= "1") and (not (outbound_settings.plugin or server.transport ~= "tcp" or server.tls or server.xtls)) then
+	elseif false and (server.mux ~= "1") and (not (outbound_settings.plugin or server.transport ~= "tcp" or server.tls or server.xtls)) then
 		server.v2ray_protocol = "shadowsocks_sing"
 		outbound_settings = outbound_settings.servers[1]
 	elseif (server.v2ray_protocol == "trojan") and (server.tls and server.mux ~= "1") and (not (server.transport ~= "tcp" or server.xtls)) then

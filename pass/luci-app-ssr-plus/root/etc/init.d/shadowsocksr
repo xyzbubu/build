@@ -877,7 +877,7 @@ stop() {
 	killall -q -9 v2ray-plugin obfs-local xray-plugin
 	rm -f /var/lock/ssr-monitor.lock
 	if [ -f "/tmp/dnsmasq.d/dnsmasq-ssrplus.conf" ]; then
-		rm -rf /tmp/dnsmasq.d/dnsmasq-ssrplus.conf $TMP_DNSMASQ_PATH $TMP_PATH/*-ssr-*.json $TMP_PATH/ssr-server*.json
+		rm -rf /tmp/dnsmasq.d/dnsmasq-ssrplus.conf $TMP_DNSMASQ_PATH $TMP_PATH/*-ssr*.json $TMP_PATH/ssr-server*.json
 		/etc/init.d/dnsmasq restart >/dev/null 2>&1
 	fi
 	del_cron
