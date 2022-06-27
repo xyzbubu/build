@@ -1,7 +1,20 @@
 #!/bin/sh
-TEMP="$(sensors 2>/dev/null | grep 'Core 0' )"
-if  [ -n "${TEMP}" ] ;then
-        TEMP="$(sensors 2>/dev/null | grep 'Core 0' | cut -c12-  | awk  -F '°' '{print $1}')"
-	
-        printf '%.f' $TEMP
-fi
+. /etc/openwrt_release
+THERMAL_PATH="/sys/class/thermal"
+
+case "$DISTRIB_TARGET" in
+"bcm27xx"/*)
+	cpu_temp="$(vcgencmd measure_temp | awk -F '=' '{print $2}' | awk -F "'" '{print $1}')" ;;
+"x86"/*)
+	# Intel
+	cpu_temp="$(sensors "coretemp-*" 2>"/dev/null" | grep -E "(Package id |Core )" | grep -Eo "\+[0-9]*" | head -n1 | tr -d "+")"
+	# AMD
+	[ -n "${cpu_temp}" ] || cpu_temp="$(sensors "k*temp-*" 2>"/dev/null" | awk '/Tdie/ {print $2}' | head -n1 | tr -d "+")"
+	;;
+*)
+	[ ! -e "$THERMAL_PATH/thermal_zone0/temp" ] || \
+		cpu_temp="$(awk '{printf("%.f, $0 / 1000)}' "$THERMAL_PATH/thermal_zone0/temp")"
+	;;
+esac
+	echo -n "${cpu_temp}"
+
