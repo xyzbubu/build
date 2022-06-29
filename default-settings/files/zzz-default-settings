@@ -70,7 +70,6 @@ set network.wan.mtu=1460
 set network.wan.metric='41'
 set network.wan.delegate='0'
 set network.wan.ipv6='auto'
-set network.wan6.ifname='@wan'
 EOF
 uci commit network
 uci set turboacc.config.fullcone_nat='1'
