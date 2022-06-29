@@ -76,6 +76,16 @@ translate("Preload the domain name (GFW mode only,Solve the problem that the ter
 o:depends("run_mode","gfw")
 o.default=1
 
+if luci.sys.call("test `grep MemTotal /proc/meminfo | awk '{print $2}'` -gt 233000") == 0 then
+o=s:option(Flag,"adguardhome",translate("Used with AdGuardHome"),
+translate("Luci-app-adguardhome require"))
+if luci.sys.call("test `which AdGuardHome` && test -r /etc/init.d/AdGuardHome") == 0 then
+o.default=1
+else
+o.default=0
+end
+end
+
 o=s:option(Value,"dports",translate("Proxy Ports"),
 translate("Custom format is 22,53,80,143,443,465,587,853,993,995,9418"))
 o:value("",translate("All Ports"))
