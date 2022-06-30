@@ -1329,7 +1329,6 @@ start(){
 	elif [ $adguardhome == 1 ]; then
 		log "请确保系统中存在luci-app-adguardhome以及adg主程序!"
 	fi
-	rm -f $LOCK $LOC
 	clean_log
 	unset_lock
 }
@@ -1355,7 +1354,7 @@ stop(){
 		if [[ -f /etc/init.d/AdGuardHome && "$(uci -q get AdGuardHome.AdGuardHome.redirect)" == "exchange"  ]]; then
 			/etc/init.d/AdGuardHome stop >/dev/null 2>&1 &
 		fi
-		rm -rf $SDNS $PID $LOC $LOG
+		rm -rf $SDNS $PID $LOC
 		/etc/init.d/dnsmasq restart >/dev/null 2>&1
 	elif [ -s $DNS_T ];then
 		cat > $DNS_T <<EOF
