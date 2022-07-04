@@ -316,6 +316,8 @@ msgstr "保留命中关键词的节点"
 msgid "Save Subscribe Settings"
 msgstr "保存订阅设置"
 
+msgid "Update Subscribe List"
+msgstr "更新订阅URL列表"
 
 msgid "Update subscribe url list first"
 msgstr "修改订阅URL和节点关键字后，请先点击更新"
