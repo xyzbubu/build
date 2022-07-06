@@ -1,7 +1,5 @@
-[![](https://visitor-badge.glitch.me/badge?page_id=sirpdboy-visitor-badge)] [![](https://img.shields.io/badge/TG群-点击加入-FFFFFF.svg)](https://t.me/joinchat/AAAAAEpRF88NfOK5vBXGBQ)
-<a href="#readme">
-    <img src="https://img.vim-cn.com/69/df015dc73fc71da07c3264766e8032ac042fed.png" alt="图飞了😂" title="opentopd" align="right" height="180" />
-</a>
+[![访问数：](https://visitor-badge.glitch.me/badge?page_id=sirpdboy-visitor-badge)] [![](https://img.shields.io/badge/TG群-点击加入-FFFFFF.svg)](https://t.me/joinchat/AAAAAEpRF88NfOK5vBXGBQ)
+
 
 欢迎来到sirpdboy的源码仓库！
 =
