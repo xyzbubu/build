@@ -281,9 +281,9 @@ rules(){
 	if ps -w | grep bypass-tcp | grep -qv grep;then
 		echo "bypass has Started.";return 1
 	fi
-	cat $LOG 2>/dev/null | sed -n '$p' | grep -q 'Check network status...\|Download IP/GFW files...' || gen_log
+	cat $LOG 2>/dev/null | sed -n '$p' | grep -q 'Check network status.\|Download IP/GFW files.' || gen_log
 	check_net
-	cat $LOG 2>/dev/null | sed -n '$p' | grep -q 'Download IP/GFW files...' || (log "Rules     :Check network status successful!";log "Rules     :Check IP/GFW files...")
+	cat $LOG 2>/dev/null | sed -n '$p' | grep -q 'Download IP/GFW files..' || (log "Rules     :Check network status successful..";log "Rules     :Check IP/GFW files..")
 	mkdir -p /var/run /var/etc
 	
 	if [ ! -s $K/china.txt ] || [ $run_mode = router -a ! -s $K/china_v6.txt ] || ([ $run_mode = gfw -o $gfw_mode = 1 ] && [ ! -s $K/gfw.list ]);then
@@ -472,7 +472,7 @@ rules(){
 
 	get_soip
 	log "Rules     : Get all server address successful!"
-	if [ -n "$lan_ac_ips" ];then
+	if [ "$lan_ac_ips" ];then
 		case $lan_ac_mode in
 			w|W|b|B)local ac_ips="$lan_ac_mode$lan_ac_ips";;
 		esac
@@ -987,13 +987,14 @@ EOF
 
 	if [ $dns_mode_l = 0 ];then
 		echo $doh_l | sed 's/,/\n/g' | sed -e 's/^/server-https /g' -e 's/$/ -group i -exclude-default-group/g' >> $DNS_T
+		for i in $dns_l;do echo "server $i -group j -exclude-default-group" >> $DNS_T;done
 		doh_l_t=$(echo $doh_l | sed 's/,/\n/g' | awk -F[/:] '{print$4}' | grep -v '\[' | grep -Ev "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$")
-		if [ "$doh_l_t" ];then
-			for i in $dns_l;do echo "server $i -group j -exclude-default-group" >> $DNS_T;done
-			for i in $doh_l_t;do echo "domain-rules /$i/ -nameserver j -ipset over_wan_ac" >> $DNS_T;done
-		fi
+		[ "$doh_l_t" ] && for i in $doh_l_t;do echo "domain-rules /$i/ -nameserver j -ipset over_wan_ac" >> $DNS_T;done
+		echo "nameserver /in-addr.arpa/j" >> $DNS_T
 	else
+	
 		for i in $dns_l;do echo "server $i -group i -exclude-default-group" >> $DNS_T;done
+		echo "nameserver /in-addr.arpa/i" >> $DNS_T
 	fi
 
 	case $run_mode in
@@ -1283,7 +1284,7 @@ start_monitor(){
 	fi
 }
 
-start(){
+start(){ 
 	set_lock
 	if [ $switch_server ];then
 		GLOBAL_SERVER=$switch_server
@@ -1329,11 +1330,11 @@ start(){
 	elif [ $adguardhome == 1 ]; then
 		log "请确保系统中存在luci-app-adguardhome以及adg主程序!"
 	fi
-	clean_log
+	clean_log 
 	unset_lock
 }
 
-stop(){
+stop(){ 
 	unlock
 	set_lock
 	kill -9 $(ps -w | grep $BIN_DIR/rules | grep -v grep | awk '{print$1}') 2>/dev/null
@@ -1348,13 +1349,14 @@ stop(){
 	$BIN_DIR/rules -f
 	[ $(iptables -nL | grep BYBASS-S-RULE | wc -l) = 0 ] || (iptables -F BYBASS-S-RULE && iptables -X BYBASS-S-RULE;while iptables -D INPUT -j BYBASS-S-RULE 2>/dev/null;do :;done)
 	rm -rf $DNS_DIR $VAR*.json $DNS_FILE $CON_T /var/lock/bypass-update.lock $LOC_UCI
-
+	[ $run_mode = gfw -o $gfw_mode = 1 ] || rm -f $K/gfw.list
+	[ $run_mode = router ] || rm -f $K/china_v6.txt
 	[ ! $GLOBAL_SERVER ] && grep -q bypass $CRON_FILE && sed -i '/bypass/d' $CRON_FILE && /etc/init.d/cron restart
 	if [ ! "$R" -o ! $GLOBAL_SERVER ];then
 		if [[ -f /etc/init.d/AdGuardHome && "$(uci -q get AdGuardHome.AdGuardHome.redirect)" == "exchange"  ]]; then
 			/etc/init.d/AdGuardHome stop >/dev/null 2>&1 &
 		fi
-		rm -rf $SDNS $PID $LOC
+		rm -rf $K $SDNS $PID $LOC
 		/etc/init.d/dnsmasq restart >/dev/null 2>&1
 	elif [ -s $DNS_T ];then
 		cat > $DNS_T <<EOF
@@ -1377,11 +1379,12 @@ EOF
 	fi
 
 	unset_lock
+
 }
 
 boot(){
 	echo '#!/bin/sh' > $FWI
-	log "boot！"
+	log "boot！" 
 	mkdir -p /var/run /var/lock /var/log /tmp/dnsmasq.d $DNS_DIR $K $VAR
 	ulimit -n 65535
 	start
