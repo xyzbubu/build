@@ -178,6 +178,15 @@ msgstr "需要代理的端口"
 msgid "Load GFW List"
 msgstr "加载GFW列表"
 
+msgid "GFW domains Update URL"
+msgstr "防火墙域名列表更新链接"
+
+msgid "China IPs Update URL"
+msgstr "中国IPv4段更新链接"
+
+msgid "China IPv6s Update URL"
+msgstr "中国IPv6段更新链接"
+
 msgid "If the domestic DNS does not hijack foreign domain name to domestic IP, No need to be enabled"
 msgstr "如果国内DNS未劫持国外域名返回国内的IP，不需要启用"
 
