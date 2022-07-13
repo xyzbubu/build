@@ -1,4 +1,3 @@
-
 config global
 	option threads '0'
 	option monitor_enable '1'
@@ -9,13 +8,11 @@ config global
 	option dns_hijack '1'
 	option udp_relay_server 'same'
 	option dns_mode_l '0'
-	option dns_l '0'
 	option isp_dns '1'
 	option enable_switch '1'
 	option adguardhome '0'
 	option tcp_dns '2'
 	option tg_proxy '1'
-	option tg_server ''
 	option run_mode 'router'
 
 config socks5_proxy
@@ -36,3 +33,4 @@ config server_subscribe
         option auto_update_time '5'
         option filter_words '过期时间/剩余流量/QQ群/官网/防失联地址/回国'
         option switch '1'
+
