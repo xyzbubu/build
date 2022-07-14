@@ -54,8 +54,7 @@ o:value("https://fastly.jsdelivr.net/gh/YW5vbnltb3Vz/domain-list-community@relea
 o:value("https://fastly.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/gfw.txt", translate("Loyalsoldier/v2ray-rules-dat"))
 o:value("https://fastly.jsdelivr.net/gh/Loukky/gfwlist-by-loukky/gfwlist.txt", translate("Loukky/gfwlist-by-loukky"))
 o:value("https://fastly.jsdelivr.net/gh/gfwlist/gfwlist/gfwlist.txt", translate("gfwlist/gfwlist"))
-o:value("https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/gfwlist.txt", translate("sirpdboy/gfwlist"))
-o.default = "https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/gfwlist.txt"
+o.default = "https://fastly.jsdelivr.net/gh/gfwlist/gfwlist/gfwlist.txt"
 
 ----chnroute  URL
 o = s:option(DynamicList, "chnroute_url", translate("China IPs(chnroute) Update URL"))
