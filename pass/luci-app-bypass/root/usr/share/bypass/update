@@ -13,12 +13,12 @@ log(){
 	[ $A = N ] && echo "$(date +'%Y-%m-%d %H:%M:%S') $*" >> /tmp/bypass.log
 }
 [ ! -d $TMP ] && mkdir -p $TMP 2>/dev/null
-	if [ $A = Y ];then
-		while !  ( curl -kLfsm 5 -o /tmp/china.txt $chnroute_url || curl -Lfsm 5 -o https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn.txt   ||  curl -kLfsm 5 -o /tmp/china.txt https://raw.githubusercontent.com/sirpdboy/iplist/all_cn.txt);do
+	if [ ! -f $T_FILE/china.txt ];then
+		while !  ( curl -kLfsm 5 -o /tmp/china.txt ${chnroute_url} || curl -Lfsm 5 -o https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn.txt   ||  curl -kLfsm 5 -o /tmp/china.txt https://raw.githubusercontent.com/sirpdboy/iplist/all_cn.txt);do
 			sleep 2
 		done
 	else
-		curl -kLfsm 5 -o /tmp/china.txt  $chnroute_url || curl -Lfsm 5 -o https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn.txt  ||  curl -kLfsm 5 -o /tmp/china.txt https://raw.githubusercontent.com/sirpdboy/iplist/all_cn.txt
+		curl -kLfsm 5 -o /tmp/china.txt  ${chnroute_url} || curl -Lfsm 5 -o https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn.txt  ||  curl -kLfsm 5 -o /tmp/china.txt https://raw.githubusercontent.com/sirpdboy/iplist/all_cn.txt
 	fi
 	[[ -f /tmp/china.txt && $? == 0 ]] && {
 		if ! cmp -s /tmp/china.txt $TMP/china.txt;then
@@ -29,17 +29,16 @@ log(){
 			log "By Update  : China IPv4 List is up to date"
 		fi
         }
-C=$(uci -q get bypass.@global[0].run_mode)
+if [ ! -f $T_FILE/china_v6.txt ];then
 
-if [ "$C" = router ];then
 
 	if [ $A = Y ];then
 
-		while ! (curl -kLfsm 3 -o /tmp/china_v6.txt $chnroute6_url || curl -kLfsm 5 -o https://ispip.clang.cn/all_cn_ipv6.txt || curl -kLfsm 5 -o /tmp/china_v6.txt https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn_ipv6.txt);do
+		while ! (curl -kLfsm 3 -o /tmp/china_v6.txt ${chnroute6_url} || curl -kLfsm 5 -o https://ispip.clang.cn/all_cn_ipv6.txt || curl -kLfsm 5 -o /tmp/china_v6.txt https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn_ipv6.txt);do
 			sleep 2
 		done
 	else
-		curl -kLfsm 3 -o /tmp/china_v6.txt $chnroute6_url || curl -kLfsm 5 -o https://ispip.clang.cn/all_cn_ipv6.txt || curl -kLfsm 5 -o /tmp/china_v6.txt https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn_ipv6.txt
+		curl -kLfsm 3 -o /tmp/china_v6.txt ${chnroute6_url} || curl -kLfsm 5 -o https://ispip.clang.cn/all_cn_ipv6.txt || curl -kLfsm 5 -o /tmp/china_v6.txt https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn_ipv6.txt
 	fi
 	[[ -f /tmp/china_v6.txt && $? == 0 ]] && {
 
@@ -53,13 +52,13 @@ if [ "$C" = router ];then
 	}
 fi
 
-if [ "$C" = gfw -o "$(uci -q get bypass.@global[0].gfw_mode)" = 1 ];then
+if [ ! -f $T_FILE/gfw.list ];then
 	if [ $A = Y ];then
-		while ! (curl -kLfsm 5 -o /tmp/gfw.b64 $gfwlist_url || curl -kLfsm 5 -o https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/gfwlist.txt   || curl -kLfsm 5 -o /tmp/gfw.b64 https://cdn.jsdelivr.net/gh/YW5vbnltb3Vz/domain-list-community@release/gfwlist.txt   );do
+		while ! (curl -kLfsm 5 -o /tmp/gfw.b64 ${gfwlist_url} || curl -kLfsm 5 -o https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/gfwlist.txt   || curl -kLfsm 5 -o /tmp/gfw.b64 https://cdn.jsdelivr.net/gh/YW5vbnltb3Vz/domain-list-community@release/gfwlist.txt   );do
 			sleep 2
 		done
 	else
-		curl -kLfsm 5  -o /tmp/gfw.b64 $gfwlist_url || curl -kLfsm 5 -o https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/gfwlist.txt   || curl -Lfso /tmp/gfw.b64 https://cdn.jsdelivr.net/gh/YW5vbnltb3Vz/domain-list-community@release/gfwlist.txt  
+		curl -kLfsm 5  -o /tmp/gfw.b64 ${gfwlist_url} || curl -kLfsm 5 -o https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/gfwlist.txt   || curl -Lfso /tmp/gfw.b64 https://cdn.jsdelivr.net/gh/YW5vbnltb3Vz/domain-list-community@release/gfwlist.txt  
 	fi
 		$DIR/gfw
 	if ! cmp -s /tmp/gfwnew.txt  $TMP/gfw.list ;then
@@ -71,4 +70,4 @@ if [ "$C" = gfw -o "$(uci -q get bypass.@global[0].gfw_mode)" = 1 ];then
 	fi
 fi
 rm -f $LOCK /tmp/china*.txt /tmp/gfwnew.txt
-[ $A = Y ] && /etc/init.d/bypass restart &
+/etc/init.d/bypass restart &
