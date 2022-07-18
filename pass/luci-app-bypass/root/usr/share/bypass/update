@@ -14,11 +14,11 @@ log(){
 }
 [ ! -d $TMP ] && mkdir -p $TMP 2>/dev/null
 	if [ ! -f $T_FILE/china.txt ];then
-		while !  ( curl -kLfsm 5 -o /tmp/china.txt ${chnroute_url} || curl -Lfsm 5 -o https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn.txt   ||  curl -kLfsm 5 -o /tmp/china.txt https://raw.githubusercontent.com/sirpdboy/iplist/all_cn.txt);do
+		while !  ( curl -kLfsm 5 -o /tmp/china.txt ${chnroute_url} || curl -Lfsm 5 -o https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn.txt   ||  curl -kLfsm 5 -o /tmp/china.txt https://raw.githubusercontent.com/sirpdboy/iplist/all_cn.txt);do
 			sleep 2
 		done
 	else
-		curl -kLfsm 5 -o /tmp/china.txt  ${chnroute_url} || curl -Lfsm 5 -o https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn.txt  ||  curl -kLfsm 5 -o /tmp/china.txt https://raw.githubusercontent.com/sirpdboy/iplist/all_cn.txt
+		curl -kLfsm 5 -o /tmp/china.txt  ${chnroute_url} || curl -Lfsm 5 -o https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn.txt  ||  curl -kLfsm 5 -o /tmp/china.txt https://raw.githubusercontent.com/sirpdboy/iplist/all_cn.txt
 	fi
 	[[ -f /tmp/china.txt && $? == 0 ]] && {
 		if ! cmp -s /tmp/china.txt $TMP/china.txt;then
@@ -34,11 +34,11 @@ if [ ! -f $T_FILE/china_v6.txt ];then
 
 	if [ $A = Y ];then
 
-		while ! (curl -kLfsm 3 -o /tmp/china_v6.txt ${chnroute6_url} || curl -kLfsm 5 -o https://ispip.clang.cn/all_cn_ipv6.txt || curl -kLfsm 5 -o /tmp/china_v6.txt https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn_ipv6.txt);do
+		while ! (curl -kLfsm 3 -o /tmp/china_v6.txt ${chnroute6_url} || curl -kLfsm 5 -o https://ispip.clang.cn/all_cn_ipv6.txt || curl -kLfsm 5 -o /tmp/china_v6.txt https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn_ipv6.txt);do
 			sleep 2
 		done
 	else
-		curl -kLfsm 3 -o /tmp/china_v6.txt ${chnroute6_url} || curl -kLfsm 5 -o https://ispip.clang.cn/all_cn_ipv6.txt || curl -kLfsm 5 -o /tmp/china_v6.txt https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn_ipv6.txt
+		curl -kLfsm 3 -o /tmp/china_v6.txt ${chnroute6_url} || curl -kLfsm 5 -o https://ispip.clang.cn/all_cn_ipv6.txt || curl -kLfsm 5 -o /tmp/china_v6.txt https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn_ipv6.txt
 	fi
 	[[ -f /tmp/china_v6.txt && $? == 0 ]] && {
 
@@ -54,11 +54,11 @@ fi
 
 if [ ! -f $T_FILE/gfw.list ];then
 	if [ $A = Y ];then
-		while ! (curl -kLfsm 5 -o /tmp/gfw.b64 ${gfwlist_url} || curl -kLfsm 5 -o https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/gfwlist.txt   || curl -kLfsm 5 -o /tmp/gfw.b64 https://cdn.jsdelivr.net/gh/YW5vbnltb3Vz/domain-list-community@release/gfwlist.txt   );do
+		while ! (curl -kLfsm 5 -o /tmp/gfw.b64 ${gfwlist_url} || curl -kLfsm 5 -o https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/gfwlist.txt   || curl -kLfsm 5 -o /tmp/gfw.b64 https://fastly.jsdelivr.net/gh/YW5vbnltb3Vz/domain-list-community@release/gfwlist.txt   );do
 			sleep 2
 		done
 	else
-		curl -kLfsm 5  -o /tmp/gfw.b64 ${gfwlist_url} || curl -kLfsm 5 -o https://cdn.jsdelivr.net/gh/sirpdboy/iplist@main/gfwlist.txt   || curl -Lfso /tmp/gfw.b64 https://cdn.jsdelivr.net/gh/YW5vbnltb3Vz/domain-list-community@release/gfwlist.txt  
+		curl -kLfsm 5  -o /tmp/gfw.b64 ${gfwlist_url} || curl -kLfsm 5 -o https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/gfwlist.txt   || curl -Lfso /tmp/gfw.b64 https://fastly.jsdelivr.net/gh/YW5vbnltb3Vz/domain-list-community@release/gfwlist.txt  
 	fi
 		$DIR/gfw
 	if ! cmp -s /tmp/gfwnew.txt  $TMP/gfw.list ;then

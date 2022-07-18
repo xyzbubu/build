@@ -54,7 +54,8 @@ o:value("https://fastly.jsdelivr.net/gh/YW5vbnltb3Vz/domain-list-community@relea
 o:value("https://fastly.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/gfw.txt", translate("Loyalsoldier/v2ray-rules-dat"))
 o:value("https://fastly.jsdelivr.net/gh/Loukky/gfwlist-by-loukky/gfwlist.txt", translate("Loukky/gfwlist-by-loukky"))
 o:value("https://fastly.jsdelivr.net/gh/gfwlist/gfwlist/gfwlist.txt", translate("gfwlist/gfwlist"))
-o.default = "https://fastly.jsdelivr.net/gh/gfwlist/gfwlist/gfwlist.txt"
+o:value("https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/gfwlist.txt", translate("sirpdboy/gfwlist"))
+o.default = "https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/gfwlist.txt"
 
 ----chnroute  URL
 o = s:option(DynamicList, "chnroute_url", translate("China IPs(chnroute) Update URL"))
@@ -62,12 +63,16 @@ o:value("https://ispip.clang.cn/all_cn.txt", translate("Clang.CN"))
 o:value("https://ispip.clang.cn/all_cn_cidr.txt", translate("Clang.CN.CIDR"))
 o:value("https://fastly.jsdelivr.net/gh/soffchen/GeoIP2-CN@release/CN-ip-cidr.txt", translate("soffchen/GeoIP2-CN"))
 o:value("https://fastly.jsdelivr.net/gh/Hackl0us/GeoIP2-CN@release/CN-ip-cidr.txt", translate("Hackl0us/GeoIP2-CN"))
-o.default = "https://ispip.clang.cn/all_cn.txt"
+
+o:value("https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn.txt", translate("sirpdboy/all_cn"))
+o.default = "https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn.txt"
 
 ----chnroute6 URL
 o = s:option(DynamicList, "chnroute6_url", translate("China IPv6s(chnroute6) Update URL"))
 o:value("https://ispip.clang.cn/all_cn_ipv6.txt", translate("Clang.CN.IPv6"))
-o.default = "https://ispip.clang.cn/all_cn_ipv6.txt"
+
+o:value("https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn_ipv6.txt", translate("sirpdboy/all_cn_ipv6"))
+o.default = "https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn_ipv6.txt"
 
 o = s:option(Button, "UpdateRule", translate("Update All Rule List"))
 o.inputstyle = "apply"
