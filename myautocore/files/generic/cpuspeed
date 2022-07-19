@@ -4,7 +4,7 @@ CPUINFO_PATH="/proc/cpuinfo"
 CPUFREQ_PATH="/sys/devices/system/cpu/cpufreq"
 case "$DISTRIB_TARGET" in
 "bcm27xx"/*)
-	cpu_freq="$( $(vcgencmd measure_clock arm | awk -F '=' '{print $2}') / 1000000  |awk -F '.' '{print $1}' )Mhz" ;;
+	cpu_freq="$(( $(vcgencmd measure_clock arm | awk -F '=' '{print $2}') / 1000000  |awk -F '.' '{print $1}' ) )Mhz" ;;
 "bcm53xx"/*)
 	cpu_freq="$(nvram get clkfreq | awk -F ',' '{print $1}')MHz" ;;
 "mvebu"/*)
