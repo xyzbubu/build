@@ -14,7 +14,7 @@ do
 	[ -z "$f" ] && f=" 10Mb/s "
 	g=$(echo "$d" | grep "Duplex" | awk -F: '{printf $2}' | sed 's/^[ \t]*//g')
 	[ "$g" == "Full" ] && x=1 || x=0
-	echo -n "$h \"$face\", \"status\": $l, \"name\": \"$i\", \"duplex\": $x, \"speed\": \"$f\", \"mac\": \"$m\"}," >> /tmp/state/ethinfo
+	echo -n "$h \"$face-$i\", \"status\": $l, \"duplex\": $x, \"speed\": \"$f\", \"mac\": \"$m\"}," >> /tmp/state/ethinfo
 done
 
 sed -i 's/.$//' /tmp/state/ethinfo
