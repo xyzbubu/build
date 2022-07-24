@@ -7,6 +7,7 @@ do
 	h=$(echo '{"face":' )
 	d=$(ethtool $i)
 	face=$(uci show network | grep "$i" | head -n1 |awk -F '.'  '{print $2}' )
+	[ "x$face" = "x" ] && continue
 	m=$(ifconfig | grep "$i" | head -n1 | awk -F 'HWaddr ' '{print $2}')
 	e=$(echo "$d" | grep "Link detected" | awk -F: '{printf $2}' | sed 's/^[ \t]*//g')
 	[ $e = yes ] && l=1 || l=0
