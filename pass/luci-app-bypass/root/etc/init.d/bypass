@@ -40,7 +40,7 @@ smartdns_flag=0
 chinadns_flag=0
 local_enable=0
 switch_enable=0
-switch_server=$1
+[[ "$1" == update* ]] && update=$1 || switch_server=$1
 server_count=0
 
 set_lock() {
@@ -285,8 +285,8 @@ rules(){
 	check_net
 	cat $LOG 2>/dev/null | sed -n '$p' | grep -q 'Download IP/GFW files..' || (log "Rules     :Check network status successful..";log "Rules     :Check IP/GFW files..")
 	mkdir -p /var/run /var/etc
-	if [ ! -s $K/china.txt ] || [ $run_mode = router -a ! -s $K/china_v6.txt ] || ([ $run_mode = gfw -o $gfw_mode = 1 ] && [ ! -s $K/gfw.list ]);then
-		log "Rules-r     :Download IP/GFW files..."
+	if [[ ! -f $PID && "$update" != "updated" ]];then
+		log "Rules     :Download IP/GFW files..."
 		firstdown 2;exit
 	fi
 	log "Rules     :Check IP/GFW files successful!"
@@ -326,7 +326,7 @@ rules(){
 			done
 		fi
 		if ! A=$(nslookup $server 2>/dev/null | grep Address | awk -F' ' '{print$NF}' | grep -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$");then
-			log "Main Node      : Unable to get server address.Check domain name!";return 1
+			log "Main Node      : Unable to get $server address.Check domain name!";return 1
 		fi
 		server=$(echo "$A" | sed -n 1p)
 	fi
@@ -349,7 +349,7 @@ rules(){
 				done
 			fi
 			if ! A=$(nslookup $udp_server 2>/dev/null | grep Address | awk -F' ' '{print$NF}' | grep -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$");then
-				log "UDP Node      : Unable to get server address.Check domain name!";return 1
+				log "UDP Node      : Unable to get  $udp_server address.Check domain name!";return 1
 			fi
 			udp_server=$(echo "$A" | sed -n 1p)
 		fi

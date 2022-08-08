@@ -70,4 +70,5 @@ if [ ! -f $T_FILE/gfw.list ];then
 	fi
 fi
 rm -f $LOCK /tmp/china*.txt /tmp/gfwnew.txt
-[ $A = Y ] && /etc/init.d/bypass restart &
+
+[ $A = Y ] && /etc/init.d/bypass start updated &
