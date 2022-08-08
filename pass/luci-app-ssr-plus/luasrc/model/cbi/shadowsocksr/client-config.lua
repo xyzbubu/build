@@ -677,6 +677,7 @@ o:depends("tls", true)
 o:depends("xtls", true)
 o:depends("type", "hysteria")
 o.description = translate("If true, allowss insecure connection at TLS client, e.g., TLS server uses unverifiable certificates.")
+o.default = "1"
 
 -- [[ Mux ]]--
 o = s:option(Flag, "mux", translate("Mux"))
