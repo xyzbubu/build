@@ -70,7 +70,6 @@ set network.wan.mtu=1460
 set network.wan.metric='41'
 set network.wan.delegate='0'
 set network.wan.ipv6='auto'
-set network.wan6.ifname='@wan'
 EOF
 uci commit network
 uci set turboacc.config.fullcone_nat='1'
@@ -91,8 +90,7 @@ rm -f /usr/lib/lua/luci/view/admin_status/index/minidlna.htm
 rm -f /usr/lib/lua/luci/view/admin_status/index/mwan.htm
 rm -f /usr/lib/lua/luci/view/admin_status/index/upnp.htm
 sed -i 's/\"services\"/\"nas\"/g' /usr/lib/lua/luci/controller/aria2.lua
-sed -i 's/services/nas/g' /usr/lib/lua/luci/view/aria2/overview_status.htm
-sed -i 's/\"services\"/\"control\"/g' /usr/lib/lua/luci/controller/hd_idle.lua
+sed -i 's/\"services\"/\"nas\"/g' /usr/lib/lua/luci/view/aria2/overview_status.htm
 sed -i 's/\"services\"/\"nas\"/g' /usr/lib/lua/luci/controller/samba4.lua
 sed -i 's/\"services\"/\"nas\"/g' /usr/lib/lua/luci/controller/minidlna.lua
 sed -i 's/\"services\"/\"nas\"/g' /usr/lib/lua/luci/controller/transmission.lua
@@ -108,7 +106,7 @@ sed -i 's,downloads.openwrt.org,mirrors.tencent.com/lede,g' /etc/opkg/distfeeds.
 sed -i "s/# //g" /etc/opkg/distfeeds.conf
 
 sed -i '/openwrt_luci/ { s/snapshots/releases\/18.06.9/g; }'  /etc/opkg/distfeeds.conf
-sed -i 's/openwrt.org/baidu.com/g'  /etc/config/luci
+# sed -i 's/openwrt.org/baidu.com/g'  /etc/config/luci
 sed -i '/REDIRECT --to-ports 53/d' /etc/firewall.user
 echo "# iptables -t nat -I POSTROUTING -o br-lan -j MASQUERADE" >> /etc/firewall.user
 echo 'iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53' >> /etc/firewall.user
