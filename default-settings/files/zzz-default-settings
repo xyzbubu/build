@@ -72,7 +72,7 @@ set network.wan.delegate='0'
 set network.wan.ipv6='auto'
 EOF
 uci commit network
-uci set turboacc.config.fullcone_nat='1'
+uci set turboacc.config.fullcone_nat='0'
 uci set turboacc.config.bbr_cca='0'
 uci set turboacc.config.sfe_flow='0'
 uci set turboacc.config.hw_flow='0'
