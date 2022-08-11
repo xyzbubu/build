@@ -1,3 +1,19 @@
+local m,s,o
+local bypass="bypass"
+local uci=luci.model.uci.cursor()
+local server_count=0
+local SYS=require"luci.sys"
+
+function url(...)
+    local url = string.format("admin/services/%s", bypass)
+    local args = { ... }
+    for i, v in pairs(args) do
+        if v ~= "" then
+            url = url .. "/" .. v
+        end
+    end
+    return require "luci.dispatcher".build_url(url)
+end
 local server_table={}
 luci.model.uci.cursor():foreach("bypass","servers",function(s)
 	if (s.type=="ss" and not nixio.fs.access("/usr/bin/ss-local")) or (s.type=="ssr" and not nixio.fs.access("/usr/bin/ssr-local")) or s.type=="socks5" or s.type=="tun" then
@@ -78,6 +94,7 @@ o = s:option(Button, "UpdateRule", translate("Update All Rule List"))
 o.inputstyle = "apply"
 function o.write(t, n)
     luci.sys.call("lua /usr/share/bypass/update  > /dev/null 2>&1 &")
+    luci.http.redirect(url("log"))
 end
 
 s=m:section(TypedSection,"socks5_proxy",translate("Global SOCKS5 Server"))

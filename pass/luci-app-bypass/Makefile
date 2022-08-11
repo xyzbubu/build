@@ -1,12 +1,12 @@
-# Copyright (C) 2022 sirpdboy
+  # Copyright (C) 2022 sirpdboy
 # Copyright (C) 2021 small-5
 #
 # This is free software, licensed under the GNU General Public License v3.
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-bypass
-PKG_VERSION:=1.2
-PKG_RELEASE:=25
+PKG_VERSION:=1.3
+PKG_RELEASE:=26
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Kcptun \

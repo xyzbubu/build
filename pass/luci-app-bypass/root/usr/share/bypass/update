@@ -10,65 +10,58 @@ gfwlist_url=$(uci -q get bypass.@global_rules[0].gfwlist_url)
 chnroute_url=$(uci -q get bypass.@global_rules[0].chnroute_url)
 chnroute6_url=$(uci -q get bypass.@global_rules[0].chnroute6_url)
 log(){
-	[ $A = N ] && echo "$(date +'%Y-%m-%d %H:%M:%S') $*" >> /tmp/bypass.log
+	echo "$(date +'%Y-%m-%d %H:%M:%S') $*" >> /tmp/bypass.log
 }
+C=$(uci -q get bypass.@global[0].run_mode)
 [ ! -d $TMP ] && mkdir -p $TMP 2>/dev/null
-	if [ ! -f $T_FILE/china.txt ];then
-		while !  ( curl -kLfsm 5 -o /tmp/china.txt ${chnroute_url} || curl -Lfsm 5 -o https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn.txt   ||  curl -kLfsm 5 -o /tmp/china.txt https://raw.githubusercontent.com/sirpdboy/iplist/all_cn.txt);do
+	if [ ! -f $TMP/china.txt ];then
+		while !  ( curl -kLfsm 5 -o /tmp/china.txt ${chnroute_url}  || curl -Lfsm 5 -o https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn.txt  || curl -kLfsm 3 -o /tmp/china.txt https://supes.top/bypass/all_cn.txt  ||  curl -kLfsm 5 -o /tmp/china.txt https://raw.githubusercontent.com/sirpdboy/iplist/all_cn.txt);do
 			sleep 2
 		done
 	else
-		curl -kLfsm 5 -o /tmp/china.txt  ${chnroute_url} || curl -Lfsm 5 -o https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn.txt  ||  curl -kLfsm 5 -o /tmp/china.txt https://raw.githubusercontent.com/sirpdboy/iplist/all_cn.txt
+		curl -kLfsm 5 -o /tmp/china.txt  ${chnroute_url} || curl -Lfsm 5 -o https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn.txt  || curl -kLfsm 3 -o /tmp/china.txt https://supes.top/bypass/all_cn.txt  ||  curl -kLfsm 5 -o /tmp/china.txt https://raw.githubusercontent.com/sirpdboy/iplist/all_cn.txt
 	fi
 	[[ -f /tmp/china.txt && $? == 0 ]] && {
 		if ! cmp -s /tmp/china.txt $TMP/china.txt;then
-			log "By Update  : Update China IP List"
+			log "By Update  : Updated China IPv4 List :"  $( cat $TMP/china.txt | wc -l)  ${chnroute_url} 
 			cp -f /tmp/china.txt $TMP/china.txt
 			[ $A = N ] && ipset list china_v4 >/dev/null 2>&1 && $DIR/chinaipset
-		else
-			log "By Update  : China IPv4 List is up to date"
 		fi
         }
-if [ ! -f $T_FILE/china_v6.txt ];then
-
-
-	if [ $A = Y ];then
-
+if [ "$C" = router ];then
+	if [ ! -f $TMP/china_v6.txt ];then
 		while ! (curl -kLfsm 3 -o /tmp/china_v6.txt ${chnroute6_url} || curl -kLfsm 5 -o https://ispip.clang.cn/all_cn_ipv6.txt || curl -kLfsm 5 -o /tmp/china_v6.txt https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn_ipv6.txt);do
 			sleep 2
 		done
-	else
+	elif [ $A = N ];then
 		curl -kLfsm 3 -o /tmp/china_v6.txt ${chnroute6_url} || curl -kLfsm 5 -o https://ispip.clang.cn/all_cn_ipv6.txt || curl -kLfsm 5 -o /tmp/china_v6.txt https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn_ipv6.txt
 	fi
 	[[ -f /tmp/china_v6.txt && $? == 0 ]] && {
 
 		if ! cmp -s /tmp/china_v6.txt $TMP/china_v6.txt;then
-			log "By Update  : Update China IPv6 List"
+			log "By Update  : Updated China IPv6 List :" $( cat $TMP/china_v6.txt | wc -l)  ${chnroute6_url} 
 			cp -f /tmp/china_v6.txt $TMP/china_v6.txt 
 			[ $A = N ] && ipset list china_v6 >/dev/null 2>&1 && $DIR/chinaipset v6
-		else
-			log "By Update  : China IPv6 List is up to date"
 		fi
 	}
 fi
-
-if [ ! -f $T_FILE/gfw.list ];then
-	if [ $A = Y ];then
-		while ! (curl -kLfsm 5 -o /tmp/gfw.b64 ${gfwlist_url} || curl -kLfsm 5 -o https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/gfwlist.txt   || curl -kLfsm 5 -o /tmp/gfw.b64 https://fastly.jsdelivr.net/gh/YW5vbnltb3Vz/domain-list-community@release/gfwlist.txt   );do
+if [ "$C" = gfw -o "$(uci -q get bypass.@global[0].gfw_mode)" = 1 ];then
+         if [ ! -f $TMP/gfw.list ];then
+		while ! (curl -kLfsm 5 -o /tmp/gfw.b64 ${gfwlist_url} || curl -Lfsm 5 -o https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/gfwlist.txt  ||  curl -kLfsm 3 -o /tmp/gfw.b64 https://supes.top/bypass/gfwlist.txt || curl -kLfsm 5 -o /tmp/gfw.b64 https://fastly.jsdelivr.net/gh/YW5vbnltb3Vz/domain-list-community@release/gfwlist.txt   );do
 			sleep 2
 		done
-	else
-		curl -kLfsm 5  -o /tmp/gfw.b64 ${gfwlist_url} || curl -kLfsm 5 -o https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/gfwlist.txt   || curl -Lfso /tmp/gfw.b64 https://fastly.jsdelivr.net/gh/YW5vbnltb3Vz/domain-list-community@release/gfwlist.txt  
+	elif [ "$C" = gfw -o $A = N ];then
+		curl -kLfsm 5  -o /tmp/gfw.b64 ${gfwlist_url}  || curl -Lfsm 5 -o https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/gfwlist.txt || curl -kLfsm 3 -o /tmp/gfw.b64 https://supes.top/bypass/gfwlist.txt ||  curl -Lfso /tmp/gfw.b64 https://fastly.jsdelivr.net/gh/YW5vbnltb3Vz/domain-list-community@release/gfwlist.txt  
 	fi
+        if [[ -f /tmp/gfw.b64 && $? == 0 ]];then
 		$DIR/gfw
-	if ! cmp -s /tmp/gfwnew.txt  $TMP/gfw.list ;then
+		if ! cmp -s /tmp/gfwnew.txt  $TMP/gfw.list ;then
 			cp -f /tmp/gfwnew.txt $TMP/gfw.list 
-			log "By Update  : Update GFW List"
-			[ $A = N ] && /etc/init.d/bypass restart
-	else
-		log "By Update  : GFW List is up to date"
+			log "By Update  : Updated GFW List :" $( cat $TMP/gfw.list | wc -l) ${gfwlist_url}
+		fi
 	fi
-fi
+   fi
+
 rm -f $LOCK /tmp/china*.txt /tmp/gfwnew.txt
 
 [ $A = Y ] && /etc/init.d/bypass start updated &
