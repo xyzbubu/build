@@ -63,12 +63,8 @@ o.write=function()
 end
 
 o = s:option(Button, "subscribe", translate("Update All Subscribe Severs"))
-o.inputstyle = "apply"
-function o.write(t, n)
-    luci.sys.call("/usr/share/bypass/subscribe  > /dev/null 2>&1 &")
-    luci.http.redirect(url("log"))
-end
-
+o.rawhtml=true
+o.template="bypass/subscribe"
 
 o=s:option(Button,"delete",translate("Delete All Subscribe Severs"))
 o.inputstyle="reset"

@@ -2,7 +2,7 @@ local m,s,o
 local bypass="bypass"
 local sid=arg[1]
 local A=luci.sys.call("which obfs-server >/dev/null")
-local B=luci.sys.call("which v2ray-plugin >/dev/null")
+local B=luci.sys.call("which xray-plugin >/dev/null")
 
 local encrypt_methods_ss={
 "aes-128-gcm",
@@ -127,14 +127,14 @@ if A==0 then
 o:value("obfs-server",translate("simple-obfs"))
 end
 if B==0 then
-o:value("v2ray-plugin",translate("v2ray-plugin"))
+o:value("xray-plugin",translate("xray-plugin"))
 end
 o:depends("type","ss")
 end
 
 o=s:option(Value,"plugin_opts",translate("Plugin Opts"))
 o:depends("plugin","obfs-server")
-o:depends("plugin","v2ray-plugin")
+o:depends("plugin","xray-plugin")
 
 o=s:option(ListValue,"encrypt_method",translate("Encrypt Method"))
 for _,v in ipairs(encrypt_methods) do o:value(v) end

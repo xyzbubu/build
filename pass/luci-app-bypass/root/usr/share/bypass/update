@@ -21,10 +21,10 @@ log(){
 	fi
 		if ! cmp -s /tmp/china.txt $TMP/china.txt;then
 			cp -f /tmp/china.txt $TMP/china.txt
-			log "By Update  : Updated China IPv4 List :"  $( cat /tmp/bypass/china.txt | wc -l)  ${chnroute_url} 
+			log "By Update  : Updated China IPv4 List :"  $( cat /tmp/bypass/china.txt | wc -l)
 			[ $A = N ] && ipset list china_v4 >/dev/null 2>&1 && $DIR/chinaipset
 		else
-			log "By Update  : China IPv4 List is up to date :"  $( cat /tmp/bypass/china.txt | wc -l)  ${chnroute_url} 
+			log "By Update  : China IPv4 List is up to date :"  $( cat /tmp/bypass/china.txt | wc -l)
 		fi
 C=$(uci -q get bypass.@global[0].run_mode)
 if [ "$C" = router ];then
@@ -39,10 +39,10 @@ if [ "$C" = router ];then
 
 		if ! cmp -s /tmp/china_v6.txt $TMP/china_v6.txt;then
 			cp -f /tmp/china_v6.txt $TMP/china_v6.txt 
-			log "By Update  : Updated China IPv6 List :" $( cat /tmp/bypass/china_v6.txt | wc -l)  ${chnroute6_url} 
+			log "By Update  : Updated China IPv6 List :" $( cat /tmp/bypass/china_v6.txt | wc -l)
 			[ $A = N ] && ipset list china_v6 >/dev/null 2>&1 && $DIR/chinaipset v6
 		else
-			log "By Update  : China IPv6 List is up to date :" $( cat /tmp/bypass/china_v6.txt | wc -l)   ${chnroute6_url} 
+			log "By Update  : China IPv6 List is up to date :" $( cat /tmp/bypass/china_v6.txt | wc -l)
 		fi
 
 fi
@@ -58,10 +58,10 @@ if [ "$C" = gfw -o "$(uci -q get bypass.@global[0].gfw_mode)" = 1 ];then
 		$DIR/gfw
 		if ! cmp -s /tmp/gfwnew.txt  $TMP/gfw.list ;then
 			cp -f /tmp/gfwnew.txt $TMP/gfw.list 
-			log "By Update  : Updated GFW List :" $( cat /tmp/bypass/gfw.list | wc -l) ${gfwlist_url}
+			log "By Update  : Updated GFW List :" $( cat /tmp/bypass/gfw.list | wc -l)
 			[ $A = N ] && /etc/init.d/bypass restart
 		else
-			log "By Update  : GFW List is up to date :" $( cat /tmp/bypass/gfw.list | wc -l)  ${gfwlist_url}
+			log "By Update  : GFW List is up to date :" $( cat /tmp/bypass/gfw.list | wc -l)
 		fi
 
 fi

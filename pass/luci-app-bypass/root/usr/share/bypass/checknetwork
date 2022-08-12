@@ -6,7 +6,6 @@ log(){
 	 echo "$(date +'%Y-%m-%d %H:%M:%S') By Rules     : $*" >> /tmp/$NAME.log
 }
 
-sleep 2
 while ! curl -so /dev/null -m 3 www.baidu.com;do
 	sleep 1
 done

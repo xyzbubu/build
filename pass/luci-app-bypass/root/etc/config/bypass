@@ -1,7 +1,7 @@
 config global
 	option threads '0'
 	option monitor_enable '1'
-	option switch_time '600'
+	option switch_time '300'
 	option switch_timeout '5'
 	option switch_try_count '3'
 	option dns_mode '1'
@@ -31,6 +31,6 @@ config global_rules
 
 config server_subscribe
         option auto_update_time '5'
-        option filter_words '过期时间/剩余流量/QQ群/官网/防失联地址/回国'
+        option filter_words '过期时间/剩余流量/QQ群/官网/防失联地址/回国/反馈'
         option switch '1'
 
