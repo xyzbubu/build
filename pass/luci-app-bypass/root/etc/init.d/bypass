@@ -40,31 +40,10 @@ smartdns_flag=0
 chinadns_flag=0
 local_enable=0
 switch_enable=0
-[[ "$1" == update* ]] && update=$1 || switch_server=$1
+switch_server=$1
 server_count=0
 
-set_lock() {
-	exec 1000>"$LOCK"
-	flock -xn 1000
-}
 
-unset_lock() {
-	flock -u 1000
-	rm -rf  "$LOC" "$LOCK"
-}
-
-unlock() {
-	failcount=1
-	while [ "$failcount" -le 10 ]; do
-		if [ -f "$LOCK" ]; then
-			let "failcount++"
-			sleep 1s
-			[ "$failcount" -ge 10 ] && unset_lock
-		else
-			break
-		fi
-	done
-}
 uci_get_by_name(){
 	ret=$(uci -q get $NAME.$1.$2)
 	echo ${ret:=$3}
@@ -223,7 +202,7 @@ start_dns(){
 check_net(){
 	if ! curl -so /dev/null -m 3 www.baidu.com;then
 		log "Rules     :Wait for network to connect..."
-		firstdown 1;exit 0;
+		firstdown 1;exit 1
 	fi
 }
 
@@ -278,16 +257,16 @@ rules(){
 	if [ ! $server ];then
 		get_soip 1;return 1
 	fi
-	if ps -w | grep bypass-tcp | grep -qv grep;then
-		echo "bypass has Started.";return 1
+	if ps -w | grep bypass-tcp | grep -v grep ;then
+		log "Rules     :Bypass has Started.";return 1
 	fi
 	cat $LOG 2>/dev/null | sed -n '$p' | grep -q 'Check network status.\|Download IP/GFW files.' || gen_log
 	check_net
-	cat $LOG 2>/dev/null | sed -n '$p' | grep -q 'Download IP/GFW files..' || (log "Rules     :Check network status successful..";log "Rules     :Check IP/GFW files..")
+	cat $LOG 2>/dev/null | sed -n '$p' | grep -q 'Download IP/GFW files...' || (log "Rules     :Check network status successful!";log "Rules     :Check IP/GFW files...")
 	mkdir -p /var/run /var/etc
-	if [[ "$update" != "updated" ]];then
+	if [ ! -s $K/china.txt ] || [ $run_mode = router -a ! -s $K/china_v6.txt ] || ([ $run_mode = gfw -o $gfw_mode = 1 ] && [ ! -s $K/gfw.list ]);then
 		log "Rules     :Download IP/GFW files......"
-		firstdown 2;exit 0;
+		firstdown 2;exit
 	fi
 	log "Rules     :Check IP/GFW files successful!"
 	kcp_enable=$(uci_get_by_name $GLOBAL_SERVER kcp_enable 0)
@@ -317,6 +296,7 @@ rules(){
 		[ "$NF_SERVER" -a "$TG_SERVER" = "$NF_SERVER" ] && TG_NF=1 && TG_SERVER=
 		[ "$CU_SERVER" -a "$TG_SERVER" = "$CU_SERVER" ] && TG_CU=1 && TG_SERVER=
 	fi
+	
 	if ! echo $server | grep -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$">/dev/null;then
 		if [ -f $LOCK ];then
 			r=1
@@ -326,7 +306,7 @@ rules(){
 			done
 		fi
 		if ! A=$(nslookup $server 2>/dev/null | grep Address | awk -F' ' '{print$NF}' | grep -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$");then
-			log "Main Node      : Unable to get $server address.Check domain name!";return 1
+			log "Main Node      : Unable to get server address.Check domain name!";return 1
 		fi
 		server=$(echo "$A" | sed -n 1p)
 	fi
@@ -349,7 +329,7 @@ rules(){
 				done
 			fi
 			if ! A=$(nslookup $udp_server 2>/dev/null | grep Address | awk -F' ' '{print$NF}' | grep -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$");then
-				log "UDP Node      : Unable to get  $udp_server address.Check domain name!";return 1
+				log "UDP Node      : Unable to get server address.Check domain name!";return 1
 			fi
 			udp_server=$(echo "$A" | sed -n 1p)
 		fi
@@ -469,7 +449,7 @@ rules(){
 
 	get_soip
 	log "Rules     : Get all server address successful!"
-	if [ -n "$lan_ac_ips" ];then
+	if [ "$lan_ac_ips" ];then
 		case $lan_ac_mode in
 			w|W|b|B)local ac_ips="$lan_ac_mode$lan_ac_ips";;
 		esac
@@ -492,7 +472,7 @@ rules(){
 		let r++;sleep 1
 	done
 	shunt_rules
-	log " Rules     : Start iptables rules successful!"
+	log "Rules     : Start $run_mode iptables rules successful!"
 }
 
 start_tcp(){
@@ -566,6 +546,8 @@ start_tcp(){
 			done
 			log "Main Node      : Network Tunnel $threads Threads Started!";;
 	esac
+	log "Main Node      : Main Server $(uci_get_by_name $GLOBAL_SERVER alias)  Started!"
+	
 }
 
 start_udp(){
@@ -600,6 +582,7 @@ start_udp(){
 			redir_udp=0
 			log "Network Tunnel UDP Relay not supported!";;
 	esac
+	log "UDP Node      : UDP Server $(uci_get_by_name  $UDP_RELAY_SERVER alias)  Started!"
 }
 
 start_yb(){
@@ -639,6 +622,7 @@ start_yb(){
 			$cmd -c $CONFIG_YB_FILE >/dev/null 2>&1
 			log "Y2B Node       : Network Tunnel REDIRECT Started!";;
 	esac
+	log "Y2B Node       : Y2B Server $(uci_get_by_name $YB_SERVER alias)  Started!"
 }
 
 start_nf(){
@@ -677,6 +661,7 @@ start_nf(){
 			$cmd -c $CONFIG_NF_FILE >/dev/null 2>&1
 			log "NF Node         : Network Tunnel REDIRECT Started!";;
 	esac
+	log "NF Node         : NF Server $(uci_get_by_name $NF_SERVER alias)  Started!"
 }
 
 start_cu(){
@@ -714,6 +699,7 @@ start_cu(){
 			$cmd -c $CONFIG_CU_FILE >/dev/null 2>&1
 			log "Custom Node : Network Tunnel REDIRECT Started!";;
 	esac
+	log "Custom Node : Custom Server $(uci_get_by_name $CU_SERVER alias)  Started!"
 }
 
 start_tg(){
@@ -749,6 +735,8 @@ start_tg(){
 			$cmd -c $CONFIG_TG_FILE >/dev/null 2>&1
 			log "TG Node        : Network Tunnel REDIRECT Started!";;
 	esac
+
+	log "TG Node        : TG Server $(uci_get_by_name $TG_SERVER alias)  Started!"
 }
 
 gen_dns(){
@@ -1281,10 +1269,8 @@ start_monitor(){
 }
 
 start(){ 
-	set_lock
-    	if [ -z "$switch_server" ]; then
-       	       	GLOBAL_SERVER=$(uci_get_by_type global global_server)
-	else
+	touch $LOC
+	if [ $switch_server ];then
 		GLOBAL_SERVER=$switch_server
 		switch_enable=1
 	fi
@@ -1318,6 +1304,7 @@ start(){
 				uci -q set AdGuardHome.AdGuardHome.redirect='exchange'
 				uci commit AdGuardHome
 				(sleep 3; /etc/init.d/AdGuardHome restart >/dev/null 2>&1) &
+				log "By ADG    : adguardhome Started!"
 			fi
 		elif [ "$(uci -q get AdGuardHome.AdGuardHome.redirect)" == "exchange" ]; then
 				uci -q set AdGuardHome.AdGuardHome.enabled='0'
@@ -1329,12 +1316,10 @@ start(){
 		log "Please ensure that Luci app adguardhome and ADG main program exist in the system!"
 	fi
 	clean_log 
-	unset_lock
+	rm -f $LOCK $LOC
 }
 
 stop(){ 
-	unlock
-	set_lock
 	kill -9 $(ps -w | grep $BIN_DIR/rules | grep -v grep | awk '{print$1}') 2>/dev/null
 	kill -9 $(ps -w | grep gfw.b64 | grep -v grep | awk '{print$1}') 2>/dev/null
 	kill -9 $(ps -w | grep $BIN_DIR/checknetwork | grep -v grep | awk '{print$1}') 2>/dev/null
@@ -1347,8 +1332,7 @@ stop(){
 	$BIN_DIR/rules -f
 	[ $(iptables -nL | grep BYBASS-S-RULE | wc -l) = 0 ] || (iptables -F BYBASS-S-RULE && iptables -X BYBASS-S-RULE;while iptables -D INPUT -j BYBASS-S-RULE 2>/dev/null;do :;done)
 	rm -rf $DNS_DIR $VAR*.json $DNS_FILE $CON_T /var/lock/bypass-update.lock $LOC_UCI
-	[ $run_mode = gfw -o $gfw_mode = 1 ] || rm -f $K/gfw.list
-	[ $run_mode = router ] || rm -f $K/china_v6.txt
+
 	[ ! $GLOBAL_SERVER ] && grep -q bypass $CRON_FILE && sed -i '/bypass/d' $CRON_FILE && /etc/init.d/cron restart
 	if [ ! "$R" -o ! $GLOBAL_SERVER ];then
 		if [[ -f /etc/init.d/AdGuardHome && "$(uci -q get AdGuardHome.AdGuardHome.redirect)" == "exchange"  ]]; then
@@ -1375,9 +1359,6 @@ EOF
 			sleep 1
 		done
 	fi
-
-	unset_lock
-
 }
 
 restart(){
@@ -1389,11 +1370,9 @@ restart(){
 	stop
 	start
 }
-
+ 
 boot(){
 	echo '#!/bin/sh' > $FWI
-	log "boot" 
-	mkdir -p /var/run /var/lock /var/log /tmp/dnsmasq.d $DNS_DIR $K $VAR
-	ulimit -n 65535
+	touch $LOCK
 	start
 }

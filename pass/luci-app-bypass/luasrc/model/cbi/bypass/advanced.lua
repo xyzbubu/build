@@ -93,7 +93,7 @@ o.default = "https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn_ipv6.txt
 o = s:option(Button, "UpdateRule", translate("Update All Rule List"))
 o.inputstyle = "apply"
 function o.write(t, n)
-    luci.sys.call("lua /usr/share/bypass/update  > /dev/null 2>&1 &")
+    luci.sys.call("/usr/share/bypass/update  > /dev/null 2>&1 &")
     luci.http.redirect(url("log"))
 end
 

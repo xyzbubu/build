@@ -65,7 +65,7 @@ end
 o = s:option(Button, "subscribe", translate("Update All Subscribe Severs"))
 o.inputstyle = "apply"
 function o.write(t, n)
-    luci.sys.call("lua /usr/share/bypass/subscribe  > /dev/null 2>&1 &")
+    luci.sys.call("/usr/share/bypass/subscribe  > /dev/null 2>&1 &")
     luci.http.redirect(url("log"))
 end
 

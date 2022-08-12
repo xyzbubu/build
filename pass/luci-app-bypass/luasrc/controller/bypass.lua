@@ -23,6 +23,7 @@ function index()
 	entry({"admin", "services", "bypass", "run"}, call("act_status"))
 	entry({"admin", "services", "bypass", "checknet"}, call("check_net"))
 	entry({"admin","services","bypass","refresh"},call("refresh"))
+	entry({"admin","services","bypass","subscribe"},call("subscribe"))
 	entry({"admin","services","bypass","ping"},call("ping"))
 	entry({"admin","services","bypass","getlog"},call("getlog"))
 	entry({"admin","services","bypass","dellog"},call("dellog"))
@@ -55,6 +56,12 @@ function check_net()
 	http.write_json({ret=r})
 end
 
+function subscribe()
+	CALL("/usr/bin/lua /usr/share/bypass/subscribe")
+        luci.http.redirect(luci.dispatcher.build_url("admin","services",bypass,"log"))
+	http.prepare_content("application/json")
+	http.write_json({ret=1})
+end
 
 function checksrv()
 	local r="<br/>"

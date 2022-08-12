@@ -68,21 +68,21 @@ end
 
 o=s:option(Flag,"pre_ip",translate("Preload IP"),
 translate("Preload Google and Telegram IP segments (GFW mode only)"))
+o.default="1"
 o:depends("run_mode","gfw")
-o.default=1
 
 o=s:option(Flag,"pre_domain",translate("Preload Domain"),
 translate("Preload the domain name (GFW mode only,Solve the problem that the terminal fails to access the website in the list after bypass restart or switch node)"))
+o.default="1"
 o:depends("run_mode","gfw")
-o.default=1
 
 if luci.sys.call("test `grep MemTotal /proc/meminfo | awk '{print $2}'` -gt 233000") == 0 then
 o=s:option(Flag,"adguardhome",translate("Used with AdGuardHome"),
 translate("Luci-app-adguardhome require"))
 if luci.sys.call("test `which AdGuardHome` && test -r /etc/init.d/AdGuardHome") == 0 then
-o.default=1
+o.default="1"
 else
-o.default=0
+o.default="0"
 end
 end
 
@@ -92,8 +92,8 @@ o:value("",translate("All Ports"))
 o:value("2",translate("Only Common Ports"))
 
 o=s:option(Flag,"dns_hijack",translate("Take over LAN DNS"),
+o.default="1"
 translate("Redirect LAN device DNS to router(Don’t disable if you don’t understand)"))
-o.default=1
 
 o=s:option(ListValue,"dns_mode",translate("Foreign Resolve Dns Mode"))
 o:value("0",translate("Use SmartDNS DoH query"))

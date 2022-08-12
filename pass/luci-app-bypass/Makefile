@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-bypass
 PKG_VERSION:=1.3
-PKG_RELEASE:=26
+PKG_RELEASE:=28
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Kcptun \
@@ -26,7 +26,7 @@ LUCI_TITLE:=LuCI support for bypass
 LUCI_PKGARCH:=all
 LUCI_DEPENDS:=+ipset +ip-full +iptables-mod-tproxy +dnsmasq-full \
 	+smartdns +coreutils +coreutils-base64 +curl +tcping \
-	+chinadns-ng +lua +luci-compat +microsocks +unzip\
+	+chinadns-ng +lua +luci-compat +microsocks \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Kcptun:kcptun-client \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_NaiveProxy:naiveproxy \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Redsocks2:redsocks2 \
@@ -104,8 +104,13 @@ endef
 
 define Package/$(PKG_NAME)/conffiles
 /etc/config/bypass
-/etc/bypass/
-
+/etc/bypass/netflix.list
+/etc/bypass/oversea.list
+/etc/bypass/black.list
+/etc/bypass/preload.list
+/etc/bypass/white.list
+/etc/bypass/custom.list
+/etc/bypass/youtube.list
 endef
 
 include $(TOPDIR)/feeds/luci/luci.mk
