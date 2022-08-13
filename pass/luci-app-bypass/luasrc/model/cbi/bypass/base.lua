@@ -80,9 +80,9 @@ if luci.sys.call("test `grep MemTotal /proc/meminfo | awk '{print $2}'` -gt 2330
 o=s:option(Flag,"adguardhome",translate("Used with AdGuardHome"),
 translate("Luci-app-adguardhome require"))
 if luci.sys.call("test `which AdGuardHome` && test -r /etc/init.d/AdGuardHome") == 0 then
-o.default="1"
+o.default=1
 else
-o.default="0"
+o.default=0
 end
 end
 
@@ -92,8 +92,8 @@ o:value("",translate("All Ports"))
 o:value("2",translate("Only Common Ports"))
 
 o=s:option(Flag,"dns_hijack",translate("Take over LAN DNS"),
-o.default="1"
-translate("Redirect LAN device DNS to router(Don’t disable if you don’t understand)"))
+translate("Redirect LAN device DNS to router(Not disable if you do not understand)"))
+o.default=1
 
 o=s:option(ListValue,"dns_mode",translate("Foreign Resolve Dns Mode"))
 o:value("0",translate("Use SmartDNS DoH query"))
@@ -124,7 +124,7 @@ o:value("1",translate("Use SmartDNS UDP query"))
 
 o=s:option(Value,"dns_l",translate("Domestic DoH"),
 translate("Custom DNS format is https://dns.alidns.com/dns-query or https://223.5.5.5/dns-query"))
-o:value("0",translate("Ali"))
+o:value("",translate("Ali"))
 o:value("1","Dnspod")
 o:depends("dns_mode_l",0)
 

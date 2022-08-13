@@ -208,7 +208,7 @@ msgstr "如果Netflix未显示代理正在使用，则无需加载代理"
 msgid "Preload the domain name (GFW mode only,Solve the problem that the terminal fails to access the website in the list after bypass restart or switch node)"
 msgstr "预加载域名（仅限GFW模式，解决绕过重启或切换节点后终端无法访问列表中网站的问题）"
 
-msgid "Redirect LAN device DNS to router(Don’t disable if you don’t understand)"
+msgid "Redirect LAN device DNS to router(Not disable if you do not understand)
 msgstr "将LAN设备DNS重定向到路由器（如果不理解，请不要禁用）"
 
 msgid "All Ports"
