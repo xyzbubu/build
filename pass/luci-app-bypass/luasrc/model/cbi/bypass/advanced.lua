@@ -79,14 +79,12 @@ o:value("https://ispip.clang.cn/all_cn.txt", translate("Clang.CN"))
 o:value("https://ispip.clang.cn/all_cn_cidr.txt", translate("Clang.CN.CIDR"))
 o:value("https://fastly.jsdelivr.net/gh/soffchen/GeoIP2-CN@release/CN-ip-cidr.txt", translate("soffchen/GeoIP2-CN"))
 o:value("https://fastly.jsdelivr.net/gh/Hackl0us/GeoIP2-CN@release/CN-ip-cidr.txt", translate("Hackl0us/GeoIP2-CN"))
-
 o:value("https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn.txt", translate("sirpdboy/all_cn"))
 o.default = "https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn.txt"
 
 ----chnroute6 URL
 o = s:option(DynamicList, "chnroute6_url", translate("China IPv6s(chnroute6) Update URL"))
 o:value("https://ispip.clang.cn/all_cn_ipv6.txt", translate("Clang.CN.IPv6"))
-
 o:value("https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn_ipv6.txt", translate("sirpdboy/all_cn_ipv6"))
 o.default = "https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/all_cn_ipv6.txt"
 

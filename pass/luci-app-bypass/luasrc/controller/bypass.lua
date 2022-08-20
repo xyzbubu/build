@@ -31,8 +31,8 @@ end
 
 function act_status()
 	local e = {}
-	e.tcp = CALL('ps -w | grep bypass-tcp | grep -v grep  >/dev/null ') == 0
-	e.udp = CALL('ps -w | grep bypass-udp | grep -v grep  >/dev/null ') == 0
+	e.tcp = CALL('busybox ps -w | grep bypass-tcp | grep -v grep  >/dev/null ') == 0
+	e.udp = CALL('busybox ps -w | grep bypass-udp | grep -v grep  >/dev/null ') == 0
 	e.smartdns = CALL("pidof smartdns >/dev/null")==0
 
 	e.chinadns=CALL("pidof chinadns-ng >/dev/null")==0
@@ -58,7 +58,6 @@ end
 
 function subscribe()
 	CALL("/usr/bin/lua /usr/share/bypass/subscribe")
-        luci.http.redirect(luci.dispatcher.build_url("admin","services",bypass,"log"))
 	http.prepare_content("application/json")
 	http.write_json({ret=1})
 end
@@ -74,7 +73,7 @@ function checksrv()
 		end
 		local dp=EXEC("netstat -unl | grep 5336 >/dev/null && echo -n 5336 || echo -n 53")
 		local ip=EXEC("echo "..s.server.." | grep -E ^[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$ || \\\
-		nslookup "..s.server.." 127.0.0.1#"..dp.." 2>/dev/null | grep Address | awk -F' ' '{print$NF}' | grep -E ^[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$ | sed -n 1p")
+		nslookup "..s.server.." 127.0.0.1:"..dp.." 2>/dev/null | grep Address | awk -F' ' '{print$NF}' | grep -E ^[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$ | sed -n 1p")
 		ip=EXEC("echo -n "..ip)
 		local iret=CALL("ipset add over_wan_ac "..ip.." 2>/dev/null")
 		local t=EXEC(string.format("tcping -q -c 1 -i 1 -t 2 -p %s %s 2>&1 | awk -F 'time=' '{print $2}' | awk -F ' ' '{print $1}'",s.server_port,ip))

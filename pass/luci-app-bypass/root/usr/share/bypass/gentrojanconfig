@@ -26,7 +26,7 @@ local trojan={
 		alpn={"h2","http/1.1"},
 		curves="",
 		reuse_session=true,
-		session_ticket=(server.tls_sessionTicket and server.tls_sessionTicket == "1") and true or false
+		session_ticket=false
 		},
 	tcp={
 		no_delay=true,

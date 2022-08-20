@@ -55,14 +55,14 @@ if [ "$C" = gfw -o "$(uci -q get bypass.@global[0].gfw_mode)" = 1 ];then
 	else
 		curl -kLfsm 5  -o /tmp/gfw.b64 ${gfwlist_url}  || curl -Lfsm 5 -o https://fastly.jsdelivr.net/gh/sirpdboy/iplist@main/gfwlist.txt || curl -kLfsm 3 -o /tmp/gfw.b64 https://supes.top/bypass/gfwlist.txt ||  curl -Lfso /tmp/gfw.b64 https://fastly.jsdelivr.net/gh/YW5vbnltb3Vz/domain-list-community@release/gfwlist.txt  
 	fi
-		$DIR/gfw
-		if ! cmp -s /tmp/gfwnew.txt  $TMP/gfw.list ;then
+	$DIR/gfw
+	if ! cmp -s /tmp/gfwnew.txt  $TMP/gfw.list ;then
 			cp -f /tmp/gfwnew.txt $TMP/gfw.list 
 			log "By Update  : Updated GFW List :" $( cat /tmp/bypass/gfw.list | wc -l)
 			[ $A = N ] && /etc/init.d/bypass restart
-		else
+	else
 			log "By Update  : GFW List is up to date :" $( cat /tmp/bypass/gfw.list | wc -l)
-		fi
+	fi
 
 fi
 rm -f $LOCKU /tmp/china*.txt /tmp/gfwnew.txt /tmp/gfw.b64

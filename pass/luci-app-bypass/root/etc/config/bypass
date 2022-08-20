@@ -19,7 +19,6 @@ config socks5_proxy
 
 config access_control
 	option lan_ac_mode 'b'
-	list wan_bp_ips '184.104.213.109'
 
 config server_global
 

@@ -417,7 +417,7 @@ o:value(cert_dir)
 o:depends("certificate",1)
 
 o=s:option(Flag,"fast_open",translate("TCP Fast Open"))
-o.default = "1"
+
 o:depends("type","ssr")
 o:depends("type","ss")
 o:depends("type","trojan")
