@@ -318,6 +318,12 @@ o = s:option(Value, "obfs_param", translate("Obfs param (optional)"))
 o:depends("type", "ssr")
 o:depends({type = "v2ray", v2ray_protocol = "shadowsocksr"})
 
+o = s:option(Value, "alter_id", translate("AlterId"))
+o.datatype = "port"
+o.default = 16
+o.rmempty = true
+o:depends({type = "v2ray", v2ray_protocol = "vmess"})
+
 -- [[ Hysteria ]]--
 o = s:option(ListValue, "hysteria_protocol", translate("Protocol"))
 o:depends("type", "hysteria")
