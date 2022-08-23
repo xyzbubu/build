@@ -195,14 +195,14 @@ if A==0 then
 o:value("obfs-local",translate("simple-obfs"))
 end
 if B==0 then
-o:value("v2ray-plugin",translate("v2ray-plugin"))
+o:value("xray-plugin",translate("xray-plugin"))
 end
 o:depends("type","ss")
 end
 
 o=s:option(Value,"plugin_opts",translate("Plugin Opts"))
 o:depends("plugin","obfs-local")
-o:depends("plugin","v2ray-plugin")
+o:depends("plugin","xray-plugin")
 
 o=s:option(ListValue,"protocol",translate("Protocol"))
 for _,v in ipairs(protocol) do o:value(v) end

@@ -1,4 +1,4 @@
-  # Copyright (C) 2022 sirpdboy
+# Copyright (C) 2022 sirpdboy
 # Copyright (C) 2021 small-5
 #
 # This is free software, licensed under the GNU General Public License v3.
@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-bypass
 PKG_VERSION:=1.3
-PKG_RELEASE:=29
+PKG_RELEASE:=30
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Kcptun \
@@ -19,7 +19,7 @@ PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Simple_Obfs \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Simple_obfs_server \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Trojan_Plus \
-	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_plugin \
+	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Xray_plugin \
 	CONFIG_PACKAGE_$(PKG_NAME)_INCLUDE_Xray
 
 LUCI_TITLE:=LuCI support for bypass
@@ -39,18 +39,13 @@ LUCI_DEPENDS:=+ipset +ip-full +iptables-mod-tproxy +dnsmasq-full \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Simple_Obfs:simple-obfs \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Simple_obfs_server:simple-obfs-server \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Trojan_Plus:trojan-plus \
-	+PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_plugin:v2ray-plugin \
+	+PACKAGE_$(PKG_NAME)_INCLUDE_Xray_plugin:xray-plugin \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Xray:xray-core
 
 define Package/$(PKG_NAME)/config
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_Kcptun
 	bool "Include Kcptun"
-	default y
-
-
-config PACKAGE_$(PKG_NAME)_INCLUDE_Xray
-	bool "Include Xray"
 	default y
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_NaiveProxy
@@ -85,19 +80,19 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_Simple_Obfs
 config PACKAGE_$(PKG_NAME)_INCLUDE_Simple_obfs_server
 	bool "Include Shadowsocks Simple-obfs-server Plugin"
 	depends on PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Libev_Server
-	default n
+	default y
 	
+config PACKAGE_$(PKG_NAME)_INCLUDE_Xray_plugin
+	bool "Include Shadowsocks Xray Plugin"
+	default y
+config PACKAGE_$(PKG_NAME)_INCLUDE_Xray
+	bool "Include Xray"
+	default y
+
 config PACKAGE_$(PKG_NAME)_INCLUDE_Trojan_Plus
 	bool "Include Trojan-Plus"
 	default y
 
-config PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_Plugin
-	bool "Include Shadowsocks V2ray Plugin"
-	default y
-
-config PACKAGE_$(PKG_NAME)_INCLUDE_Xray
-	bool "Include Xray"
-	default y
 
 
 endef

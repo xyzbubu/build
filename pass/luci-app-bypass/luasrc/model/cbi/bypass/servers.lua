@@ -82,7 +82,7 @@ o.write=function()
 	if SYS.call("uci -q get bypass."..SYS.exec("echo -n $(uci -q get bypass.@global[0].global_server)")..".server >/dev/null")==1 then
 		SYS.exec("/etc/init.d/bypass stop &")
 	end
-
+	luci.http.redirect(luci.dispatcher.build_url("admin","services",bypass,"servers"))
 end
 
 s=m:section(TypedSection,"servers")

@@ -111,10 +111,7 @@ function buildUrl(btn,urlname,sid){
 	}
 
 	var s=document.getElementById(urlname+"-status");
-	if (!s) {
-			alert("Never");
-			return false;
-		}
+	if (!s) return false;
 	var v_type=opt.get("type").value;
 	var v_alias=opt.get("alias").value;
 	var url=null;
@@ -228,7 +225,7 @@ function buildUrl(btn,urlname,sid){
 			params+=opt.query("headerType","tcp_guise");
 			params+=opt.query("host","http_host");
 			params+=opt.query("path","http_path");
-		} else if (v_transport === "mkcp") {
+		} else if (v_transport == "mkcp") {
 			v_transport = "kcp";
 			params+=opt.query("headerType","kcp_guise");
 			params+=opt.query("seed","seed");
