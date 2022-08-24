@@ -890,7 +890,7 @@ msgid "Check..."
 msgstr "检测中..."
 
 msgid "Clear Log"
-msgstr "清空日志"
+msgstr "清除日志"
 
 msgid "Clear"
 msgstr "清除"

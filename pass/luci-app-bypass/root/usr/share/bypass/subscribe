@@ -604,6 +604,7 @@ local execute = function()
 				else
 					log('维持当前主服务器节点。')
 				end
+			SYS.call("/etc/init.d/bypass restart > /dev/null 2>&1 &")
 		else
 			ucic:delete(name,ucic:get_first(name,'global'),'global_server')
 			ucic:delete(name,ucic:get_first(name,'global'),'udp_relay_server')
@@ -634,8 +635,8 @@ if subscribe_url and #subscribe_url > 0 then
 		log(e)
 		log(debug.traceback())
 		log('发生错误, 正在恢复服务')
-		if ucic:get_first(name,uciType) then
-			SYS.call("/etc/init.d/" .. name .. " restart > /dev/null 2>&1 &")
+		local firstServer = ucic:get_first(name, uciType)
+		if firstServer then
 			log('重启服务成功')
 		else
 			SYS.call("/etc/init.d/" .. name .. " stop > /dev/null 2>&1 &") -- 不加&的话日志会出现的更早

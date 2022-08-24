@@ -111,7 +111,10 @@ function buildUrl(btn,urlname,sid){
 	}
 
 	var s=document.getElementById(urlname+"-status");
-	if (!s) return false;
+	if (!s) {
+			alert("Never");
+			return false;
+		}
 	var v_type=opt.get("type").value;
 	var v_alias=opt.get("alias").value;
 	var url=null;
