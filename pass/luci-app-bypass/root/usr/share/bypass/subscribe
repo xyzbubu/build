@@ -231,9 +231,9 @@ local function processData(szType, content)
 			result.tls = "0"
 		end
 		-- https://www.v2fly.org/config/protocols/vmess.html#vmess-md5-认证信息-淘汰机制
-		if info.aid and (tonumber(info.aid) > 0) then
-			result.server = nil
-		end
+		-- if info.aid and (tonumber(info.aid) > 0) then
+		-- 	result.server = nil
+		-- end
 	elseif szType == "ss" then
 		local idx_sp = 0
 		local alias = ""
@@ -637,6 +637,8 @@ if subscribe_url and #subscribe_url > 0 then
 		log('发生错误, 正在恢复服务')
 		local firstServer = ucic:get_first(name, uciType)
 		if firstServer then
+
+			SYS.call("/etc/init.d/" .. name .. " restart > /dev/null 2>&1 &") -- 不加&的话日志会出现的更早
 			log('重启服务成功')
 		else
 			SYS.call("/etc/init.d/" .. name .. " stop > /dev/null 2>&1 &") -- 不加&的话日志会出现的更早
