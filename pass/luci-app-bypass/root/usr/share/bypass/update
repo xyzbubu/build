@@ -67,4 +67,4 @@ if [ "$C" = gfw -o "$(uci -q get bypass.@global[0].gfw_mode)" = 1 ];then
 fi
 rm -f $LOCKU /tmp/china*.txt /tmp/gfwnew.txt /tmp/gfw.b64
 
-[ $A = Y ] && /etc/init.d/bypass start & || /etc/init.d/bypass restart & 
+[ $A = Y ] && /etc/init.d/bypass start &
