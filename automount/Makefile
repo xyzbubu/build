@@ -19,7 +19,7 @@ define Package/automount
   TITLE:=mount and format autoconfig hotplug script.
   MAINTAINER:=Lean &sirpdboy
 
-  DEPENDS:=+block-mount +kmod-fs-exfat +kmod-fs-ext4 +kmod-fs-vfat +ntfs-3g +ntfs-3g-utils +libblkid +fdisk +blkid +hdparam +lsblk \
+  DEPENDS:=+block-mount +kmod-fs-exfat +kmod-fs-ext4 +kmod-fs-vfat +ntfs-3g +ntfs-3g-utils +libblkid +fdisk +blkid +lsblk \
 	+kmod-fs-ntfs +kmod-usb-storage +kmod-usb-storage-extras +!TARGET_ramips:kmod-usb-storage-uas
   PKGARCH:=all
 endef
