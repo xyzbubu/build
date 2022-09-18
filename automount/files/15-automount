@@ -6,34 +6,19 @@
 blkdev=`dirname $DEVPATH`
 basename=`basename $blkdev`
 device=`basename $DEVPATH`
-skip=`block info | grep -vE '(f2fs|kernel|squashfs)' | sed 's/\(.*\): .*/\1/' | grep -q $device ; echo $?`
+skip=`block info | grep -vE '(f2fs|kernel|squashfs)' | sed 's/\(.*\): .*/\1/' | grep $device `
 path=$DEVPATH
 
-if [ $basename != "block" ] && [ -z "${device##sd*}" ] && [ $skip -eq 1 ]; then
+if [[ $basename != "block" && -z "${device##sd*}"  && -n "$skip" ]] ; then
 	mntpnt=$device
 	case "$ACTION" in
 		add)
 			mkdir -p /mnt/$mntpnt
 			chmod 777 /mnt/$mntpnt
-			if [ `which fdisk` ]; then
-				isntfs=`fdisk -l | grep $device | grep NTFS`
-				isvfat=`fdisk -l | grep $device | grep FAT`
-				isfuse=`lsmod | grep fuse`
-				isntfs3g=`which ntfs-3g`
-			else
-				isntfs=""
-				isvfat=""
-			fi
+			[ `which ntfs-3g` ]  && isntfs=`block info |  grep -n$device | grep "ntfs" ` || isntfs=""
+			 
 			# mount with ntfs-3g if possible, else with default mount
-			if [ "$isntfs" -a "$isfuse" -a "$isntfs3g" ]; then
-				ntfs-3g /dev/$device /mnt/$mntpnt
-			elif [ "$isvfat" ]; then
-				mount -o iocharset=utf8 /dev/$device /mnt/$mntpnt
-			else
-				# Try to be gentle on solid state devices
-				mount -o rw,noatime,discard /dev/$device /mnt/$mntpnt
-			fi
-		
+			[ "$isntfs" ] && mount -t ntfs-3g /dev/$device /mnt/$mntpnt || mount -o rw,noatime,discard /dev/$device /mnt/$mntpnt
 
 			;;
 		remove)
