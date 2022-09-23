@@ -22,12 +22,11 @@ start()
 	uci set network.@globals[0].packet_steering=1
 	uci commit network
 	g=$(dmesg | grep 'DMI:' | awk -F ', B' '{print $1 }' | awk -F ':' '{print $2 }')
-	h=${g}
 
-	mkdir -p /tmp/sysinfo
-	echo $h > /tmp/sysinfo/model
+	[ -d /tmp/sysinfo ] || mkdir -p /tmp/sysinfo
+	[ -n ${g} ] && echo $g > /tmp/sysinfo/model
 
-	for c in $(ip address | awk -F ': ' '/eth[0-9]+/ {print $2}' | xargs)
+	for c in $(ip address | awk -F ': ' '/eth[0-9]+/ {print $2}' | awk -F '@' {'print $1'} | awk '{ if ( length($0) <=4 ) print $0}' | xargs)
 	do
 		ethtool -K $c rx-checksum on >/dev/null 2>&1
 		ethtool -K $c tx-checksum-ip-generic on >/dev/null 2>&1 || (

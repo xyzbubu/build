@@ -3,7 +3,7 @@
 sed -i '/_orig_ifname/d' /etc/config/network
 echo -n "[" > /tmp/state/ethinfo
 
-a=$(ip address | awk -F ': ' '/eth[0-9]+/ {print $2}' )
+a=$(ip address | awk -F ': ' '/eth[0-9]+/ {print $2}' | awk -F '@' {'print $1'})
 b=$(echo "$a" | wc -l)
 for i in $(seq 1 $b)
 do
