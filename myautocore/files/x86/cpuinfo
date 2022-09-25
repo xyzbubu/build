@@ -6,6 +6,6 @@ cpu_arch="$(awk -F ': ' '/model name/ {print $2}' "/proc/cpuinfo" | head -n1)"
 if grep -q "x86" "/etc/openwrt_release"; then
 	cpu_cores="$(grep "core id" "/proc/cpuinfo" | sort -u | wc -l)核 $(grep -c "processor" "/proc/cpuinfo")线程" 
 else
-	cpu_cores="$(grep -c "processor" "/proc/cpuinfo")核";;
+	cpu_cores="$(grep -c "processor" "/proc/cpuinfo")核"
 fi
 echo -n "${cpu_arch} x ${cpu_cores}"

@@ -1,6 +1,5 @@
  
 # Copyright (C) 2010-2011 OpenWrt.org
-#
 #  2021-2022 by sirpdboy  (sirpdboy@qq.com)
 #  2020  by lean
 # This is free software, licensed under the GNU General Public License v2.
