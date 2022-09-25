@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=default-settings
 PKG_VERSION:=2
-PKG_RELEASE:=27
+PKG_RELEASE:=31
 PKG_LICENSE:=GPLv3
 PKG_LICENSE_FILES:=LICENSE
 
@@ -30,11 +30,8 @@ define Build/Compile
 endef
 
 define Package/default-settings/install
-	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_DIR) $(1)/etc/uci-defaults $(1)/usr/lib/lua/luci/i18n
 	$(INSTALL_BIN) ./files/zzz-default-settings $(1)/etc/uci-defaults/99-default-settings
-
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/i18n
 	po2lmo ./po/zh-cn/default.po $(1)/usr/lib/lua/luci/i18n/default.zh-cn.lmo
 endef
 
