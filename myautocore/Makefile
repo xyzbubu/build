@@ -53,9 +53,9 @@ define Package/myautocore-arm/install
 
 	$(INSTALL_DATA) ./files/arm/index.htm $(1)/etc/
 	$(INSTALL_BIN) ./files/arm/090-cover-index_htm $(1)/etc/uci-defaults/
-ifneq ($(filter ipq% %mt7622, $(TARGETID)),)
+# ifneq ($(filter ipq% %mt7622, $(TARGETID)),)
 	$(INSTALL_BIN) ./files/arm/tempinfo $(1)/sbin/
-endif
+# endif
 endef
 
 define Package/myautocore-x86/install
