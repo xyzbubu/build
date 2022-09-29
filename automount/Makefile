@@ -18,8 +18,9 @@ define Package/automount
   TITLE:=mount and format autoconfig hotplug script.
   MAINTAINER:=Lean &sirpdboy
 
-  DEPENDS:=+block-mount +kmod-fs-exfat +kmod-fs-ext4 +kmod-fs-vfat +libblkid +kmod-fs-ntfs3\
+  DEPENDS:=+block-mount +kmod-fs-exfat +kmod-fs-ext4 +kmod-fs-vfat +libblkid +ntfs-3g +ntfs-3g-utils \
 	+kmod-usb-storage +kmod-usb-storage-extras +!TARGET_ramips:kmod-usb-storage-uas
+  PKGARCH:=all
 endef
 
 define Package/automount/description
@@ -31,9 +32,8 @@ define Build/Compile
 endef
 
 define Package/automount/install
-	$(INSTALL_DIR) $(1)/etc/uci-defaults $(1)/sbin
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
 	$(INSTALL_BIN) ./files/15-automount $(1)/etc/15-automount
-	$(INSTALL_BIN) ./files/mount.ntfs $(1)/sbin
 	$(INSTALL_BIN) ./files/zzz-move-automount $(1)/etc/uci-defaults/zzz-move-automount
 endef
 
