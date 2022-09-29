@@ -8,10 +8,9 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=automount
-PKG_FLAGS:=nonshared
-PKG_RELEASE:=$(COMMITCOUNT)
-
-PKG_CONFIG_DEPENDS:=CONFIG_TARGET_ramips
+PKG_VERSION:=1
+PKG_RELEASE:=39
+PKG_ARCH:=all
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -19,9 +18,8 @@ define Package/automount
   TITLE:=mount and format autoconfig hotplug script.
   MAINTAINER:=Lean &sirpdboy
 
-  DEPENDS:=+block-mount +kmod-fs-exfat +kmod-fs-ext4 +kmod-fs-vfat \
+  DEPENDS:=+block-mount +kmod-fs-exfat +kmod-fs-ext4 +kmod-fs-vfat +libblkid +kmod-fs-ntfs3\
 	+kmod-usb-storage +kmod-usb-storage-extras +!TARGET_ramips:kmod-usb-storage-uas
-  PKGARCH:=all
 endef
 
 define Package/automount/description
@@ -33,8 +31,9 @@ define Build/Compile
 endef
 
 define Package/automount/install
-	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_DIR) $(1)/etc/uci-defaults $(1)/sbin
 	$(INSTALL_BIN) ./files/15-automount $(1)/etc/15-automount
+	$(INSTALL_BIN) ./files/mount.ntfs $(1)/sbin
 	$(INSTALL_BIN) ./files/zzz-move-automount $(1)/etc/uci-defaults/zzz-move-automount
 endef
 
