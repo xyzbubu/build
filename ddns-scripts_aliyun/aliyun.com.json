@@ -1,9 +1,0 @@
-{
-	"name": "aliyun.com",
-	"ipv4": {
-		"url": "update-aliyun_com.sh"
-	},
-	"ipv6": {
-		"url": "update-aliyun_com.sh"
-	}
-}
