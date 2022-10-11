@@ -32,8 +32,9 @@ define Build/Compile
 endef
 
 define Package/automount/install
-	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_DIR) $(1)/etc/uci-defaults $(1)/sbin
 	$(INSTALL_BIN) ./files/15-automount $(1)/etc/15-automount
+	$(INSTALL_BIN) ./files/mount.ntfs $(1)/sbin
 	$(INSTALL_BIN) ./files/zzz-move-automount $(1)/etc/uci-defaults/zzz-move-automount
 endef
 
