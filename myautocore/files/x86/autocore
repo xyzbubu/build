@@ -24,7 +24,7 @@ start()
 	g=$(dmesg | grep 'DMI:' | awk -F ', B' '{print $1 }' | awk -F ':' '{print $2 }')
 
 	[ -d /tmp/sysinfo ] || mkdir -p /tmp/sysinfo
-	[ -n ${g} ] && echo $g > /tmp/sysinfo/model
+	echo $g > /tmp/sysinfo/model
 
 	for c in $(ip address | awk -F ': ' '/eth[0-9]+/ {print $2}' | awk -F '@' {'print $1'} | awk '{ if ( length($0) <=4 ) print $0}' | xargs)
 	do
@@ -38,7 +38,6 @@ start()
 		ethtool -K $c ufo on >/dev/null 2>&1
 
 	done
-
 
 	[ -f /etc/index.htm ] && mv /etc/index.htm /usr/lib/lua/luci/view/admin_status/index.htm
 }
