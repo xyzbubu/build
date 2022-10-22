@@ -44,7 +44,7 @@
 	local has_dsl = fs.access("/etc/init.d/dsl_control")
 local function online_data()
 	local rv = { }
-	local fd = util.execi('/usr/bin/awk \'BEGIN{while ((getline < "/tmp/dhcp.leases") > 0){a[$2]=$4;}while ((getline < "/proc/net/arp") > 0){if (!a[$4]){a[$4]="\?";}if (match($3,"0x[26]")){"ping -q -c 1 "$1" &";if (b[$4]){b[$4]=b[$4]"/"$1;}else{b[$4]=$1;}c[$4]=$6;}}while (("ip -6 neighbor show | grep -v fe80" | getline) > 0){if (b[$5]) {"ping -q -c 1 "$1" &";b[$5]=b[$5]"/"$1;}}for (mac in b){print(a[mac],b[mac],mac,c[mac]);}}\' ')
+	local fd = util.execi('/usr/bin/awk \'BEGIN{while ((getline < "/tmp/dhcp.leases") > 0){a[$2]=$4;}while ((getline < "/proc/net/arp") > 0){if (!a[$4]){a[$4]="\?";}if (match($3,"0x[26]")){"ping -q -c 1 "$1" &";if (b[$4]){b[$4]=b[$4]"/"$1;}else{b[$4]=$1;}c[$4]=$6;}}for (mac in b){print(a[mac],b[mac],mac,c[mac]);}}\' ')
 	while true do
 		local ln = fd()
 		if ln == nil then break end
@@ -799,7 +799,7 @@ end
 	<legend><%:System%></legend>
 	<table width="100%" cellspacing="10">
 		<tr><td width="33%"><%:Hostname%></td><td><%=luci.sys.hostname() or "?"%></td></tr>
-		<tr><td width="33%"><%:Model%></td><td><%=pcdata(boardinfo.model or "?")%>  <%=luci.sys.exec("cat /etc/bench.log |awk -F '.' '{print $1}'") or " "%></td></tr>
+		<tr><td width="33%"><%:Model%></td><td><%=pcdata(boardinfo.model or "?")%>  <%=luci.sys.exec("cat /etc/bench.log") or " "%></td></tr>
 		<tr><td width="33%"><%:Architecture%></td><td><%=pcdata(boardinfo.system or "?")%> x <%=luci.sys.exec("cat /proc/cpuinfo | grep 'processor' | wc -l") or "1"%></td></tr>
 		<tr><td width="33%"><%:Target Platform%></td><td><%=pcdata(boardinfo.release.target or "?")%></td></tr>
 		<tr><td width="33%"><%:CPU主频%></td><td id="cpuspeed">-</td></tr>

@@ -3,7 +3,7 @@
 sed -i '/_orig_ifname/d' /etc/config/network
 {
 echo -n "["
-for i in $(ip address | awk -F ': ' '/eth[0-9]+/ {print $2}' | awk -F '@' {'print $1'} | awk '{ if ( length($0) <5 ) print $0}' | xargs)
+for i in $(ip address | awk -F ': ' '/eth[0-9]+/ {print $2}' | awk -F '@' {'print $1'} | awk '{ if ( length($0) <=7 ) print $0}' | xargs)
 do
 	h=$(echo '{"face":' )
 	d=$(ethtool $i)
