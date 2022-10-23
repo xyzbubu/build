@@ -48,7 +48,6 @@ define Package/ntfs3-mount
 endef
 
 define Build/Compile
-	true
 endef
 
 define Package/automount/install
