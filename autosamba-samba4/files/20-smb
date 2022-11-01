@@ -60,7 +60,7 @@ case "$ACTION" in
 
 	wait_for_init
 
-	cat /proc/mounts | grep -v '/boot\|/opt' | while read j
+	cat /proc/mounts | grep -v '/boot\|/opt|/overlay' | while read j
 	do
 		str=${j%% *}
 		if [ "$str" == $path ];then
@@ -82,6 +82,7 @@ case "$ACTION" in
 				echo -e "\toption create_mask '0666'" >> $config_file
 				echo -e "\toption dir_mask '0777'" >> $config_file
 				echo -e "\toption device '$device'" >> $config_file
+				echo -e "\toption inherit_owner 'yes'" >> $config_file
 				/etc/init.d/samba4 reload
 				return
 			fi
