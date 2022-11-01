@@ -15,7 +15,7 @@ if [ $basename != "block" ] && [ -z "${device##sd*}" ] && [ $skip -eq 1 ]; then
 		add)
 			mkdir -p /mnt/$mntpnt
 			chmod 777 /mnt/$mntpnt
-			[ `which ntfs-3g` ]  && isntfs=`block info |  grep -n$device | grep "ntfs" ` || isntfs=""
+			[ `which ntfs-3g` ]  && isntfs=`block info |  grep -n $device | grep "ntfs" ` || isntfs=""
 			 
 			# mount with ntfs-3g if possible, else with default mount
 			[ "$isntfs" ] && mount -t ntfs-3g /dev/$device /mnt/$mntpnt || mount -o rw,noatime,discard /dev/$device /mnt/$mntpnt
