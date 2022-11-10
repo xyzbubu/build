@@ -8,32 +8,30 @@ s.anonymous = true
 s:tab("general",  translate("General Settings"))
 s:tab("template", translate("Edit Template"))
 
---o=s:taboption("general",NetworkSelect,'interface', translate('Interface'),translate('Listen only on the given interface or, if unspecified, on lan'))
-
 
 a = s:taboption("general", Flag, "enabled", translate("Enabled"))
 a.rmempty = false
-a.default = "no"
+a.default = "1"
+
+s:taboption("general", Value, "name", translate("Hostname"))
 
 o=s:taboption("general", Value, "workgroup", translate("Workgroup"))
-o.placeholder = 'WORKGROUP'
 
 o=s:taboption("general", Value, "description", translate("Description"))
-o.placeholder = 'Samba4 on OpenWrt'
 
 br = s:taboption("general", Flag, 'disable_async_io', translate('Force synchronous  I/O'),
 			translate('On lower-end devices may increase speeds, by forceing synchronous I/O instead of the default asynchronous.'))
-
+br.default = "1"
+br.rmempty = false
 br = s:taboption("general", Flag,  'allow_legacy_protocols', translate('Allow legacy (insecure) protocols/authentication.'),
 			translate('Allow legacy smb(v1)/Lanman connections, needed for older devices without smb(v2.1/3) support.'))
 br.rmempty = false
-br.enabled = "yes"
-br.disabled = "no"
-br.default = "yes"
+br.default = "1"
 
 macos = s:taboption("general", Flag, "macos", translate("Enable macOS compatible shares"),
 	translate("Enables Apple's AAPL extension globally and adds macOS compatibility options to all shares."))
 macos.rmempty = false
+macos.default = "1"
 
 if nixio.fs.access("/usr/sbin/nmbd") then
 	s:taboption("general", Flag, "disable_netbios", translate("Disable Netbios"))
@@ -43,12 +41,14 @@ if nixio.fs.access("/usr/sbin/samba") then
 end
 if nixio.fs.access("/usr/sbin/winbindd") then
 	s:taboption("general", Flag, "disable_winbind", translate("Disable Winbind"))
+ 
 end
 
 h = s:taboption("general", Flag,  'enable_extra_tuning', translate('Enable extra Tuning'),
 			translate('Enable some community driven tuning parameters, that may improve write speeds and better operation via WiFi.\
 			Not recommend if multiple clients write to the same files, at the same time!'))
-
+h.rmempty = false
+h.default = "1"
 tmpl = s:taboption("template", Value, "_tmpl",
 	translate("Edit the template that is used for generating the samba configuration."), 
 	translate("This is the content of the file '/etc/samba/smb.conf.template' from which your samba configuration will be generated. " ..
@@ -70,7 +70,7 @@ end
 a = s:taboption("general", Flag, "autoshare", translate("Auto Share"),
         translate("Auto share local disk which connected"))
 a.rmempty = false
-a.default = "yes"
+a.default = "1"
 
 s = m:section(TypedSection, "sambashare", translate("Shared Directories")
   , translate("Please add directories to share. Each directory refers to a folder on a mounted device."))
