@@ -29,7 +29,8 @@ wait_for_init() {
 
 smb_handle() {
 	config_get path $1 path
-	if [  "$path" = "$2" ] ;then
+	config_get auto $1 auto
+	if [  "$path" = "$2" -o "$auto" = "0" ] ;then
 		global=1
 	fi
 }
@@ -60,7 +61,7 @@ case "$ACTION" in
 
 	wait_for_init
 
-	cat /proc/mounts | grep -v '/boot\|/opt|/overlay' | while read j
+	cat /proc/mounts | grep -v '/boot\|/opt|/sda1|/overlay' | while read j
 	do
 		str=${j%% *}
 		if [ "$str" == $path ];then
