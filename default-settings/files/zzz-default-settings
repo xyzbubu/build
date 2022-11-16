@@ -64,7 +64,6 @@ set turboacc.config.bbr_cca='0'
 set turboacc.config.sfe_flow='0'
 set turboacc.config.hw_flow='0'
 set turboacc.config.sw_flow='0'
-set fstab.@global[0].anon_mount=1
 set upnpd.@upnpd[0].enabled='0' 
 set upnpd.@upnpd[0].igdv1='1' 
 set fstab.@global[0].anon_mount=1
