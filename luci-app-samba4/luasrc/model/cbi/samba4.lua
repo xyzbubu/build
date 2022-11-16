@@ -70,7 +70,7 @@ end
 a = s:taboption("general", Flag, "autoshare", translate("Auto Share"),
         translate("Auto share local disk which connected"))
 a.rmempty = false
-a.default = "1"
+a.default = "0"
 
 s = m:section(TypedSection, "sambashare", translate("Shared Directories")
   , translate("Please add directories to share. Each directory refers to a folder on a mounted device."))
