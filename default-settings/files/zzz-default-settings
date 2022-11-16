@@ -67,6 +67,8 @@ set turboacc.config.sw_flow='0'
 set fstab.@global[0].anon_mount=1
 set upnpd.@upnpd[0].enabled='0' 
 set upnpd.@upnpd[0].igdv1='1' 
+set fstab.@global[0].anon_mount=1
+set fstab.@global[0].check_fs=1
 EOF
 uci commit luci
 uci commit fstab
